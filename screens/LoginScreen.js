@@ -17,10 +17,7 @@ export default function LoginScreen() {
         <View style={styles.headerContainer}>
           {false && <DevelopmentModeNotice />}
           <View style={styles.headerTextContainer}>
-            <Text style={styles.getStartedText}>Hello!</Text>
-            <Text style={styles.getStartedText}>Cash</Text>
-            <Text style={styles.getStartedText}>Income</Text>
-            <Text style={styles.getStartedText}>Credit Debt</Text>
+            <Text style={styles.getStartedText}>Login to Masonic</Text>
           </View>
 
         </View>
