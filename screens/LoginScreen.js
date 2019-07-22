@@ -7,23 +7,37 @@ import {
   View,
 } from 'react-native';
 
-export default function LoginScreen() {
-  return (
-    <View style={styles.container}>
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={styles.contentContainer}>
+class LoginScreen extends React.Component {
+  constructor(props) {
+    super(props);
+  }
 
-        <View style={styles.headerContainer}>
-          {false && <DevelopmentModeNotice />}
-          <View style={styles.headerTextContainer}>
-            <Text style={styles.getStartedText}>Login to Masonic</Text>
+  _onLoginPress = () => {
+    console.log("hi");
+    this.props.navigation.navigate('App');
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <ScrollView
+          style={styles.container}
+          contentContainerStyle={styles.contentContainer}>
+  
+          <View style={styles.headerContainer}>
+            {false && <DevelopmentModeNotice />}
+            <View style={styles.headerTextContainer}>
+              <Text style={styles.getStartedText}>Login to Masonic</Text>
+              <TouchableOpacity onPress={this._onLoginPress}>
+                <Text style={styles.getStartedText}>Log me in :)</Text>
+              </TouchableOpacity>
+            </View>
+  
           </View>
-
-        </View>
-      </ScrollView>
-    </View>
-  );
+        </ScrollView>
+      </View>
+    );
+  }
 }
 
 LoginScreen.navigationOptions = {
@@ -74,3 +88,5 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
 });
+
+export default LoginScreen;
