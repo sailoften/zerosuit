@@ -7,7 +7,6 @@ import {
   Text,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { NavigationActions } from 'react-navigation';
 
 import PAText from '../common/PAText';
 import PADefaultButton from '../common/PADefaultButton';
@@ -69,7 +68,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export class Login extends React.Component {
+class Login extends React.Component {
   static navigationOptions = {
     header: null,
     gesturesEnabled: false,

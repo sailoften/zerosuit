@@ -5,14 +5,18 @@ import {
   Text,
   TouchableOpacity,
   View,
+  SafeAreaView,
 } from 'react-native';
+import CardView from '../common/CardView';
 
 export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <ScrollView
         style={styles.container}
-        contentContainerStyle={styles.contentContainer}>
+        contentContainerStyle={styles.contentContainer}
+        contentInsetAdjustmentBehavior="never"
+        >
 
         <View style={styles.headerContainer}>
           {false && <DevelopmentModeNotice />}
@@ -22,7 +26,14 @@ export default function HomeScreen() {
             <Text style={styles.getStartedText}>Income</Text>
             <Text style={styles.getStartedText}>Credit Debt</Text>
           </View>
-
+        </View>
+        <View style={styles.homeCards}>
+          <CardView>
+            <Text>This is a card</Text>
+          </CardView>
+          <CardView>
+            <Text>This is another card</Text>
+          </CardView>
         </View>
       </ScrollView>
     </View>
@@ -59,13 +70,14 @@ function DevelopmentModeNotice() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#e6edf9',
   },
   contentContainer: {
     paddingTop: 30,
   },
   headerContainer: {
     backgroundColor: 'gray',
+    marginBottom: 20,
   },
   headerTextContainer: {
     marginHorizontal: 20,
