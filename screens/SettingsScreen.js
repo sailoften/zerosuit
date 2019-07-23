@@ -3,23 +3,38 @@ import {StyleSheet, View, Text, SectionList} from 'react-native';
 import { ExpoConfigView } from '@expo/samples';
 
 export default class SettingsScreen extends React.Component {
-  /**
-   * Go ahead and delete ExpoConfigView and replace it with your content;
-   * we just wanted to give you a quick view of your config.
-   */
-  //return <ExpoConfigView />;
+  constructor(props) {
+    super(props);
+    this.state = {
+      sections: [
+        {title: 'July 23, 2019', data: [{name: 'Transaction 1', value: 1244}, {name: 'Transaction 1', value: 1244}]},
+        {title: 'July 22, 2019', data: [{name: 'Transaction 1', value: 1244}, {name: 'Transaction 1', value: 1244}]},
+        {title: 'July 21, 2019', data: [{name: 'Transaction 1', value: 1244}, {name: 'Transaction 1', value: 1244}]},
+      ]
+    }
+  }
+
+  _renderSectionHeader = ({ section }) => {
+    return (
+      <Text style={styles.sectionHeader}>{section.title}</Text>
+    );
+  };
+
+  _renderItem = ({ item, index, section }) => {
+    return (
+      <View style={styles.item}>
+        <Text key={index}>{item.name}, {item.value}</Text>
+      </View>
+    );
+  };
+
   render() {
+    const { sections } = this.state;
     return(
       <SectionList
-        renderItem={({item, index, section}) => <View style={styles.item}><Text key={index}>{item}</Text></View>}
-        renderSectionHeader={({section: {title}}) => (
-          <Text style={styles.sectionHeader}>{title}</Text>
-        )}
-        sections={[
-          {title: 'July 23, 2019', data: ['Transaction 1', 'Transaction 2']},
-          {title: 'July 22, 2019', data: ['Transaction 1', 'Transaction 2']},
-          {title: 'July 21, 2019', data: ['Transaction 1', 'Transaction 2']},
-        ]}
+        renderItem={this._renderItem}
+        renderSectionHeader={this._renderSectionHeader}
+        sections={sections}
         keyExtractor={(item, index) => item + index}
       />
     );
