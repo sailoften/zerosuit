@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 
-class Login extends React.Component {
+class CardView extends React.Component {
     render() {
         return (
             <View style={styles.cardView}>
@@ -29,4 +29,4 @@ const styles = {
     }
 }
 
-export default Login
+export default CardView

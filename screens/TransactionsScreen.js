@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Text, SectionList} from 'react-native';
 import { ExpoConfigView } from '@expo/samples';
 
-export default class SettingsScreen extends React.Component {
+export default class TransactionsScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -41,7 +41,7 @@ export default class SettingsScreen extends React.Component {
   }
 }
 
-SettingsScreen.navigationOptions = {
+TransactionsScreen.navigationOptions = {
   title: 'Transactions',
 };
 

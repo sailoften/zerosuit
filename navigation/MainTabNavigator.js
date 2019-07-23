@@ -4,8 +4,9 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
-import SettingsScreen from '../screens/SettingsScreen';
+import PathScreen from '../screens/PathScreen';
+import TransactionsScreen from '../screens/TransactionsScreen';
+import AccountsScreen from '../screens/AccountsScreen';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -35,42 +36,59 @@ HomeStack.navigationOptions = {
 
 HomeStack.path = '';
 
-const LinksStack = createStackNavigator(
+const PathStack = createStackNavigator(
   {
-    Links: LinksScreen,
+    Path: PathScreen,
   },
   config
 );
 
-LinksStack.navigationOptions = {
-  tabBarLabel: 'Burn',
+PathStack.navigationOptions = {
+  tabBarLabel: 'Path',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-link' : 'md-link'} />
   ),
 };
 
-LinksStack.path = '';
+PathStack.path = '';
 
-const SettingsStack = createStackNavigator(
+const TransactionsStack = createStackNavigator(
   {
-    Settings: SettingsScreen,
+    Transactions: TransactionsScreen,
   },
   config
 );
 
-SettingsStack.navigationOptions = {
+TransactionsStack.navigationOptions = {
   tabBarLabel: 'Transactions',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'} />
   ),
 };
 
-SettingsStack.path = '';
+TransactionsStack.path = '';
+
+const AccountsStack = createStackNavigator(
+  {
+    Accounts: AccountsScreen,
+  },
+  config
+);
+
+AccountsStack.navigationOptions = {
+  tabBarLabel: 'Accounts',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'} />
+  ),
+};
+
+AccountsStack.path = '';
 
 const tabNavigator = createBottomTabNavigator({
   HomeStack,
-  LinksStack,
-  SettingsStack,
+  PathStack,
+  TransactionsStack,
+  AccountsStack
 });
 
 tabNavigator.path = '';
