@@ -5,6 +5,16 @@ import React, { useState } from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+import RubikLight from './assets/fonts/Rubik/Rubik-Light.ttf';
+import RubikRegular from './assets/fonts/Rubik/Rubik-Regular.ttf';
+import RubikMedium from './assets/fonts/Rubik/Rubik-Medium.ttf';
+import RubikBold from './assets/fonts/Rubik/Rubik-Bold.ttf';
+
+import MaisonNeueLight from './assets/fonts/MaisonNeue/MaisonNeue-Light.ttf';
+import MaisonNeueRegular from './assets/fonts/MaisonNeue/MaisonNeue-Book.ttf';
+import MaisonNeueMedium from './assets/fonts/MaisonNeue/MaisonNeue-Demi.ttf';
+import MaisonNeueBold from './assets/fonts/MaisonNeue/MaisonNeue-Bold.ttf';
+
 import AppNavigator from './navigation/AppNavigator';
 
 export default function App(props) {
@@ -40,6 +50,14 @@ async function loadResourcesAsync() {
       // We include SpaceMono because we use it in HomeScreen.js. Feel free to
       // remove this if you are not using it in your app
       'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
+      'Rubik-Light': RubikLight,
+      'Rubik-Regular': RubikRegular,
+      'Rubik-Medium': RubikMedium,
+      'Rubik-Bold': RubikBold,
+      'MaisonNeue-Light': MaisonNeueLight,
+      'MaisonNeue-Regular': MaisonNeueRegular,
+      'MaisonNeue-Medium': MaisonNeueMedium,
+      'MaisonNeue-Bold': MaisonNeueBold,
     }),
   ]);
 }
