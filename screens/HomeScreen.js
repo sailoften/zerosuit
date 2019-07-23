@@ -18,15 +18,17 @@ export default function HomeScreen() {
         contentInsetAdjustmentBehavior="never"
         >
 
-        <View style={styles.headerContainer}>
-          {false && <DevelopmentModeNotice />}
-          <View style={styles.headerTextContainer}>
-            <Text style={styles.getStartedText}>Hello!</Text>
-            <Text style={styles.getStartedText}>Cash</Text>
-            <Text style={styles.getStartedText}>Income</Text>
-            <Text style={styles.getStartedText}>Credit Debt</Text>
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.headerContainer}>
+            {false && <DevelopmentModeNotice />}
+            <View style={styles.headerTextContainer}>
+              <Text style={styles.getStartedText}>Hello!</Text>
+              <Text style={styles.getStartedText}>Cash</Text>
+              <Text style={styles.getStartedText}>Income</Text>
+              <Text style={styles.getStartedText}>Credit Debt</Text>
+            </View>
           </View>
-        </View>
+        </SafeAreaView>
         <View style={styles.homeCards}>
           <CardView>
             <Text>This is a card</Text>
@@ -44,36 +46,18 @@ HomeScreen.navigationOptions = {
   header: null,
 };
 
-function DevelopmentModeNotice() {
-  if (__DEV__) {
-    const learnMoreButton = (
-      <Text onPress={handleLearnMorePress} style={styles.helpLinkText}>
-        Learn more
-      </Text>
-    );
-
-    return (
-      <Text style={styles.developmentModeText}>
-        Development mode is enabled: your app will be slower but you can use
-        useful development tools. {learnMoreButton}
-      </Text>
-    );
-  } else {
-    return (
-      <Text style={styles.developmentModeText}>
-        You are not in development mode: your app will run at full speed.
-      </Text>
-    );
-  }
-}
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#e6edf9',
   },
+  safeArea: {
+    flex: 1,
+    backgroundColor: 'gray',
+    marginBottom: 20,
+  },
   contentContainer: {
-    paddingTop: 30,
+    paddingTop: 0,
   },
   headerContainer: {
     backgroundColor: 'gray',

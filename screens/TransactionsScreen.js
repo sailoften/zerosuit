@@ -1,6 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Text, SectionList} from 'react-native';
-import { ExpoConfigView } from '@expo/samples';
+import {StyleSheet, TouchableOpacity, Text, SectionList} from 'react-native';
 
 export default class TransactionsScreen extends React.Component {
   constructor(props) {
@@ -20,11 +19,15 @@ export default class TransactionsScreen extends React.Component {
     );
   };
 
+  _onTxPress = () => {
+    this.props.navigation.navigate('TxScreen');
+  }
+
   _renderItem = ({ item, index, section }) => {
     return (
-      <View style={styles.item}>
+      <TouchableOpacity style={styles.item} onPress={this._onTxPress}>
         <Text key={index}>{item.name}, {item.value}</Text>
-      </View>
+      </TouchableOpacity>
     );
   };
 
