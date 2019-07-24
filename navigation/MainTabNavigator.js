@@ -8,6 +8,7 @@ import PathScreen from '../screens/PathScreen';
 import TransactionsScreen from '../screens/TransactionsScreen';
 import AccountsScreen from '../screens/AccountsScreen';
 import TxScreen from '../screens/IndivTxScreen';
+import UserScreen from '../screens/UserScreen';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -70,27 +71,28 @@ TransactionsStack.navigationOptions = {
 
 TransactionsStack.path = '';
 
-const AccountsStack = createStackNavigator(
+const UserStack = createStackNavigator(
   {
+    User: UserScreen,
     Accounts: AccountsScreen,
   },
   config
 );
 
-AccountsStack.navigationOptions = {
-  tabBarLabel: 'Accounts',
+UserStack.navigationOptions = {
+  tabBarLabel: 'User',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'} />
   ),
 };
 
-AccountsStack.path = '';
+UserStack.path = '';
 
 const tabNavigator = createBottomTabNavigator({
   HomeStack,
   PathStack,
   TransactionsStack,
-  AccountsStack
+  UserStack
 });
 
 tabNavigator.path = '';
