@@ -7,66 +7,11 @@ import {
   Text,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import {AsyncStorage} from 'react-native';
 
 import PAText from '../common/PAText';
 import PADefaultButton from '../common/PADefaultButton';
 import PATextInput from '../common/PATextInput';
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#fff',
-    flexGrow: 1,
-    justifyContent: 'space-between',
-    marginLeft: 20,
-    marginRight: 20,
-    marginTop: 65,
-    marginBottom: 30,
-  },
-  backgroundWhite: {
-    backgroundColor: '#fff',
-  },
-  flex: {
-    flex: 1,
-  },
-  marginVertical: {
-    marginTop: 10,
-    marginBottom: 10,
-  },
-  logo: {
-    marginTop: 20,
-    width: 120,
-    overflow: 'hidden',
-  },
-  logoContainer: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  errorText: {
-    backgroundColor: 'transparent',
-  },
-  inputField: {
-    height: 45,
-    fontSize: 16,
-    borderColor: '#efefef',
-    flex: 1,
-    borderWidth: 1,
-    borderRadius: 5,
-    backgroundColor: '#fff',
-    paddingLeft: 10,
-    paddingRight: 10,
-  },
-  finePrintContainer: {
-    paddingLeft: 20,
-    paddingRight: 20,
-    paddingTop: 20,
-    paddingBottom: 40,
-    backgroundColor: '#fff',
-  },
-  finePrintText: {
-    fontSize: 11,
-    color: '#D3D3D3',
-  },
-});
 
 class Login extends React.Component {
   static navigationOptions = {
@@ -77,7 +22,6 @@ class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      navigation: props.navigation,
       email: '',
       password: '',
       error: null,
@@ -85,39 +29,38 @@ class Login extends React.Component {
   }
 
   handleLogin = async () => {
-    /*const { email, password, navigation } = this.state;
+    const { email, password } = this.state;
     const loginData = {
       email,
       password,
     };
     try {
-      const response = await postData('/user/login', loginData);
-      if (response && !response.error) {
-        // Securely store response
-        try {
-          await SecureStore.setItemAsync('user', JSON.stringify(response));
-          // Navigate to HomeTabs, but also reset stack
-          const loginReset = NavigationActions.reset({
-            index: 0,
-            key: null,
-            actions: [
-              NavigationActions.navigate({ routeName: 'HomeTabs' }),
-            ],
-          });
-          navigation.dispatch(loginReset);
-        } catch (error) {
-          // Error
-          this.setState({ error });
+      console.log(loginData);
+      const res = await fetch('https://masonic-staging-backend.onrender.com/api/user/login', {
+        method: 'POST',
+        body: JSON.stringify(loginData),
+        credentials: 'include',
+        headers:{
+          'Content-Type': 'application/json'
         }
-      } else if (!response) {
-        this.setState({ error: 'Error connecting to server ' });
-      } else {
-        this.setState({ error: response.error.toString() });
+      });
+      const payload = await res.json();
+      console.log(payload);
+      if (payload && payload.id) {
+        await this.storeUser(payload);
+        this.props.navigation.navigate('App');
       }
     } catch (e) {
       this.setState({ error: 'Error logging in' });
-    }*/
-    this.props.navigation.navigate('App');
+    }
+  }
+
+  storeUser = async (user) => {
+    try {
+      await AsyncStorage.setItem('user', JSON.stringify(user));
+    } catch(e) {
+      console.log("Error storing user details");
+    }
   }
 
   render() {
@@ -190,5 +133,62 @@ Login.propTypes = {
     navigate: PropTypes.func,
   }),
 };
+
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#fff',
+    flexGrow: 1,
+    justifyContent: 'space-between',
+    marginLeft: 20,
+    marginRight: 20,
+    marginTop: 65,
+    marginBottom: 30,
+  },
+  backgroundWhite: {
+    backgroundColor: '#fff',
+  },
+  flex: {
+    flex: 1,
+  },
+  marginVertical: {
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  logo: {
+    marginTop: 20,
+    width: 120,
+    overflow: 'hidden',
+  },
+  logoContainer: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  errorText: {
+    backgroundColor: 'transparent',
+  },
+  inputField: {
+    height: 45,
+    fontSize: 16,
+    borderColor: '#efefef',
+    flex: 1,
+    borderWidth: 1,
+    borderRadius: 5,
+    backgroundColor: '#fff',
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  finePrintContainer: {
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 20,
+    paddingBottom: 40,
+    backgroundColor: '#fff',
+  },
+  finePrintText: {
+    fontSize: 11,
+    color: '#D3D3D3',
+  },
+});
 
 export default Login;
