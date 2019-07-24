@@ -3,11 +3,15 @@ import { ScrollView, StyleSheet, Text, FlatList, View } from 'react-native';
 import CardView from '../common/CardView';
 
 export default class BurnScreen extends React.Component {
+    _moneyFormat = (amount) => {
+        return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+    }
+
     _renderExpenses = ({item}) => {
         return (
             <View style={styles.expenseCat}>
                 <Text style={{width: '50%'}}>{item.key}</Text>
-                <Text style={{width: '50%', textAlign: 'right'}}>${item.amount}</Text>
+                <Text style={{width: '50%', textAlign: 'right'}}>${this._moneyFormat(item.amount)}</Text>
             </View>
         );
     }
@@ -16,7 +20,14 @@ export default class BurnScreen extends React.Component {
         return (
             <ScrollView style={styles.container}>
               <CardView style={styles.burnCard}>
-                <Text style={styles.burnAmount}>You spent $13,231 so far this month</Text>
+                <Text style={styles.burnAmount}>Parta spent $13,231 so far this month</Text>
+              </CardView>
+              <CardView style={styles.expenseCard}>
+                <Text style={styles.expenseTitle}>Payroll</Text>
+                <FlatList
+                    data={[{key: 'Tim Apple', amount: 11210.21}, {key: 'Jony Ive', amount: 12210.21}, {key: 'Craig Federighi', amount: 3210.21}]}
+                    renderItem={this._renderExpenses}
+                />
               </CardView>
               <CardView style={styles.expenseCard}>
                 <Text style={styles.expenseTitle}>Company Expenses</Text>

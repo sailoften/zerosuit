@@ -3,11 +3,15 @@ import { ScrollView, StyleSheet, Text, View, FlatList } from 'react-native';
 import CardView from '../common/CardView';
 
 export default class RunwayScreen extends React.Component {
+    _moneyFormat = (amount) => {
+        return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+    }
+
     _renderExpenses = ({item}) => {
         return (
             <View style={styles.expenseCat}>
                 <Text style={{width: '50%'}}>{item.key}</Text>
-                <Text style={{width: '50%', textAlign: 'right'}}>${item.amount}</Text>
+                <Text style={{width: '50%', textAlign: 'right'}}>${this._moneyFormat(item.amount)}</Text>
             </View>
         );
     }
