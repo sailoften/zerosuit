@@ -9,16 +9,21 @@ import {
 import PropTypes from 'prop-types';
 
 class CardView extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
     render() {
+        const {style, children, ...rest} = this.props;
         return (
-            <View style={styles.cardView}>
-                {this.props.children}
+            <View style={[styles.cardView, style]}>
+                {children}
             </View>
         )
     }
 }
 
-const styles = {
+const styles = StyleSheet.create({
     cardView: {
         marginVertical: 10,
         marginHorizontal: 10,
@@ -27,6 +32,6 @@ const styles = {
         backgroundColor: '#fff',
         borderRadius: 5,
     }
-}
+});
 
 export default CardView

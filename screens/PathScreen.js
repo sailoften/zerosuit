@@ -30,7 +30,7 @@ export default class BurnTabScreen extends React.Component {
 }
 
 BurnTabScreen.navigationOptions = {
-  title: 'Burn',
+  title: 'Path',
 };
  
 const styles = StyleSheet.create({

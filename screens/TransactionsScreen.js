@@ -6,9 +6,9 @@ export default class TransactionsScreen extends React.Component {
     super(props);
     this.state = {
       sections: [
-        {title: 'July 23, 2019', data: [{name: 'Transaction 1', value: 1244}, {name: 'Transaction 1', value: 1244}]},
-        {title: 'July 22, 2019', data: [{name: 'Transaction 1', value: 1244}, {name: 'Transaction 1', value: 1244}]},
-        {title: 'July 21, 2019', data: [{name: 'Transaction 1', value: 1244}, {name: 'Transaction 1', value: 1244}]},
+        {title: 'July 23, 2019', data: [{name: 'Transaction 1', value: 12.44}, {name: 'Transaction 1', value: 1244}]},
+        {title: 'July 22, 2019', data: [{name: 'Transaction 1', value: 12.44}, {name: 'Transaction 1', value: 1244}]},
+        {title: 'July 21, 2019', data: [{name: 'Transaction 1', value: 12.44}, {name: 'Transaction 1', value: 1244}]},
       ]
     }
   }
@@ -26,7 +26,8 @@ export default class TransactionsScreen extends React.Component {
   _renderItem = ({ item, index, section }) => {
     return (
       <TouchableOpacity style={styles.item} onPress={this._onTxPress}>
-        <Text key={index}>{item.name}, {item.value}</Text>
+        <Text style={{width: '50%'}} key={index}>{item.name}</Text>
+        <Text style={{width: '50%', textAlign: 'right'}}>${item.value}</Text>
       </TouchableOpacity>
     );
   };
@@ -65,7 +66,9 @@ const styles = StyleSheet.create({
   item: {
     paddingVertical: 20,
     paddingHorizontal: 10,
-    borderBottomColor: 'gray',
+    borderBottomColor: '#f4f7fb',
     borderBottomWidth: 1,
+    flex: 1,
+    flexDirection: 'row',
   }
 });
