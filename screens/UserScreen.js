@@ -10,7 +10,17 @@ export default class UserScreen extends React.Component {
         {title: 'Banks', data: [{name: 'Silicon Valley Bank'}, {name: 'Mercury Checking'}]},
         {title: 'Credit Cards', data: [{name: 'Brex'}, {name: 'American Express Platinum'}]},
         {title: 'Payroll', data: [{name: 'Gusto'}]},
-      ]
+      ],
+      user: null,
+    }
+  }
+
+  _getUser = async () => {
+    const userString = await AsyncStorage.getItem('user');
+    if (userString) {
+        const user = JSON.parse(userString);
+        console.log(user);
+        this.setState({user});
     }
   }
 
@@ -23,16 +33,23 @@ export default class UserScreen extends React.Component {
     this.props.navigation.navigate('Accounts');
   }
 
+  componentWillMount() {
+      this._getUser();
+  }
+
   render() {
-    const { sections } = this.state;
+    const { user } = this.state;
     return(
-      <View>
+      <View style={styles.container}>
           <TouchableOpacity onPress={this._userLogout}>
               <Text>Logout</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={this._viewAccounts}>
               <Text>Accounts</Text>
           </TouchableOpacity>
+          { user && <View>
+            <Text>{user.firstName}</Text>
+          </View> }
       </View>
     );
   }
