@@ -18,17 +18,26 @@ export default function HomeScreen() {
         contentInsetAdjustmentBehavior="never"
         >
 
-        <SafeAreaView style={styles.safeArea}>
           <View style={styles.headerContainer}>
-            {false && <DevelopmentModeNotice />}
             <View style={styles.headerTextContainer}>
-              <Text style={styles.getStartedText}>Hello!</Text>
-              <Text style={styles.getStartedText}>Cash</Text>
-              <Text style={styles.getStartedText}>Income</Text>
-              <Text style={styles.getStartedText}>Credit Debt</Text>
+              <View style={styles.greetingCard}>
+                <Text style={styles.getStartedText}>Hello Jimmy!</Text>
+              </View>
+              <View style={styles.statCard}>
+                <Text style={styles.statCardText}>Cash</Text>
+                <Text style={[styles.statCardText, {textAlign: 'right'}]}>$15,000</Text>
+              </View>
+              <View style={styles.statCard}>
+                <Text style={styles.statCardText}>Income</Text>
+                <Text style={[styles.statCardText, {textAlign: 'right'}]}>$15,000</Text>
+              </View>
+              <View style={styles.statCard}>
+                <Text style={styles.statCardText}>Credit Debt</Text>
+                <Text style={[styles.statCardText, {textAlign: 'right'}]}>$15,000</Text>
+              </View>
             </View>
           </View>
-        </SafeAreaView>
+
         <View style={styles.homeCards}>
           <CardView>
             <Text>This is a card</Text>
@@ -53,23 +62,45 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
-    backgroundColor: 'gray',
     marginBottom: 20,
   },
   contentContainer: {
     paddingTop: 0,
   },
   headerContainer: {
-    backgroundColor: 'gray',
+    //backgroundColor: 'gray',
     marginBottom: 20,
   },
   headerTextContainer: {
-    marginHorizontal: 20,
-    marginVertical: 30,
+    //marginHorizontal: 20,
+    marginTop: 30,
   },
   getStartedText: {
     fontSize: 17,
-    color: 'white',
+    color: 'black',
     lineHeight: 24,
   },
+  greetingCard: {
+    flex: 1,
+    flexDirection: 'row',
+    paddingVertical: 45,
+    paddingHorizontal: 20,
+    borderBottomColor: '#f4f7fb',
+    borderBottomWidth: 1,
+  },
+  statCard: {
+    backgroundColor: 'white',
+    flex: 1,
+    flexDirection: 'row',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderBottomColor: '#f4f7fb',
+    borderBottomWidth: 1,
+  },
+  statCardText: {
+    fontSize: 15,
+    color: 'black',
+    lineHeight: 24,
+    width: '50%'
+  }
 });
