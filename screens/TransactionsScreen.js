@@ -1,16 +1,70 @@
 import React from 'react';
-import {StyleSheet, TouchableOpacity, Text, SectionList} from 'react-native';
+import {StyleSheet, TouchableOpacity, Text, SectionList, View} from 'react-native';
+import PATextInput from '../common/PATextInput';
+import _ from 'lodash';
 
 export default class TransactionsScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      allSections: [],
       sections: [
-        {title: 'July 23, 2019', data: [{name: 'Transaction 1', value: 12.44}, {name: 'Transaction 1', value: 1244}]},
-        {title: 'July 22, 2019', data: [{name: 'Transaction 1', value: 12.44}, {name: 'Transaction 1', value: 1244}]},
-        {title: 'July 21, 2019', data: [{name: 'Transaction 1', value: 12.44}, {name: 'Transaction 1', value: 1244}]},
-      ]
-    }
+        {title: 'July 23, 2019', data: [{merchantName: 'Transaction 1', amount: 12.44}, {merchantName: 'Transaction 1', amount: 1244}]},
+        {title: 'July 22, 2019', data: [{merchantName: 'Transaction 1', amount: 12.44}, {merchantName: 'Transaction 1', amount: 1244}]},
+        {title: 'July 21, 2019', data: [{merchantName: 'Transaction 1', amount: 12.44}, {merchantName: 'Transaction 1', amount: 1244}]},
+      ],
+      search: ''
+    };
+  }
+
+  componentWillMount() {
+    this._fetchTransactions();
+  }
+
+  _fetchTransactions = async() => {
+    const url = 'https://masonic-staging-backend.onrender.com/api/transaction/get';
+    const res = await fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    const payload = await res.json();
+    await this._transformTransactions(payload);
+  }
+
+  _transformTransactions = async(payload) => {
+    const payloadGrouped = _.chain(payload).groupBy((tx) => {
+      const timeStamp = new Date(tx.transactionDate).toDateString();
+      return timeStamp;
+    }).map((data, title) => ({ title, data })).value();
+    this.setState({sections: payloadGrouped, allSections: payloadGrouped})
+    //console.log(payloadGrouped);
+  }
+
+  _searchTransactions = (searchText) => {
+    const { allSections } = this.state;
+    this.setState({ search: searchText });
+    const search = searchText.toLowerCase().trim();
+    const filteredTx = _.chain(allSections).map((section) => {
+      const newData = [];
+      const title = section.title;
+      section.data.forEach((tx) => {
+        if (tx.merchantName.toLowerCase().includes(search)) {
+          newData.push(tx);
+        }
+      });
+      if (newData.length > 0) {
+        return ({ title, data: newData });
+      }
+    }).compact().value();
+    console.log('Search Done');
+    this.setState({ sections: filteredTx})
+  }
+
+  _moneyFormat = (amount) => {
+    return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
   }
 
   _renderSectionHeader = ({ section }) => {
@@ -19,15 +73,31 @@ export default class TransactionsScreen extends React.Component {
     );
   };
 
-  _onTxPress = () => {
+  _renderSearch = () => {
+    const { search } = this.state;
+    return (
+      <PATextInput
+                  style={styles.inputField}
+                  clearButtonMode="while-editing"
+                  placeholder="Search"
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                  onChangeText={searchText => this._searchTransactions(searchText)}
+                  value={search}
+                  returnKeyType='go'
+                />
+    );
+  }
+
+  _onTxPress = (item) => {
     this.props.navigation.navigate('TxScreen');
   }
 
   _renderItem = ({ item, index, section }) => {
     return (
-      <TouchableOpacity style={styles.item} onPress={this._onTxPress}>
-        <Text style={{width: '50%'}} key={index}>{item.name}</Text>
-        <Text style={{width: '50%', textAlign: 'right'}}>${item.value}</Text>
+      <TouchableOpacity style={styles.item} onPress={() => this._onTxPress(item)}>
+        <Text style={{width: '50%'}} key={index}>{item.merchantName}</Text>
+        <Text style={{width: '50%', textAlign: 'right'}}>${this._moneyFormat(item.amount)}</Text>
       </TouchableOpacity>
     );
   };
@@ -40,6 +110,7 @@ export default class TransactionsScreen extends React.Component {
         renderSectionHeader={this._renderSectionHeader}
         sections={sections}
         keyExtractor={(item, index) => item + index}
+        ListHeaderComponent={this._renderSearch}
       />
     );
   }
@@ -70,5 +141,16 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     flex: 1,
     flexDirection: 'row',
-  }
+  },
+  inputField: {
+    height: 45,
+    fontSize: 16,
+    borderColor: '#efefef',
+    flex: 1,
+    borderWidth: 1,
+    borderRadius: 5,
+    backgroundColor: '#fff',
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
 });
