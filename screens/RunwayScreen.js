@@ -1,15 +1,26 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View, FlatList } from 'react-native';
 import CardView from '../common/CardView';
+import moment from 'moment';
 
 export default class RunwayScreen extends React.Component {
     
     constructor(props) {
         super(props);
+        this.state = {
+            totalBurn: 0,
+            cash: 0,
+            months: 0,
+        }
+    }
+
+    componentDidMount() {
+        this._getData();
     }
 
     _getData = async () => {
         const url = 'https://masonic-staging-backend.onrender.com/api/transaction/runway';
+        //TODO: use moment to set this to last month
         const body = {
             startDate: "2019-06-01T00:00:00.000",
             endDate: "2019-06-28T23:59:59.000",
@@ -23,8 +34,13 @@ export default class RunwayScreen extends React.Component {
         }
         });
         const payload = await res.json();
-        this.setState({totalBurn: payload.spending });
+        const runway = this._calcRunway(payload);
+        this.setState({totalBurn: payload.spending, cash: payload.cash, months: runway});
         console.log(payload);
+    }
+
+    _calcRunway = ({spending, cash}) => {
+        return Math.floor(cash / spending);
     }
 
     _moneyFormat = (amount) => {
@@ -41,16 +57,17 @@ export default class RunwayScreen extends React.Component {
     }
 
     render() {
+        const {totalBurn, cash, months} = this.state;
         return (
             <ScrollView style={styles.container}>
                 <CardView>
                     <View style={{flex: 1, flexDirection:'row'}}>
                         <View style={{width: '50%'}}>
-                            <Text style={styles.textBig}>$14,974</Text>
+                            <Text style={styles.textBig}>${this._moneyFormat(totalBurn)}</Text>
                             <Text style={{color: 'gray'}}>Last Month's Burn</Text>
                         </View>
                         <View style={{width: '50%'}}>
-                            <Text style={[styles.textBig, {textAlign: 'right'}]}>5 Months</Text>
+                            <Text style={[styles.textBig, {textAlign: 'right'}]}>{months} {months > 1 ? 'Months' : 'Month'}</Text>
                             <Text style={{textAlign: 'right', color: 'gray'}}>Runway Left</Text>
                         </View> 
                     </View>
