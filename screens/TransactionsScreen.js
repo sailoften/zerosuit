@@ -96,8 +96,8 @@ export default class TransactionsScreen extends React.Component {
   _renderItem = ({ item, index, section }) => {
     return (
       <TouchableOpacity style={styles.item} onPress={() => this._onTxPress(item)}>
-        <Text style={{width: '50%'}} key={index}>{item.merchantName}</Text>
-        <Text style={{width: '50%', textAlign: 'right'}}>${this._moneyFormat(item.amount)}</Text>
+        <Text numberOfLines={1} style={{width: '70%'}} key={index}>{item.merchantName}</Text>
+        <Text style={{width: '30%', textAlign: 'right'}}>${this._moneyFormat(item.amount)}</Text>
       </TouchableOpacity>
     );
   };

@@ -1,17 +1,41 @@
 import React from 'react';
 import {StyleSheet, View, Text, SectionList} from 'react-native';
 import CardView from '../common/CardView';
+import _ from 'lodash';
 
 export default class AccountsScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      sections: [
-        {title: 'Banks', data: [{name: 'Silicon Valley Bank'}, {name: 'Mercury Checking'}]},
-        {title: 'Credit Cards', data: [{name: 'Brex'}, {name: 'American Express Platinum'}]},
-        {title: 'Payroll', data: [{name: 'Gusto'}]},
-      ]
+      sections: [],
     }
+  }
+
+  componentDidMount() {
+      this._getAccounts();
+  }
+
+  _getAccounts= async () => {
+    const url = 'https://masonic-staging-backend.onrender.com/api/transaction/accounts';
+    const res = await fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    const payload = await res.json();
+    const transformed = this._transformAccounts(payload.accounts);
+    this.setState({sections: transformed});
+    console.log(transformed);
+    //console.log(payload);
+  }
+
+  _transformAccounts = (accounts) => {
+    const groupedBy = _.chain(accounts).groupBy((acc) => {
+        return acc.kind
+    }).map((data, title) => ({title, data})).value();
+    return groupedBy;
   }
 
   _renderSectionHeader = ({ section }) => {
@@ -22,9 +46,9 @@ export default class AccountsScreen extends React.Component {
 
   _renderItem = ({ item, index, section }) => {
     return (
-      <CardView>
-        <Text key={index}>{item.name}</Text>
-      </CardView>
+      <View style={styles.item}>
+        <Text key={index}>{item.accountName}</Text>
+      </View>
     );
   };
 
@@ -62,7 +86,7 @@ const styles = StyleSheet.create({
   item: {
     paddingVertical: 20,
     paddingHorizontal: 10,
-    borderBottomColor: 'gray',
+    borderBottomColor: '#f4f7fb',
     borderBottomWidth: 1,
   }
 });

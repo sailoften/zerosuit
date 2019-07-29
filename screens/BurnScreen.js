@@ -7,6 +7,7 @@ export default class BurnScreen extends React.Component {
         super(props);
         this.state = {
             categoryExpenses: [],
+            peopleSpending: [],
             totalBurn: 0,
         }
     }
@@ -30,7 +31,7 @@ export default class BurnScreen extends React.Component {
         }
         });
         const payload = await res.json();
-        this.setState({categoryExpenses: payload.categories, totalBurn: payload.spending });
+        this.setState({categoryExpenses: payload.categories, totalBurn: payload.spending, peopleSpending: payload.people });
         console.log(payload);
     }
 
@@ -47,19 +48,28 @@ export default class BurnScreen extends React.Component {
         );
     }
 
+    _renderPeople = ({item}) => {
+        return (
+            <View style={styles.expenseCat}>
+                <Text style={{width: '50%'}}>{item.person}</Text>
+                <Text style={{width: '50%', textAlign: 'right'}}>${this._moneyFormat(item.amount)}</Text>
+            </View>
+        );
+    }
+
     componentWillMount() {
         this._getData();
     }
 
     render() {
-        const { categoryExpenses, totalBurn } = this.state;
+        const { categoryExpenses, totalBurn, peopleSpending } = this.state;
         return (
             <ScrollView style={styles.container}>
               <CardView style={styles.burnCard}>
                 <Text style={styles.burnAmount}>Parta spent ${this._moneyFormat(totalBurn)} so far this month</Text>
               </CardView>
               <CardView style={styles.expenseCard}>
-                <Text style={styles.expenseTitle}>Payroll</Text>
+                <Text style={styles.expenseTitle}>Company Expenses</Text>
                 <FlatList
                     data={categoryExpenses}
                     keyExtractor={(item) => item.category}
@@ -67,10 +77,11 @@ export default class BurnScreen extends React.Component {
                 />
               </CardView>
               <CardView style={styles.expenseCard}>
-                <Text style={styles.expenseTitle}>Company Expenses</Text>
+                <Text style={styles.expenseTitle}>Spending By Person</Text>
                 <FlatList
-                    data={[{key: 'Meals', amount: 3210.21}, {key: 'Uber', amount: 3210.21}, {key: 'Travel', amount: 3210.21}]}
-                    renderItem={this._renderExpenses}
+                    data={peopleSpending}
+                    keyExtractor={(item) => item.people}
+                    renderItem={this._renderPeople}
                 />
               </CardView>
             </ScrollView>
