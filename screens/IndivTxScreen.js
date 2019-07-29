@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Text,
   View,
+  FlatList,
 } from 'react-native';
 import CardView from '../common/CardView';
 
@@ -25,6 +26,27 @@ export default class TxScreen extends React.Component {
         return dateObj.toLocaleDateString();
     }
 
+    _renderItem = ({item}) => {
+        if (item.key && item.desp) {
+            return (
+                <View style={styles.despItem}>
+                  <Text style={[styles.despText, {width: '30%'}]}>{item.key}</Text>
+                  <Text style={[styles.despText, {textAlign: 'right', width: '70%'}]}>{item.desp}</Text>
+                </View>
+              );
+        }
+    }
+
+    _getData = () => {
+        const { tx } = this.state;
+        return [
+            {key: 'Date', desp: this._dateFormat(tx.transactionDate)},
+            {key: 'Category', desp: tx.category},
+            {key: 'Person', desp: tx.transactionOwner},
+            {key: 'Account', desp: tx.account},
+        ]
+    }
+
     render() {
         const { tx } = this.state;
         return (
@@ -33,14 +55,17 @@ export default class TxScreen extends React.Component {
                 style={styles.container}
                 contentContainerStyle={styles.contentContainer}
                 >
-        
+
                 <View style={styles.headerContainer}>
-                  {false && <DevelopmentModeNotice />}
+                    <Text style={[styles.titleText, {width: '70%'}]}>{tx.merchantName}</Text>
+                    <Text style={[styles.titleText, {width: '30%', textAlign: 'right'}]}>${this._moneyFormat(tx.amount)}</Text>
+                </View>
+        
+                <View>
                   <CardView style={styles.headerTextContainer}>
-                    <Text style={styles.getStartedText}>{tx.merchantName}</Text>
-                    <Text style={styles.getStartedText}>${this._moneyFormat(tx.amount)}</Text>
-                    <Text style={styles.getStartedText}>{this._dateFormat(tx.transactionDate)}</Text>
-                    <Text style={styles.getStartedText}>{tx.source}</Text>
+                  <FlatList
+                    data={this._getData()}
+                    renderItem={this._renderItem} />
                   </CardView>
                 </View>
               </ScrollView>
@@ -58,16 +83,32 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#e6edf9',
   },
+  titleText: {
+    fontSize: 17,
+    fontWeight: '600',
+  },
   headerContainer: {
-    marginBottom: 20,
+    marginTop: 40,
+    marginHorizontal: 10,
+    flex: 1,
+    flexDirection: 'row',
+    marginBottom: 10,
   },
   headerTextContainer: {
-    marginHorizontal: 20,
-    marginVertical: 30,
   },
   getStartedText: {
     fontSize: 17,
     color: 'black',
     lineHeight: 24,
   },
+  despItem: {
+    paddingVertical: 15,
+    flex: 1,
+    flexDirection: 'row',
+    borderBottomColor: '#f4f7fb',
+    borderBottomWidth: 1,
+  },
+  despText: {
+      
+  }
 });
