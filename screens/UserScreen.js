@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Text, SectionList, TouchableOpacity, AsyncStorage} from 'react-native';
+import {StyleSheet, View, Text, SectionList, TouchableOpacity, AsyncStorage, FlatList} from 'react-native';
 import CardView from '../common/CardView';
 
 export default class UserScreen extends React.Component {
@@ -37,10 +37,27 @@ export default class UserScreen extends React.Component {
       this._getUser();
   }
 
+  _renderItem = ({item}) => {
+    return (
+      <TouchableOpacity onPress={item.action} style={styles.optionItem}>
+        <Text>{item.key}</Text>
+      </TouchableOpacity>
+    );
+  }
+
   render() {
     const { user } = this.state;
     return(
-      <View style={styles.container}>
+      <FlatList
+        data={[{key: 'Connected Accounts', action: this._viewAccounts}, {key: 'Logout', action: this._userLogout}]}
+        renderItem={this._renderItem}
+      />
+    );
+  }
+}
+
+/*
+<View style={styles.container}>
           <TouchableOpacity onPress={this._userLogout}>
               <Text>Logout</Text>
           </TouchableOpacity>
@@ -51,9 +68,7 @@ export default class UserScreen extends React.Component {
             <Text>{user.firstName}</Text>
           </View> }
       </View>
-    );
-  }
-}
+*/
 
 UserScreen.navigationOptions = {
   title: 'User',
@@ -77,6 +92,12 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 10,
     borderBottomColor: 'gray',
+    borderBottomWidth: 1,
+  },
+  optionItem: {
+    paddingVertical: 20,
+    paddingHorizontal: 10,
+    borderBottomColor: '#f4f7fb',
     borderBottomWidth: 1,
   }
 });

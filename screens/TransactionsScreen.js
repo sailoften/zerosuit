@@ -8,11 +8,7 @@ export default class TransactionsScreen extends React.Component {
     super(props);
     this.state = {
       allSections: [],
-      sections: [
-        {title: 'July 23, 2019', data: [{merchantName: 'Transaction 1', amount: 12.44}, {merchantName: 'Transaction 1', amount: 1244}]},
-        {title: 'July 22, 2019', data: [{merchantName: 'Transaction 1', amount: 12.44}, {merchantName: 'Transaction 1', amount: 1244}]},
-        {title: 'July 21, 2019', data: [{merchantName: 'Transaction 1', amount: 12.44}, {merchantName: 'Transaction 1', amount: 1244}]},
-      ],
+      sections: [],
       search: ''
     };
   }
@@ -40,12 +36,14 @@ export default class TransactionsScreen extends React.Component {
       return timeStamp;
     }).map((data, title) => ({ title, data })).value();
     this.setState({sections: payloadGrouped, allSections: payloadGrouped})
-    //console.log(payloadGrouped);
   }
 
   _searchTransactions = (searchText) => {
     const { allSections } = this.state;
     this.setState({ search: searchText });
+    if (searchText === "") {
+      return allSections;
+    }
     const search = searchText.toLowerCase().trim();
     const filteredTx = _.chain(allSections).map((section) => {
       const newData = [];
@@ -90,7 +88,9 @@ export default class TransactionsScreen extends React.Component {
   }
 
   _onTxPress = (item) => {
-    this.props.navigation.navigate('TxScreen');
+    this.props.navigation.navigate('TxScreen', {
+      tx: item
+    });
   }
 
   _renderItem = ({ item, index, section }) => {

@@ -3,6 +3,30 @@ import { ScrollView, StyleSheet, Text, View, FlatList } from 'react-native';
 import CardView from '../common/CardView';
 
 export default class RunwayScreen extends React.Component {
+    
+    constructor(props) {
+        super(props);
+    }
+
+    _getData = async () => {
+        const url = 'https://masonic-staging-backend.onrender.com/api/transaction/runway';
+        const body = {
+            startDate: "2019-06-01T00:00:00.000",
+            endDate: "2019-06-28T23:59:59.000",
+        }
+        const res = await fetch(url, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify(body),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+        });
+        const payload = await res.json();
+        this.setState({totalBurn: payload.spending });
+        console.log(payload);
+    }
+
     _moneyFormat = (amount) => {
         return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
     }
