@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, FlatList, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, FlatList, View, TouchableOpacity } from 'react-native';
 import CardView from '../common/CardView';
 
 export default class BurnScreen extends React.Component {
@@ -9,7 +9,13 @@ export default class BurnScreen extends React.Component {
             categoryExpenses: [],
             peopleSpending: [],
             totalBurn: 0,
+            startDate: '2019-07-01T00:00:00.000',
+            endDate: '2019-07-30T00:00:00.000'
         }
+    }
+
+    componentWillReceiveProps(props) {
+
     }
 
     _moneyFormat = (amount) => {
@@ -17,10 +23,10 @@ export default class BurnScreen extends React.Component {
       }
 
     _getData = async () => {
+        const { startDate, endDate } = this.state;
         const url = 'https://masonic-staging-backend.onrender.com/api/transaction/burn';
         const body = {
-            startDate: "2019-07-01T00:00:00.000",
-            endDate: "2019-07-30T00:00:00.000",
+            startDate, endDate
         }
         const res = await fetch(url, {
         method: 'POST',
@@ -41,14 +47,27 @@ export default class BurnScreen extends React.Component {
 
     _renderExpenses = ({item}) => {
         return (
-            <View style={styles.expenseCat}>
+            <TouchableOpacity style={styles.expenseCat} onPress={() => this._goToExpense(item.category)}>
                 <Text style={{width: '50%'}}>{item.category}</Text>
                 <Text style={{width: '50%', textAlign: 'right'}}>${this._moneyFormat(item.amount)}</Text>
-            </View>
+            </TouchableOpacity>
         );
     }
 
+    _goToExpense = (category) => {
+        console.log(category);
+        const { startDate, endDate } = this.state;
+        this.props.navigation.navigate('Category', {
+            cat: category,
+            startDate,
+            endDate
+        });
+    }
+
     _renderPeople = ({item}) => {
+        if (item.person === "null") {
+            item.person = 'Company';
+        }
         return (
             <View style={styles.expenseCat}>
                 <Text style={{width: '50%'}}>{item.person}</Text>
@@ -80,7 +99,7 @@ export default class BurnScreen extends React.Component {
                 <Text style={styles.expenseTitle}>Spending By Person</Text>
                 <FlatList
                     data={peopleSpending}
-                    keyExtractor={(item) => item.people}
+                    keyExtractor={(item) => item.person}
                     renderItem={this._renderPeople}
                 />
               </CardView>
@@ -88,10 +107,6 @@ export default class BurnScreen extends React.Component {
         );
     }
 }
-
-BurnScreen.navigationOptions = {
-  title: 'Burn',
-};
 
 const styles = StyleSheet.create({
   container: {

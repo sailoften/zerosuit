@@ -58,12 +58,12 @@ export default class HomeScreen extends React.Component {
                   <Text style={[styles.statCardText, {textAlign: 'right'}]}>${this._moneyFormat(cash)}</Text>
                 </View>
                 <View style={styles.statCard}>
-                  <Text style={styles.statCardText}>Income</Text>
-                  <Text style={[styles.statCardText, {textAlign: 'right'}]}>$15,000</Text>
+                  <Text style={styles.statCardText}>Revenue</Text>
+                  <Text style={[styles.statCardText, {textAlign: 'right'}]}>Coming Soon</Text>
                 </View>
                 <View style={styles.statCard}>
                   <Text style={styles.statCardText}>Credit Debt</Text>
-                  <Text style={[styles.statCardText, {textAlign: 'right'}]}>$15,000</Text>
+                  <Text style={[styles.statCardText, {textAlign: 'right'}]}>Coming Soon</Text>
                 </View>
               </View>
             </View>

@@ -1,37 +1,52 @@
 import React from 'react';
-import {StyleSheet, Dimensions} from 'react-native';
+import {StyleSheet, Dimensions, Button} from 'react-native';
 import { TabView, SceneMap } from 'react-native-tab-view';
 
 import BurnScreen from './BurnScreen';
 import RunwayScreen from './RunwayScreen';
 
-export default class BurnTabScreen extends React.Component {
-  state = {
-    index: 0,
-    routes: [
-      { key: 'first', title: 'Burn' },
-      { key: 'second', title: 'Runway' },
-    ],
-  };
- 
+export default class PathTabScreen extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      index: 0,
+      routes: [
+        { key: 'first', title: 'Burn' },
+        { key: 'second', title: 'Runway' },
+      ],
+    };
+  }
+
+  componentDidMount() {
+  }
+
   render() {
     return (
       <TabView
         navigationState={this.state}
-        renderScene={SceneMap({
-          first: BurnScreen,
-          second: RunwayScreen,
-        })}
+        renderScene={this.renderScene}
         onIndexChange={index => this.setState({ index })}
         initialLayout={{ width: Dimensions.get('window').width }}
       />
     );
   }
+
+  renderScene = ({ route }) => {
+    switch (route.key) {
+      case 'first':
+        return <BurnScreen navigation={this.props.navigation} />;
+      case 'second':
+        return <RunwayScreen navigation={this.props.navigation} />;
+      default:
+        return null;
+    }
+  };
 }
 
-BurnTabScreen.navigationOptions = {
+PathTabScreen.navigationOptions = {
   title: 'Path',
-};
+}
  
 const styles = StyleSheet.create({
   scene: {

@@ -57,7 +57,7 @@ export default class RunwayScreen extends React.Component {
         for (let i = 0; i < 10; i++) {
             now.add(1, 'month');
             const projMonth = {
-                key: now.format('MMMM'),
+                key: now.format('MMMM, YYYY'),
                 amount: cash - (spending * (i + 1))
             }
             proj.push(projMonth);

@@ -3,14 +3,18 @@ import {StyleSheet, TouchableOpacity, Text, SectionList, View} from 'react-nativ
 import PATextInput from '../common/PATextInput';
 import _ from 'lodash';
 
-export default class TransactionsScreen extends React.Component {
+export default class CategoryView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       allSections: [],
       sections: [],
-      search: ''
+      search: '',
+      startDate: this.props.navigation.getParam("startDate"),
+      endDate: this.props.navigation.getParam("endDate"),
+      category: this.props.navigation.getParam("cat")
     };
+    console.log(this.state);
   }
 
   componentWillMount() {
@@ -18,13 +22,20 @@ export default class TransactionsScreen extends React.Component {
   }
 
   _fetchTransactions = async() => {
-    const url = 'https://masonic-staging-backend.onrender.com/api/transaction/get';
+    const {startDate, endDate, category} = this.state;
+    const body = {
+        startDate,
+        endDate,
+        category
+    }
+    const url = 'https://masonic-staging-backend.onrender.com/api/transaction/categoryTransactions';
     const res = await fetch(url, {
       method: 'POST',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
-      }
+      },
+      body: JSON.stringify(body)
     });
     const payload = await res.json();
     await this._transformTransactions(payload);
@@ -117,7 +128,7 @@ export default class TransactionsScreen extends React.Component {
   }
 }
 
-TransactionsScreen.navigationOptions = {
+CategoryView.navigationOptions = {
   title: 'Transactions',
 };
 

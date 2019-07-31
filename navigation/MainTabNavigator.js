@@ -9,6 +9,7 @@ import TransactionsScreen from '../screens/TransactionsScreen';
 import AccountsScreen from '../screens/AccountsScreen';
 import TxScreen from '../screens/IndivTxScreen';
 import UserScreen from '../screens/UserScreen';
+import CategoryScreen from '../screens/CategoryView';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -41,6 +42,7 @@ HomeStack.path = '';
 const PathStack = createStackNavigator(
   {
     Path: PathScreen,
+    Category: CategoryScreen
   },
   config
 );
