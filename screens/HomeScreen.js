@@ -70,10 +70,10 @@ export default class HomeScreen extends React.Component {
 
           <View style={styles.homeCards}>
             <CardView>
-              <Text>This is a card</Text>
+              <Text>This feature is coming soon</Text>
             </CardView>
             <CardView>
-              <Text>This is another card</Text>
+              <Text>This feature is coming soon</Text>
             </CardView>
           </View>
         </ScrollView>

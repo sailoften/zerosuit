@@ -1,26 +1,31 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, FlatList, View, TouchableOpacity } from 'react-native';
 import CardView from '../common/CardView';
+import moment from 'moment';
 
 export default class BurnScreen extends React.Component {
     constructor(props) {
         super(props);
+        const date = this._getTimeRange();
         this.state = {
             categoryExpenses: [],
             peopleSpending: [],
             totalBurn: 0,
-            startDate: '2019-07-01T00:00:00.000',
-            endDate: '2019-07-30T00:00:00.000'
+            startDate: date.start,
+            endDate: date.end
         }
+    }
+
+    _getTimeRange = () => {
+        const now = moment();
+        const start = now.startOf('month').toDate();;
+        const end = now.endOf('month').toDate();
+        return { start, end };
     }
 
     componentWillReceiveProps(props) {
 
     }
-
-    _moneyFormat = (amount) => {
-        return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-      }
 
     _getData = async () => {
         const { startDate, endDate } = this.state;

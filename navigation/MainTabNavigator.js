@@ -42,7 +42,8 @@ HomeStack.path = '';
 const PathStack = createStackNavigator(
   {
     Path: PathScreen,
-    Category: CategoryScreen
+    Category: CategoryScreen,
+    TxScreen: TxScreen,
   },
   config
 );
