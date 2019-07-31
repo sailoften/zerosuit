@@ -11,6 +11,7 @@ export default class RunwayScreen extends React.Component {
             totalBurn: 0,
             cash: 0,
             months: 0,
+            projection: [],
         }
     }
 
@@ -21,9 +22,10 @@ export default class RunwayScreen extends React.Component {
     _getData = async () => {
         const url = 'https://masonic-staging-backend.onrender.com/api/transaction/runway';
         //TODO: use moment to set this to last month
+        const range = this._getTimeRange();
         const body = {
-            startDate: "2019-06-01T00:00:00.000",
-            endDate: "2019-06-28T23:59:59.000",
+            startDate: range.start,
+            endDate: range.end,
         }
         const res = await fetch(url, {
         method: 'POST',
@@ -35,8 +37,36 @@ export default class RunwayScreen extends React.Component {
         });
         const payload = await res.json();
         const runway = this._calcRunway(payload);
-        this.setState({totalBurn: payload.spending, cash: payload.cash, months: runway});
+        const projection = this._calcProjections(payload);
+        console.log(projection);
+        this.setState({totalBurn: payload.spending, cash: payload.cash, months: runway, projection});
         console.log(payload);
+    }
+
+    _getTimeRange = () => {
+        const now = moment();
+        now.subtract(1, 'month');
+        const start = now.startOf('month').toDate();;
+        const end = now.endOf('month').toDate();
+        return { start, end };
+    }
+
+    _calcProjections = ({spending, cash}) => {
+        const now = moment();
+        const proj = [];
+        for (let i = 0; i < 10; i++) {
+            now.add(1, 'month');
+            const projMonth = {
+                key: now.format('MMMM'),
+                amount: cash - (spending * (i + 1))
+            }
+            proj.push(projMonth);
+            if (projMonth.amount < 0) {
+                projMonth.amount = 0;
+                break;
+            }
+        }
+        return proj;
     }
 
     _calcRunway = ({spending, cash}) => {
@@ -57,7 +87,7 @@ export default class RunwayScreen extends React.Component {
     }
 
     render() {
-        const {totalBurn, cash, months} = this.state;
+        const {totalBurn, cash, months, projection} = this.state;
         return (
             <ScrollView style={styles.container}>
                 <CardView>
@@ -75,7 +105,7 @@ export default class RunwayScreen extends React.Component {
                 <CardView style={styles.expenseCard}>
                     <Text style={styles.expenseTitle}>Runway Projection</Text>
                     <FlatList
-                        data={[{key: 'August', amount: 232110}, {key: 'September', amount: 212110}, {key: 'October', amount: 197110}]}
+                        data={projection}
                         renderItem={this._renderExpenses}
                     />
                 </CardView>

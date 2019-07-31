@@ -20,7 +20,7 @@ export default class BurnScreen extends React.Component {
         const url = 'https://masonic-staging-backend.onrender.com/api/transaction/burn';
         const body = {
             startDate: "2019-07-01T00:00:00.000",
-            endDate: "2019-07-28T00:00:00.000",
+            endDate: "2019-07-30T00:00:00.000",
         }
         const res = await fetch(url, {
         method: 'POST',
@@ -32,7 +32,7 @@ export default class BurnScreen extends React.Component {
         });
         const payload = await res.json();
         this.setState({categoryExpenses: payload.categories, totalBurn: payload.spending, peopleSpending: payload.people });
-        console.log(payload);
+        //console.log(payload);
     }
 
     _moneyFormat = (amount) => {
