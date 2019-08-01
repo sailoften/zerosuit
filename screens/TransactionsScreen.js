@@ -40,7 +40,7 @@ export default class TransactionsScreen extends React.Component {
 
   _searchTransactions = (searchText) => {
     const { allSections } = this.state;
-    //this.setState({ search: searchText });
+    this.setState({ search: searchText });
     if (searchText === "") {
       return allSections;
     }

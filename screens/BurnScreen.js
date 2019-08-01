@@ -12,12 +12,14 @@ export default class BurnScreen extends React.Component {
             peopleSpending: [],
             totalBurn: 0,
             startDate: date.start,
-            endDate: date.end
+            endDate: date.end,
+            company: ''
         }
     }
 
     _getTimeRange = () => {
         const now = moment();
+        now.subtract(1, 'month');
         const start = now.startOf('month').toDate();;
         const end = now.endOf('month').toDate();
         return { start, end };
@@ -42,8 +44,7 @@ export default class BurnScreen extends React.Component {
         }
         });
         const payload = await res.json();
-        this.setState({categoryExpenses: payload.categories, totalBurn: payload.spending, peopleSpending: payload.people });
-        //console.log(payload);
+        this.setState({company: payload.company, categoryExpenses: payload.categories, totalBurn: payload.spending, peopleSpending: payload.people });
     }
 
     _moneyFormat = (amount) => {
@@ -86,11 +87,11 @@ export default class BurnScreen extends React.Component {
     }
 
     render() {
-        const { categoryExpenses, totalBurn, peopleSpending } = this.state;
+        const { categoryExpenses, totalBurn, peopleSpending, company } = this.state;
         return (
             <ScrollView style={styles.container}>
               <CardView style={styles.burnCard}>
-                <Text style={styles.burnAmount}>Parta spent ${this._moneyFormat(totalBurn)} so far this month</Text>
+                <Text style={styles.burnAmount}>{company} spent ${this._moneyFormat(totalBurn)} so far this month</Text>
               </CardView>
               <CardView style={styles.expenseCard}>
                 <Text style={styles.expenseTitle}>Company Expenses</Text>
