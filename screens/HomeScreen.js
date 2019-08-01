@@ -16,7 +16,9 @@ export default class HomeScreen extends React.Component {
     this.state = {
       cash: 0,
       currentBurn: 0,
-      lastBurn: 0
+      lastBurn: 0,
+      firstName: '',
+      company: '',
     }
   }
 
@@ -34,7 +36,7 @@ export default class HomeScreen extends React.Component {
 }
 
   _getData = async () => {
-    const url = 'https://masonic-staging-backend.onrender.com/api/transaction/accounts';
+    const url = 'https://masonic-staging-backend.onrender.com/api/transaction/home';
     const dates = this._getTimeRange();
     const burnDates = this._getTimeRange(1);
     const body = {
@@ -51,9 +53,9 @@ export default class HomeScreen extends React.Component {
       },
       body: JSON.stringify(body)
     });
-    console.log(res);
     const payload = await res.json();
-    this.setState({cash: payload.cash, currentBurn: payload.currentBurn, lastBurn: payload.lastBurn});
+    console.log(payload);
+    this.setState({company: payload.company, firstName: payload.firstName, cash: payload.cash, currentBurn: payload.currentBurn, lastBurn: payload.lastBurn});
   }
 
   _moneyFormat = (amount) => {
@@ -61,7 +63,7 @@ export default class HomeScreen extends React.Component {
   }
 
   render() {
-    const { cash, currentBurn, lastBurn } = this.state;
+    const { cash, currentBurn, lastBurn, company, firstName } = this.state;
     const months = Math.floor(cash / lastBurn);
     return (
       <View style={styles.container}>
@@ -74,7 +76,7 @@ export default class HomeScreen extends React.Component {
             <View style={styles.headerContainer}>
               <View style={styles.headerTextContainer}>
                 <View style={styles.greetingCard}>
-                  <Text style={styles.getStartedText}>Hello Jimmy!</Text>
+                  <Text style={styles.getStartedText}>Hello {firstName}!</Text>
                 </View>
                 <View style={styles.statCard}>
                   <Text style={styles.statCardText}>Cash</Text>
@@ -105,7 +107,7 @@ export default class HomeScreen extends React.Component {
                     </View>
                 </CardView>
             <CardView style={styles.burnCard}>
-              <Text style={styles.burnAmount}>Parta spent ${this._moneyFormat(currentBurn)} so far this month</Text>
+              <Text style={styles.burnAmount}>{company} spent ${this._moneyFormat(currentBurn)} so far this month</Text>
             </CardView>
           </View>
         </ScrollView>
