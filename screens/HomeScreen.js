@@ -8,12 +8,15 @@ import {
   SafeAreaView,
 } from 'react-native';
 import CardView from '../common/CardView';
+import moment from 'moment';
 
 export default class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       cash: 0,
+      currentBurn: 0,
+      lastBurn: 0
     }
   }
 
@@ -21,17 +24,36 @@ export default class HomeScreen extends React.Component {
     this._getData();
   }
 
+  _getTimeRange = (offset) => {
+    offset = offset ? offset : 0;
+    const now = moment();
+    now.subtract(offset, 'month');
+    const start = now.startOf('month').toDate();;
+    const end = now.endOf('month').toDate();
+    return { start, end };
+}
+
   _getData = async () => {
     const url = 'https://masonic-staging-backend.onrender.com/api/transaction/accounts';
+    const dates = this._getTimeRange();
+    const burnDates = this._getTimeRange(1);
+    const body = {
+      startDate: dates.start,
+      endDate: dates.end,
+      burnStartDate: burnDates.start,
+      burnEndDate: burnDates.end
+    }
     const res = await fetch(url, {
       method: 'POST',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
-      }
+      },
+      body: JSON.stringify(body)
     });
+    console.log(res);
     const payload = await res.json();
-    this.setState({cash: payload.cash});
+    this.setState({cash: payload.cash, currentBurn: payload.currentBurn, lastBurn: payload.lastBurn});
   }
 
   _moneyFormat = (amount) => {
@@ -39,7 +61,8 @@ export default class HomeScreen extends React.Component {
   }
 
   render() {
-    const { cash } = this.state;
+    const { cash, currentBurn, lastBurn } = this.state;
+    const months = Math.floor(cash / lastBurn);
     return (
       <View style={styles.container}>
         <ScrollView
@@ -69,11 +92,20 @@ export default class HomeScreen extends React.Component {
             </View>
 
           <View style={styles.homeCards}>
-            <CardView>
-              <Text>This feature is coming soon</Text>
-            </CardView>
-            <CardView>
-              <Text>This feature is coming soon</Text>
+          <CardView>
+                    <View style={{flex: 1, flexDirection:'row'}}>
+                        <View style={{width: '50%'}}>
+                          <Text style={styles.textBig}>${this._moneyFormat(lastBurn)}</Text>
+                          <Text style={{color: 'gray'}}>Last Month's Burn</Text>
+                        </View>
+                        <View style={{width: '50%'}}>
+                          <Text style={[styles.textBig, {textAlign: 'right'}]}>{months} {months > 1 ? 'Months' : 'Month'}</Text>
+                          <Text style={{textAlign: 'right', color: 'gray'}}>Runway Left</Text>
+                        </View> 
+                    </View>
+                </CardView>
+            <CardView style={styles.burnCard}>
+              <Text style={styles.burnAmount}>Parta spent ${this._moneyFormat(currentBurn)} so far this month</Text>
             </CardView>
           </View>
         </ScrollView>
@@ -90,6 +122,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#e6edf9',
+  },
+  burnCard: {
+    paddingVertical: 60,
+    paddingHorizontal: 40,
+  },
+  burnAmount: {
+    textAlign: 'center',
+    fontSize:25,
+    lineHeight: 35,
   },
   safeArea: {
     flex: 1,
@@ -133,5 +174,10 @@ const styles = StyleSheet.create({
     color: 'black',
     lineHeight: 24,
     width: '50%'
+  },
+  textBig: {
+    fontSize:24,
+    fontWeight: '500',
+    marginBottom: 5,
   }
 });
