@@ -28,7 +28,7 @@ export default class CategoryView extends React.Component {
         endDate,
         category
     }
-    const url = 'https://masonic-staging-backend.onrender.com/api/transaction/categoryTransactions';
+    const url = 'https://masonic-backend.onrender.com' + '/api/transaction/categoryTransactions';
     const res = await fetch(url, {
       method: 'POST',
       credentials: 'include',

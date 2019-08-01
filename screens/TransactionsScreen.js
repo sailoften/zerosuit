@@ -18,7 +18,7 @@ export default class TransactionsScreen extends React.Component {
   }
 
   _fetchTransactions = async() => {
-    const url = 'https://masonic-staging-backend.onrender.com/api/transaction/get';
+    const url = 'https://masonic-backend.onrender.com' + '/api/transaction/get';
     const res = await fetch(url, {
       method: 'POST',
       credentials: 'include',

@@ -29,7 +29,7 @@ export default class BurnScreen extends React.Component {
 
     _getData = async () => {
         const { startDate, endDate } = this.state;
-        const url = 'https://masonic-staging-backend.onrender.com/api/transaction/burn';
+        const url = 'https://masonic-backend.onrender.com' + '/api/transaction/burn';
         const body = {
             startDate, endDate
         }

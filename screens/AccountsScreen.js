@@ -16,7 +16,7 @@ export default class AccountsScreen extends React.Component {
   }
 
   _getAccounts= async () => {
-    const url = 'https://masonic-staging-backend.onrender.com/api/transaction/accounts';
+    const url = 'https://masonic-backend.onrender.com' + '/api/transaction/accounts';
     const res = await fetch(url, {
       method: 'POST',
       credentials: 'include',

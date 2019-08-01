@@ -20,7 +20,7 @@ export default class RunwayScreen extends React.Component {
     }
 
     _getData = async () => {
-        const url = 'https://masonic-staging-backend.onrender.com/api/transaction/runway';
+        const url = 'https://masonic-backend.onrender.com' + '/api/transaction/runway';
         //TODO: use moment to set this to last month
         const range = this._getTimeRange();
         const body = {

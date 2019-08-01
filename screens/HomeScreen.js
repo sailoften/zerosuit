@@ -36,7 +36,7 @@ export default class HomeScreen extends React.Component {
 }
 
   _getData = async () => {
-    const url = 'https://masonic-staging-backend.onrender.com/api/transaction/home';
+    const url = 'https://masonic-backend.onrender.com' + '/api/transaction/home';
     const dates = this._getTimeRange();
     const burnDates = this._getTimeRange(1);
     const body = {

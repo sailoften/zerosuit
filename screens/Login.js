@@ -36,7 +36,7 @@ class Login extends React.Component {
     };
     try {
       console.log(loginData);
-      const res = await fetch('https://masonic-staging-backend.onrender.com/api/user/login', {
+      const res = await fetch('https://masonic-backend.onrender.com' + '/api/user/login', {
         method: 'POST',
         body: JSON.stringify(loginData),
         credentials: 'include',
