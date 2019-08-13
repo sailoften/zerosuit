@@ -19,7 +19,6 @@ export default class BurnScreen extends React.Component {
 
     _getTimeRange = () => {
         const now = moment();
-        now.subtract(1, 'month');
         const start = now.startOf('month').toDate();;
         const end = now.endOf('month').toDate();
         return { start, end };
