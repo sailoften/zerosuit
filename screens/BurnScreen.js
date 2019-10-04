@@ -14,8 +14,12 @@ export default class BurnScreen extends React.Component {
             totalBurn: 0,
             startDate: date.start,
             endDate: date.end,
-            company: ''
+            company: '',
+            firstDate: moment().subtract(10, 'month'),
+            burnRange: []
         }
+        this._getBurnRanges();
+        //TODO: calculate months that burn can be had (for month picker)
     }
 
     _getTimeRange = () => {
@@ -24,6 +28,29 @@ export default class BurnScreen extends React.Component {
         const start = now.startOf('month').toDate();;
         const end = now.endOf('month').toDate();
         return { start, end };
+    }
+
+    _monthYear = (myear) => {
+        //TODO: spit out first date of month and last date
+        const date = moment(myear, "MMM, YYYY");
+        const start = date.startOf('month').toDate();;
+        const end = date.endOf('month').toDate();
+        return { start, end };
+    }
+
+    _getBurnRanges = () => {
+        const { firstDate } = this.state;
+        const inceptionNumber = parseInt(firstDate.format('YYYYMM'));
+        const now = moment();
+        const range = [];
+        let iterNumber = parseInt(now.format('YYYYMM'));
+        while (iterNumber >= inceptionNumber) {
+            range.push(now.format('MMM, YYYY'));
+            now.subtract(1, 'month');
+            iterNumber = parseInt(now.format('YYYYMM'));
+        }
+        console.log(range);
+        return range;
     }
 
     componentWillReceiveProps(props) {
@@ -92,8 +119,8 @@ export default class BurnScreen extends React.Component {
         //TODO: put button in for date picker
         return (
             <ScrollView style={styles.container}>
-              <CardView style={styles.burnCard}>
-                <TouchableOpacity><Text>October</Text></TouchableOpacity>
+              <CardView style={styles.burnPickerCard}>
+                <Text>Displaying burn for October</Text>
                 <RNPickerSelect
                     onValueChange={(value) => console.log(value)}
                     items={[
@@ -136,6 +163,10 @@ const styles = StyleSheet.create({
   burnCard: {
     paddingVertical: 60,
     paddingHorizontal: 40,
+  },
+  burnPickerCard: {
+    paddingVertical: 30, 
+    paddingHorizontal: 30
   },
   burnAmount: {
     textAlign: 'center',
