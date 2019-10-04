@@ -1,5 +1,6 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, FlatList, View, TouchableOpacity } from 'react-native';
+import RNPickerSelect from 'react-native-picker-select';
 import CardView from '../common/CardView';
 import moment from 'moment';
 
@@ -19,6 +20,7 @@ export default class BurnScreen extends React.Component {
 
     _getTimeRange = () => {
         const now = moment();
+        now.subtract(2, 'month');
         const start = now.startOf('month').toDate();;
         const end = now.endOf('month').toDate();
         return { start, end };
@@ -87,8 +89,20 @@ export default class BurnScreen extends React.Component {
 
     render() {
         const { categoryExpenses, totalBurn, peopleSpending, company } = this.state;
+        //TODO: put button in for date picker
         return (
             <ScrollView style={styles.container}>
+              <CardView style={styles.burnCard}>
+                <TouchableOpacity><Text>October</Text></TouchableOpacity>
+                <RNPickerSelect
+                    onValueChange={(value) => console.log(value)}
+                    items={[
+                        { label: 'Football', value: 'football' },
+                        { label: 'Baseball', value: 'baseball' },
+                        { label: 'Hockey', value: 'hockey' },
+                    ]}
+                />
+              </CardView>
               <CardView style={styles.burnCard}>
                 <Text style={styles.burnAmount}>{company} spent ${this._moneyFormat(totalBurn)} so far this month</Text>
               </CardView>

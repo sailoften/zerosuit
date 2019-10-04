@@ -27,7 +27,8 @@ export default class TransactionsScreen extends React.Component {
       }
     });
     const payload = await res.json();
-    await this._transformTransactions(payload);
+    console.log(payload);
+    await this._transformTransactions(payload.transactions);
   }
 
   _transformTransactions = async(payload) => {
@@ -35,6 +36,8 @@ export default class TransactionsScreen extends React.Component {
       const timeStamp = new Date(tx.transactionDate).toDateString();
       return timeStamp;
     }).map((data, title) => ({ title, data })).value();
+    console.log("This is payload grouped");
+    //console.log(payloadGrouped);
     this.setState({sections: payloadGrouped, allSections: payloadGrouped})
   }
 
@@ -57,7 +60,7 @@ export default class TransactionsScreen extends React.Component {
         return ({ title, data: newData });
       }
     }).compact().value();
-    console.log(filteredTx);
+    //console.log(filteredTx);
     console.log('Search Done');
     this.setState({ sections: filteredTx})
   }
@@ -94,10 +97,23 @@ export default class TransactionsScreen extends React.Component {
     });
   }
 
+  _txTitle = (item) => {
+    switch(item.transactionType) {
+      case 'Expense':
+        return item.merchantName;
+      case 'Transfer':
+        return "Transfer to" + item.merchantName;
+      default:
+        return item.merchantName ? item.merchantName : item.memo;
+    }
+  }
+
   _renderItem = ({ item, index, section }) => {
+    console.log("THIS ITEM");
+    //console.log(item);
     return (
       <TouchableOpacity style={styles.item} onPress={() => this._onTxPress(item)}>
-        <Text numberOfLines={1} style={{width: '70%'}} key={index}>{item.merchantName}</Text>
+        <Text numberOfLines={1} style={{width: '70%'}} key={index}>{this._txTitle(item)}</Text>
         <Text style={{width: '30%', textAlign: 'right'}}>${this._moneyFormat(item.amount)}</Text>
       </TouchableOpacity>
     );

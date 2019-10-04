@@ -45,6 +45,7 @@ export default class PathTabScreen extends React.Component {
 }
 
 PathTabScreen.navigationOptions = {
+  //TODO: date picker on here
   title: 'Path',
 }
  

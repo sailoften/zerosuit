@@ -41,9 +41,9 @@ export default class TxScreen extends React.Component {
         const { tx } = this.state;
         return [
             {key: 'Date', desp: this._dateFormat(tx.transactionDate)},
-            {key: 'Category', desp: tx.category},
+            {key: 'Category', desp: tx.expenseCategory},
             {key: 'Person', desp: tx.transactionOwner},
-            {key: 'Account', desp: tx.account},
+            {key: 'Account', desp: tx.qbAccount.accountName},
         ]
     }
 

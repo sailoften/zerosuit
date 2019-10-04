@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
   SafeAreaView,
+  AsyncStorage,
 } from 'react-native';
 import CardView from '../common/CardView';
 import moment from 'moment';
@@ -37,8 +38,8 @@ export default class HomeScreen extends React.Component {
 
   _getData = async () => {
     const url = 'https://masonic-backend.onrender.com' + '/api/transaction/home';
-    const dates = this._getTimeRange();
-    const burnDates = this._getTimeRange(1);
+    const dates = this._getTimeRange(2);
+    const burnDates = this._getTimeRange(3);
     const body = {
       startDate: dates.start,
       endDate: dates.end,
@@ -55,6 +56,12 @@ export default class HomeScreen extends React.Component {
     });
     const payload = await res.json();
     console.log(payload);
+    if (payload.error) {
+      // Return user to signin screen
+      await AsyncStorage.removeItem('user');
+      this.props.navigation.navigate('Auth');
+      return;
+    }
     this.setState({company: payload.company, firstName: payload.firstName, cash: payload.cash, currentBurn: payload.currentBurn, lastBurn: payload.lastBurn});
   }
 
