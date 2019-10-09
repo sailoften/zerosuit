@@ -12,7 +12,8 @@ export default class CategoryView extends React.Component {
       search: '',
       startDate: this.props.navigation.getParam("startDate"),
       endDate: this.props.navigation.getParam("endDate"),
-      category: this.props.navigation.getParam("cat")
+      category: this.props.navigation.getParam("cat"),
+      categoryId: this.props.navigation.getParam("catId")
     };
     console.log(this.state);
   }
@@ -22,11 +23,11 @@ export default class CategoryView extends React.Component {
   }
 
   _fetchTransactions = async() => {
-    const {startDate, endDate, category} = this.state;
+    const {startDate, endDate, categoryId} = this.state;
     const body = {
         startDate,
         endDate,
-        category
+        category: categoryId,
     }
     const url = 'https://masonic-backend.onrender.com' + '/api/transaction/categoryTransactions';
     const res = await fetch(url, {

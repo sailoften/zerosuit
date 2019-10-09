@@ -19,19 +19,16 @@ export default class BurnScreen extends React.Component {
             burnRange: []
         }
         this._getBurnRanges();
-        //TODO: calculate months that burn can be had (for month picker)
     }
 
     _getTimeRange = () => {
         const now = moment();
-        now.subtract(2, 'month');
         const start = now.startOf('month').toDate();;
         const end = now.endOf('month').toDate();
         return { start, end };
     }
 
     _monthYear = (myear) => {
-        //TODO: spit out first date of month and last date
         const date = moment(myear, "MMM, YYYY");
         const start = date.startOf('month').toDate();;
         const end = date.endOf('month').toDate();
@@ -59,7 +56,7 @@ export default class BurnScreen extends React.Component {
 
     _getData = async () => {
         const { startDate, endDate } = this.state;
-        const url = 'https://masonic-backend.onrender.com' + '/api/transaction/burn';
+        const url = 'https://masonic-backend.onrender.com' + '/api/transaction/categoryInfo';
         const body = {
             startDate, endDate
         }
@@ -72,7 +69,7 @@ export default class BurnScreen extends React.Component {
         }
         });
         const payload = await res.json();
-        this.setState({company: payload.company, categoryExpenses: payload.categories, totalBurn: payload.spending, peopleSpending: payload.people });
+        this.setState({company: payload.company, categoryExpenses: payload.categories, totalBurn: payload.spending});
     }
 
     _moneyFormat = (amount) => {
@@ -81,18 +78,18 @@ export default class BurnScreen extends React.Component {
 
     _renderExpenses = ({item}) => {
         return (
-            <TouchableOpacity style={styles.expenseCat} onPress={() => this._goToExpense(item.category)}>
+            <TouchableOpacity style={styles.expenseCat} onPress={() => this._goToExpense(item.category, item.categoryId)}>
                 <Text style={{width: '50%'}}>{item.category}</Text>
-                <Text style={{width: '50%', textAlign: 'right'}}>${this._moneyFormat(item.amount)}</Text>
+                <Text style={{width: '50%', textAlign: 'right'}}>${this._moneyFormat(item.total)}</Text>
             </TouchableOpacity>
         );
     }
 
-    _goToExpense = (category) => {
-        console.log(category);
+    _goToExpense = (category, categoryId) => {
         const { startDate, endDate } = this.state;
         this.props.navigation.navigate('Category', {
             cat: category,
+            catId: categoryId, 
             startDate,
             endDate
         });
@@ -137,7 +134,7 @@ export default class BurnScreen extends React.Component {
                 <Text style={styles.expenseTitle}>Company Expenses</Text>
                 <FlatList
                     data={categoryExpenses}
-                    keyExtractor={(item) => item.category}
+                    keyExtractor={(item) => item.categoryId}
                     renderItem={this._renderExpenses}
                 />
               </CardView>
