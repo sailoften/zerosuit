@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, TouchableOpacity, Text, SectionList, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, Text, SectionList, TextInput} from 'react-native';
 import PATextInput from '../common/PATextInput';
 import _ from 'lodash';
 
@@ -32,6 +32,7 @@ export default class TransactionsScreen extends React.Component {
   }
 
   _transformTransactions = async(payload) => {
+    //TODO: need to sort by date
     const payloadGrouped = _.chain(payload).groupBy((tx) => {
       const timeStamp = new Date(tx.transactionDate).toDateString();
       return timeStamp;
@@ -42,17 +43,18 @@ export default class TransactionsScreen extends React.Component {
   }
 
   _searchTransactions = (searchText) => {
+    console.log("New search query: " + searchText);
     const { allSections } = this.state;
-    this.setState({ search: searchText });
-    if (searchText === "") {
-      return allSections;
+    if (searchText === '') {
+      this.setState({ sections: allSections })
     }
     const search = searchText.toLowerCase().trim();
     const filteredTx = _.chain(allSections).map((section) => {
       const newData = [];
       const title = section.title;
       section.data.forEach((tx) => {
-        if (tx.merchantName.toLowerCase().includes(search)) {
+        const name = tx.merchantName ? tx.merchantName : '';
+        if (name.toLowerCase().includes(search)) {
           newData.push(tx);
         }
       });
@@ -60,7 +62,7 @@ export default class TransactionsScreen extends React.Component {
         return ({ title, data: newData });
       }
     }).compact().value();
-    //console.log(filteredTx);
+    console.log(filteredTx);
     console.log('Search Done');
     this.setState({ sections: filteredTx})
   }
@@ -75,20 +77,25 @@ export default class TransactionsScreen extends React.Component {
     );
   };
 
+  // TODO: fix search unmounting issue
   _renderSearch = () => {
-    const { search } = this.state;
     return (
       <PATextInput
-                  style={styles.inputField}
-                  clearButtonMode="while-editing"
-                  placeholder="Search"
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                  onChangeText={searchText => this._searchTransactions(searchText)}
-                  returnKeyType='go'
-                  value={search}
-                />
+        style={styles.inputField}
+        clearButtonMode="while-editing"
+        placeholder="Search"
+        autoCapitalize="none"
+        keyboardType="email-address"
+        onChangeText={searchText => this._searchTransactions(searchText)}
+        returnKeyType='go'
+      />
     );
+  }
+
+  _renderEmptyList = () => {
+    return (
+      <Text>Empty</Text>
+    )
   }
 
   _onTxPress = (item) => {
@@ -109,8 +116,6 @@ export default class TransactionsScreen extends React.Component {
   }
 
   _renderItem = ({ item, index, section }) => {
-    console.log("THIS ITEM");
-    //console.log(item);
     return (
       <TouchableOpacity style={styles.item} onPress={() => this._onTxPress(item)}>
         <Text numberOfLines={1} style={{width: '70%'}} key={index}>{this._txTitle(item)}</Text>
@@ -120,12 +125,13 @@ export default class TransactionsScreen extends React.Component {
   };
 
   render() {
-    const { sections, search } = this.state;
+    const { sections } = this.state;
     return(
       <SectionList
         renderItem={this._renderItem}
         renderSectionHeader={this._renderSectionHeader}
         sections={sections}
+        ListEmptyComponent={this._renderEmptyList}
         keyExtractor={(item, index) => item + index}
         ListHeaderComponent={this._renderSearch}
       />

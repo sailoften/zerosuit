@@ -53,7 +53,7 @@ export default class CategoryView extends React.Component {
   _searchTransactions = (searchText) => {
     const { allSections } = this.state;
     //this.setState({ search: searchText });
-    if (searchText === "") {
+    if (searchText === '') {
       return allSections;
     }
     const search = searchText.toLowerCase().trim();
@@ -61,7 +61,8 @@ export default class CategoryView extends React.Component {
       const newData = [];
       const title = section.title;
       section.data.forEach((tx) => {
-        if (tx.merchantName.toLowerCase().includes(search)) {
+        const name = tx.merchantName ? tx.merchantName : '';
+        if (name.toLowerCase().includes(search)) {
           newData.push(tx);
         }
       });
@@ -71,7 +72,7 @@ export default class CategoryView extends React.Component {
     }).compact().value();
     console.log(filteredTx);
     console.log('Search Done');
-    this.setState({ sections: filteredTx})
+    this.setState({ sections: filteredTx })
   }
 
   _moneyFormat = (amount) => {

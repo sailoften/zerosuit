@@ -16,9 +16,9 @@ export default class BurnScreen extends React.Component {
             endDate: date.end,
             company: '',
             firstDate: moment().subtract(10, 'month'),
-            burnRange: []
+            burnRange: [],
+            loading: true,
         }
-        this._getBurnRanges();
     }
 
     _getTimeRange = () => {
@@ -35,30 +35,27 @@ export default class BurnScreen extends React.Component {
         return { start, end };
     }
 
-    _getBurnRanges = () => {
-        const { firstDate } = this.state;
-        const inceptionNumber = parseInt(firstDate.format('YYYYMM'));
+    _getBurnRanges = (firstDate) => {
+        const inceptionNumber = parseInt(moment(firstDate).format('YYYYMM'));
         const now = moment();
         const range = [];
         let iterNumber = parseInt(now.format('YYYYMM'));
         while (iterNumber >= inceptionNumber) {
-            range.push(now.format('MMM, YYYY'));
+            range.push({ label: now.format('MMM, YYYY'), value: now.format('MMM, YYYY')});
             now.subtract(1, 'month');
             iterNumber = parseInt(now.format('YYYYMM'));
         }
         console.log(range);
+        this.setState({burnRange: range});
         return range;
     }
 
-    componentWillReceiveProps(props) {
-
-    }
-
-    _getData = async () => {
-        const { startDate, endDate } = this.state;
+    _getData = async (start, end) => {
+        const { startDate, endDate, burnRange } = this.state;
         const url = 'https://masonic-backend.onrender.com' + '/api/transaction/categoryInfo';
         const body = {
-            startDate, endDate
+            startDate: start ? start : startDate,
+            endDate: end ? end : endDate
         }
         const res = await fetch(url, {
         method: 'POST',
@@ -69,7 +66,15 @@ export default class BurnScreen extends React.Component {
         }
         });
         const payload = await res.json();
-        this.setState({company: payload.company, categoryExpenses: payload.categories, totalBurn: payload.spending});
+        if (burnRange.length === 0) {
+            this._getBurnRanges(payload.firstDate);
+        }
+        this.setState({company: payload.company, categoryExpenses: payload.expenseInfo, totalBurn: payload.spending});
+    }
+
+    _changeDates = async (monthYear) => {
+        const dates = this._monthYear(monthYear);
+        await this._getData(dates.start, dates.end);
     }
 
     _moneyFormat = (amount) => {
@@ -112,23 +117,19 @@ export default class BurnScreen extends React.Component {
     }
 
     render() {
-        const { categoryExpenses, totalBurn, peopleSpending, company } = this.state;
+        const { categoryExpenses, totalBurn, burnRange, company } = this.state;
         //TODO: put button in for date picker
         return (
             <ScrollView style={styles.container}>
               <CardView style={styles.burnPickerCard}>
                 <Text>Displaying burn for October</Text>
                 <RNPickerSelect
-                    onValueChange={(value) => console.log(value)}
-                    items={[
-                        { label: 'Football', value: 'football' },
-                        { label: 'Baseball', value: 'baseball' },
-                        { label: 'Hockey', value: 'hockey' },
-                    ]}
+                    onValueChange={(value) => this._changeDates(value)}
+                    items={burnRange}
                 />
               </CardView>
               <CardView style={styles.burnCard}>
-                <Text style={styles.burnAmount}>{company} spent ${this._moneyFormat(totalBurn)} so far this month</Text>
+                <Text style={styles.burnAmount}>AirGarage spent ${this._moneyFormat(totalBurn)} so far this month</Text>
               </CardView>
               <CardView style={styles.expenseCard}>
                 <Text style={styles.expenseTitle}>Company Expenses</Text>
@@ -138,7 +139,13 @@ export default class BurnScreen extends React.Component {
                     renderItem={this._renderExpenses}
                 />
               </CardView>
-              <CardView style={styles.expenseCard}>
+            </ScrollView>
+        );
+    }
+}
+
+/*
+<CardView style={styles.expenseCard}>
                 <Text style={styles.expenseTitle}>Spending By Person</Text>
                 <FlatList
                     data={peopleSpending}
@@ -146,10 +153,7 @@ export default class BurnScreen extends React.Component {
                     renderItem={this._renderPeople}
                 />
               </CardView>
-            </ScrollView>
-        );
-    }
-}
+*/
 
 const styles = StyleSheet.create({
   container: {
