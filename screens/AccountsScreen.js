@@ -28,12 +28,11 @@ export default class AccountsScreen extends React.Component {
     const transformed = this._transformAccounts(payload.accounts);
     this.setState({sections: transformed});
     console.log(transformed);
-    //console.log(payload);
   }
 
   _transformAccounts = (accounts) => {
     const groupedBy = _.chain(accounts).groupBy((acc) => {
-        return acc.kind
+        return "Quickbooks"
     }).map((data, title) => ({title, data})).value();
     return groupedBy;
   }

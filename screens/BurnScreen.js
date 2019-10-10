@@ -17,6 +17,7 @@ export default class BurnScreen extends React.Component {
             company: '',
             firstDate: moment().subtract(10, 'month'),
             burnRange: [],
+            currMonth: date.curr,
             loading: true,
         }
     }
@@ -25,11 +26,12 @@ export default class BurnScreen extends React.Component {
         const now = moment();
         const start = now.startOf('month').toDate();;
         const end = now.endOf('month').toDate();
-        return { start, end };
+        const curr = now.format('MMMM, YYYY');
+        return { start, end, curr };
     }
 
     _monthYear = (myear) => {
-        const date = moment(myear, "MMM, YYYY");
+        const date = moment(myear, "MMMM, YYYY");
         const start = date.startOf('month').toDate();;
         const end = date.endOf('month').toDate();
         return { start, end };
@@ -41,7 +43,7 @@ export default class BurnScreen extends React.Component {
         const range = [];
         let iterNumber = parseInt(now.format('YYYYMM'));
         while (iterNumber >= inceptionNumber) {
-            range.push({ label: now.format('MMM, YYYY'), value: now.format('MMM, YYYY')});
+            range.push({ label: now.format('MMMM, YYYY'), value: now.format('MMMM, YYYY')});
             now.subtract(1, 'month');
             iterNumber = parseInt(now.format('YYYYMM'));
         }
@@ -74,6 +76,7 @@ export default class BurnScreen extends React.Component {
 
     _changeDates = async (monthYear) => {
         const dates = this._monthYear(monthYear);
+        this.setState({startDate: dates.start, endDate: dates.end, currMonth: monthYear });
         await this._getData(dates.start, dates.end);
     }
 
@@ -117,15 +120,23 @@ export default class BurnScreen extends React.Component {
     }
 
     render() {
-        const { categoryExpenses, totalBurn, burnRange, company } = this.state;
+        const { categoryExpenses, totalBurn, burnRange, currMonth } = this.state;
         //TODO: put button in for date picker
         return (
             <ScrollView style={styles.container}>
               <CardView style={styles.burnPickerCard}>
-                <Text>Displaying burn for October</Text>
                 <RNPickerSelect
                     onValueChange={(value) => this._changeDates(value)}
+                    placeholder={{}}
                     items={burnRange}
+                    style={{
+                        ...pickerSelectStyles,
+                        iconContainer: {
+                            top: 10,
+                            right: 12,
+                        }
+                    }}
+                    value={currMonth}
                 />
               </CardView>
               <CardView style={styles.burnCard}>
@@ -166,8 +177,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
   },
   burnPickerCard: {
-    paddingVertical: 30, 
-    paddingHorizontal: 30
+    paddingVertical: 20, 
+    paddingHorizontal: 20
   },
   burnAmount: {
     textAlign: 'center',
@@ -186,3 +197,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   }
 });
+
+const pickerSelectStyles = StyleSheet.create({
+    inputIOS: {
+      fontSize: 16,
+      paddingVertical: 12,
+      paddingHorizontal: 10,
+      borderWidth: 1,
+      borderColor: 'gray',
+      borderRadius: 4,
+      color: 'black',
+      paddingRight: 30, // to ensure the text is never behind the icon
+    },
+    inputAndroid: {
+      fontSize: 16,
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+      borderWidth: 0.5,
+      borderColor: 'purple',
+      borderRadius: 8,
+      color: 'black',
+      paddingRight: 30, // to ensure the text is never behind the icon
+    },
+  });

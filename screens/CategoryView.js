@@ -54,7 +54,7 @@ export default class CategoryView extends React.Component {
     const { allSections } = this.state;
     //this.setState({ search: searchText });
     if (searchText === '') {
-      return allSections;
+      this.setState({ sections: allSections });
     }
     const search = searchText.toLowerCase().trim();
     const filteredTx = _.chain(allSections).map((section) => {
@@ -70,8 +70,6 @@ export default class CategoryView extends React.Component {
         return ({ title, data: newData });
       }
     }).compact().value();
-    console.log(filteredTx);
-    console.log('Search Done');
     this.setState({ sections: filteredTx })
   }
 
@@ -86,7 +84,6 @@ export default class CategoryView extends React.Component {
   };
 
   _renderSearch = () => {
-    const { search } = this.state;
     return (
       <PATextInput
                   style={styles.inputField}
@@ -96,7 +93,6 @@ export default class CategoryView extends React.Component {
                   keyboardType="email-address"
                   onChangeText={searchText => this._searchTransactions(searchText)}
                   returnKeyType='go'
-                  value={search}
                 />
     );
   }
@@ -117,7 +113,7 @@ export default class CategoryView extends React.Component {
   };
 
   render() {
-    const { sections, search } = this.state;
+    const { sections } = this.state;
     return(
       <SectionList
         renderItem={this._renderItem}
