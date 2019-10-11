@@ -64,7 +64,11 @@ export default class TransactionsScreen extends React.Component {
     }).compact().value();
     console.log(filteredTx);
     console.log('Search Done');
-    this.setState({ sections: filteredTx})
+    if (filteredTx.length === 0) {
+      this.setState({ sections: [{title: "No transactions found", data: []}]});
+    } else {
+      this.setState({ sections: filteredTx})
+    }
   }
 
   _moneyFormat = (amount) => {

@@ -70,7 +70,11 @@ export default class CategoryView extends React.Component {
         return ({ title, data: newData });
       }
     }).compact().value();
-    this.setState({ sections: filteredTx })
+    if (filteredTx.length === 0) {
+      this.setState({ sections: [{title: "No transactions found", data: []}]});
+    } else {
+      this.setState({ sections: filteredTx})
+    }
   }
 
   _moneyFormat = (amount) => {
