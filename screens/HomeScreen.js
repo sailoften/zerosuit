@@ -29,7 +29,7 @@ export default class HomeScreen extends React.Component {
 
   _getTimeRange = (offset) => {
     offset = offset ? offset : 0;
-    const now = moment();
+    const now = moment.utc();
     now.subtract(offset, 'month');
     const start = now.startOf('month').toDate();;
     const end = now.endOf('month').toDate();
@@ -38,8 +38,8 @@ export default class HomeScreen extends React.Component {
 
   _getData = async () => {
     const url = 'https://masonic-backend.onrender.com' + '/api/transaction/home';
-    const dates = this._getTimeRange(2);
-    const burnDates = this._getTimeRange(3);
+    const dates = this._getTimeRange();
+    const burnDates = this._getTimeRange(1);
     const body = {
       startDate: dates.start,
       endDate: dates.end,

@@ -107,9 +107,15 @@ export default class TransactionsScreen extends React.Component {
   _txTitle = (item) => {
     switch(item.transactionType) {
       case 'Expense':
-        return item.merchantName;
+        if (item.merchantName) {
+          return item.merchantName;
+        } else if (item.memo && item.memo !== '') {
+          return item.memo;
+        } else {
+          return 'Transaction'
+        }
       case 'Transfer':
-        return "Transfer to" + item.merchantName;
+        return "Transfer: " + item.merchantName;
       default:
         return item.merchantName ? item.merchantName : item.memo;
     }

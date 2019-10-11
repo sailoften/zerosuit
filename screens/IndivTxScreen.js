@@ -12,6 +12,7 @@ export default class TxScreen extends React.Component {
     constructor(props) {
         super(props);
         const tx = this.props.navigation.getParam("tx");
+        console.log(tx);
         this.state = {
             tx,
         }
@@ -47,6 +48,23 @@ export default class TxScreen extends React.Component {
         ]
     }
 
+    _txTitle = (item) => {
+      switch(item.transactionType) {
+        case 'Expense':
+          if (item.merchantName) {
+            return item.merchantName;
+          } else if (item.memo && item.memo !== '') {
+            return item.memo;
+          } else {
+            return 'Transaction'
+          }
+        case 'Transfer':
+          return "Transfer: " + item.merchantName;
+        default:
+          return item.merchantName ? item.merchantName : item.memo;
+      }
+    }
+
     render() {
         const { tx } = this.state;
         return (
@@ -57,7 +75,7 @@ export default class TxScreen extends React.Component {
                 >
 
                 <View style={styles.headerContainer}>
-                    <Text style={[styles.titleText, {width: '70%'}]}>{tx.merchantName}</Text>
+                    <Text style={[styles.titleText, {width: '70%'}]}>{this._txTitle(tx)}</Text>
                     <Text style={[styles.titleText, {width: '30%', textAlign: 'right'}]}>${this._moneyFormat(tx.amount)}</Text>
                 </View>
         

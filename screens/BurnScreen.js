@@ -15,7 +15,7 @@ export default class BurnScreen extends React.Component {
             startDate: date.start,
             endDate: date.end,
             company: '',
-            firstDate: moment().subtract(10, 'month'),
+            firstDate: null,
             burnRange: [],
             currMonth: date.curr,
             loading: true,
@@ -23,7 +23,7 @@ export default class BurnScreen extends React.Component {
     }
 
     _getTimeRange = () => {
-        const now = moment();
+        const now = moment.utc();
         const start = now.startOf('month').toDate();;
         const end = now.endOf('month').toDate();
         const curr = now.format('MMMM, YYYY');
@@ -31,7 +31,7 @@ export default class BurnScreen extends React.Component {
     }
 
     _monthYear = (myear) => {
-        const date = moment(myear, "MMMM, YYYY");
+        const date = moment.utc(myear, "MMMM, YYYY");
         const start = date.startOf('month').toDate();;
         const end = date.endOf('month').toDate();
         return { start, end };
@@ -47,13 +47,13 @@ export default class BurnScreen extends React.Component {
             now.subtract(1, 'month');
             iterNumber = parseInt(now.format('YYYYMM'));
         }
-        console.log(range);
         this.setState({burnRange: range});
         return range;
     }
 
     _getData = async (start, end) => {
         const { startDate, endDate, burnRange } = this.state;
+        console.log("StartDate: " + startDate + " EndDate: " + endDate);
         const url = 'https://masonic-backend.onrender.com' + '/api/transaction/categoryInfo';
         const body = {
             startDate: start ? start : startDate,

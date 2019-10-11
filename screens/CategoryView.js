@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, TouchableOpacity, Text, SectionList, View} from 'react-native';
 import PATextInput from '../common/PATextInput';
+import { Ionicons } from '@expo/vector-icons';
 import _ from 'lodash';
 
 export default class CategoryView extends React.Component {
@@ -15,7 +16,6 @@ export default class CategoryView extends React.Component {
       category: this.props.navigation.getParam("cat"),
       categoryId: this.props.navigation.getParam("catId")
     };
-    console.log(this.state);
   }
 
   componentWillMount() {
@@ -93,6 +93,9 @@ export default class CategoryView extends React.Component {
                   keyboardType="email-address"
                   onChangeText={searchText => this._searchTransactions(searchText)}
                   returnKeyType='go'
+                  Icon={() => {
+                    return <Ionicons name="md-arrow-down" size={24} color="gray" />;
+                  }}
                 />
     );
   }
