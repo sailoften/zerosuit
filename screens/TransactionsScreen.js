@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, TouchableOpacity, Text, SectionList, TextInput} from 'react-native';
+import {StyleSheet, TouchableOpacity, Text, SectionList, View} from 'react-native';
 import PATextInput from '../common/PATextInput';
 import _ from 'lodash';
 
@@ -27,7 +27,6 @@ export default class TransactionsScreen extends React.Component {
       }
     });
     const payload = await res.json();
-    console.log(payload);
     await this._transformTransactions(payload.transactions);
   }
 
@@ -38,7 +37,6 @@ export default class TransactionsScreen extends React.Component {
       return timeStamp;
     }).map((data, title) => ({ title, data })).value();
     console.log("This is payload grouped");
-    //console.log(payloadGrouped);
     this.setState({sections: payloadGrouped, allSections: payloadGrouped})
   }
 
@@ -62,8 +60,8 @@ export default class TransactionsScreen extends React.Component {
         return ({ title, data: newData });
       }
     }).compact().value();
-    console.log(filteredTx);
     console.log('Search Done');
+    // DuctTape.gif
     if (filteredTx.length === 0) {
       this.setState({ sections: [{title: "No transactions found", data: []}]});
     } else {
@@ -81,7 +79,6 @@ export default class TransactionsScreen extends React.Component {
     );
   };
 
-  // TODO: fix search unmounting issue
   _renderSearch = () => {
     return (
       <PATextInput
@@ -98,7 +95,9 @@ export default class TransactionsScreen extends React.Component {
 
   _renderEmptyList = () => {
     return (
-      <Text>Empty</Text>
+      <View style={styles.loading}>
+        <Text style={styles.loadingText}>Loading...</Text>
+      </View>
     )
   }
 
@@ -186,4 +185,10 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
   },
+  loading: {
+    paddingVertical: 20,
+  },
+  loadingText: {
+    textAlign: 'center'
+  }
 });

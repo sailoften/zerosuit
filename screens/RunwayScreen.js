@@ -38,9 +38,7 @@ export default class RunwayScreen extends React.Component {
         const payload = await res.json();
         const runway = this._calcRunway(payload);
         const projection = this._calcProjections(payload);
-        console.log(projection);
         this.setState({totalBurn: payload.spending, cash: payload.cash, months: runway, projection});
-        console.log(payload);
     }
 
     _getTimeRange = () => {
@@ -48,7 +46,6 @@ export default class RunwayScreen extends React.Component {
         now.subtract(1, 'month');
         const start = now.startOf('month').toDate();;
         const end = now.endOf('month').toDate();
-        console.log("Start date :" + start + " End Date: " + end);
         return { start, end };
     }
 

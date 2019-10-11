@@ -10,6 +10,7 @@ import AccountsScreen from '../screens/AccountsScreen';
 import TxScreen from '../screens/IndivTxScreen';
 import UserScreen from '../screens/UserScreen';
 import CategoryScreen from '../screens/CategoryView';
+import TasksScreen from '../screens/TasksScreen';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -91,8 +92,25 @@ UserStack.navigationOptions = {
 
 UserStack.path = '';
 
+const TasksStack = createStackNavigator(
+  {
+    Tasks: TasksScreen,
+  },
+  config
+);
+
+TasksStack.navigationOptions = {
+  tabBarLabel: 'Tasks',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-flash' : 'md-flash'} />
+  ),
+};
+
+TasksStack.path = '';
+
 const tabNavigator = createBottomTabNavigator({
   HomeStack,
+  TasksStack,
   PathStack,
   TransactionsStack,
   UserStack
