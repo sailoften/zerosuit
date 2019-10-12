@@ -6,6 +6,7 @@ import {
   View,
   AsyncStorage,
   TouchableOpacity,
+  FlatList,
 } from 'react-native';
 import CardView from '../common/CardView';
 import moment from 'moment';
@@ -19,6 +20,7 @@ export default class TasksScreen extends React.Component {
       lastBurn: 0,
       firstName: '',
       company: '',
+      transactions: []
     }
   }
 
@@ -36,15 +38,8 @@ export default class TasksScreen extends React.Component {
 }
 
   _getData = async () => {
-    const url = 'https://masonic-backend.onrender.com' + '/api/transaction/home';
-    const dates = this._getTimeRange();
-    const burnDates = this._getTimeRange(1);
-    const body = {
-      startDate: dates.start,
-      endDate: dates.end,
-      burnStartDate: burnDates.start,
-      burnEndDate: burnDates.end
-    }
+    const url = 'https://masonic-backend.onrender.com' + '/api/transaction/uncategorized';
+    const body = {};
     const res = await fetch(url, {
       method: 'POST',
       credentials: 'include',
@@ -61,14 +56,33 @@ export default class TasksScreen extends React.Component {
       this.props.navigation.navigate('Auth');
       return;
     }
-    this.setState({company: payload.company, firstName: payload.firstName, cash: payload.cash, currentBurn: payload.currentBurn, lastBurn: payload.lastBurn});
+    this.setState({transactions: payload.uncategorized});
   }
 
   _moneyFormat = (amount) => {
     return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
   }
 
+  _renderItem = ({item}) => {
+      return (
+        <TouchableOpacity style={styles.homeCards}>
+            <CardView style={styles.infoCard}>
+            <View style={{flex: 1, flexDirection:'row'}}>
+              <View style={{width: '60%'}}>
+                <Text style={styles.infoText}>{item.merchantName ? item.merchantName : item.memo}</Text>
+                <Text style={styles.infoText, {color: 'gray'}}>{moment(item.transactionDate).format('MMM DD, YYYY')}</Text>
+              </View>
+              <View style={{width: '40%'}}>
+                <Text style={styles.infoText, {fontWeight: '600', fontSize: 16, textAlign: 'right'}}>${this._moneyFormat(item.amount)}</Text>
+              </View>
+            </View>
+            </CardView>
+          </TouchableOpacity>
+      )
+  }
+
   render() {
+    const { transactions } = this.state;
     return (
       <View style={styles.container}>
         <ScrollView
@@ -77,19 +91,11 @@ export default class TasksScreen extends React.Component {
           contentInsetAdjustmentBehavior="never"
           >
           <Text style={styles.groupTitle}>Uncategorized Expenses</Text>
-          <TouchableOpacity style={styles.homeCards}>
-            <CardView style={styles.infoCard}>
-            <View style={{flex: 1, flexDirection:'row'}}>
-              <View style={{width: '70%'}}>
-                <Text style={styles.infoText}>Kickstarter.com</Text>
-                <Text style={styles.infoText}>Sep. 24th, 2018</Text>
-              </View>
-              <View style={{width: '30%'}}>
-                <Text style={styles.infoText, {fontWeight: '600', fontSize: 16, textAlign: 'right'}}>$214.00</Text>
-              </View>
-            </View>
-            </CardView>
-          </TouchableOpacity>
+          <FlatList
+            data={transactions}
+            renderItem={this._renderItem}
+            keyExtractor={item => item.masonicId}
+        />
         </ScrollView>
       </View>
     );
@@ -112,7 +118,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   infoCard: {
-    paddingVertical: 15,
+    paddingVertical: 20,
     paddingHorizontal: 20,
   },
   infoTitle: {
