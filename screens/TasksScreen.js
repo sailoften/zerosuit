@@ -5,6 +5,7 @@ import {
   Text,
   View,
   AsyncStorage,
+  TouchableOpacity,
 } from 'react-native';
 import CardView from '../common/CardView';
 import moment from 'moment';
@@ -68,8 +69,6 @@ export default class TasksScreen extends React.Component {
   }
 
   render() {
-    const { cash, currentBurn, lastBurn, company, firstName } = this.state;
-    const months = Math.floor(cash / lastBurn);
     return (
       <View style={styles.container}>
         <ScrollView
@@ -77,24 +76,20 @@ export default class TasksScreen extends React.Component {
           contentContainerStyle={styles.contentContainer}
           contentInsetAdjustmentBehavior="never"
           >
-
-          <View style={styles.homeCards}>
-          <CardView>
-                    <View style={{flex: 1, flexDirection:'row'}}>
-                        <View style={{width: '50%'}}>
-                          <Text style={styles.textBig}>${this._moneyFormat(lastBurn)}</Text>
-                          <Text style={{color: 'gray'}}>Last Month's Burn</Text>
-                        </View>
-                        <View style={{width: '50%'}}>
-                          <Text style={[styles.textBig, {textAlign: 'right'}]}>{months} {months > 1 ? 'Months' : 'Month'}</Text>
-                          <Text style={{textAlign: 'right', color: 'gray'}}>Runway Left</Text>
-                        </View> 
-                    </View>
-                </CardView>
-            <CardView style={styles.burnCard}>
-              <Text style={styles.burnAmount}>{company} spent ${this._moneyFormat(currentBurn)} so far this month</Text>
+          <Text style={styles.groupTitle}>Uncategorized Expenses</Text>
+          <TouchableOpacity style={styles.homeCards}>
+            <CardView style={styles.infoCard}>
+            <View style={{flex: 1, flexDirection:'row'}}>
+              <View style={{width: '70%'}}>
+                <Text style={styles.infoText}>Kickstarter.com</Text>
+                <Text style={styles.infoText}>Sep. 24th, 2018</Text>
+              </View>
+              <View style={{width: '30%'}}>
+                <Text style={styles.infoText, {fontWeight: '600', fontSize: 16, textAlign: 'right'}}>$214.00</Text>
+              </View>
+            </View>
             </CardView>
-          </View>
+          </TouchableOpacity>
         </ScrollView>
       </View>
     );
@@ -110,14 +105,23 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#e6edf9',
   },
-  burnCard: {
-    paddingVertical: 60,
-    paddingHorizontal: 40,
+  groupTitle: {
+    marginHorizontal: 10,
+    marginTop:30,
+    marginBottom: 15,
+    fontWeight: '600',
   },
-  burnAmount: {
-    textAlign: 'center',
-    fontSize:25,
-    lineHeight: 35,
+  infoCard: {
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+  },
+  infoTitle: {
+    backgroundColor: 'grey',
+    fontSize:12,
+    fontWeight: '600',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    alignSelf: 'flex-start',
   },
   safeArea: {
     flex: 1,
