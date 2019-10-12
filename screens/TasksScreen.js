@@ -7,7 +7,9 @@ import {
   AsyncStorage,
   TouchableOpacity,
   FlatList,
+  Button
 } from 'react-native';
+import Modal from "react-native-modal";
 import CardView from '../common/CardView';
 import moment from 'moment';
 
@@ -20,7 +22,9 @@ export default class TasksScreen extends React.Component {
       lastBurn: 0,
       firstName: '',
       company: '',
-      transactions: []
+      transactions: [],
+      modalVisible: false,
+      focusTx: {},
     }
   }
 
@@ -63,9 +67,13 @@ export default class TasksScreen extends React.Component {
     return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
   }
 
+  _showDetails = (tx) => {
+    this.setState({ focusTx: tx, modalVisible: true });
+  }
+
   _renderItem = ({item}) => {
       return (
-        <TouchableOpacity style={styles.homeCards}>
+        <TouchableOpacity style={styles.homeCards} onPress={() => this._showDetails(item)}>
             <CardView style={styles.infoCard}>
             <View style={{flex: 1, flexDirection:'row'}}>
               <View style={{width: '60%'}}>
@@ -81,8 +89,12 @@ export default class TasksScreen extends React.Component {
       )
   }
 
+  _hideModal = () => {
+      this.setState({ modalVisible: false });
+  }
+
   render() {
-    const { transactions } = this.state;
+    const { transactions, modalVisible, focusTx } = this.state;
     return (
       <View style={styles.container}>
         <ScrollView
@@ -97,6 +109,12 @@ export default class TasksScreen extends React.Component {
             keyExtractor={item => item.masonicId}
         />
         </ScrollView>
+        <Modal isVisible={modalVisible} style={styles.bottomModal} swipeDirection={['up', 'left', 'right', 'down']}>
+          <View style={styles.modal}>
+            <Text>{focusTx.memo}</Text>
+            <Button title="Hide modal" onPress={this._hideModal} />
+          </View>
+        </Modal>
       </View>
     );
   }
@@ -110,6 +128,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#e6edf9',
+  },
+  modal: {
+    backgroundColor: 'white',
+    padding: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
   },
   groupTitle: {
     marginHorizontal: 10,
@@ -176,5 +202,9 @@ const styles = StyleSheet.create({
     fontSize:24,
     fontWeight: '500',
     marginBottom: 5,
-  }
+  },
+  bottomModal: {
+    justifyContent: 'flex-end',
+    margin: 0,
+  },
 });
