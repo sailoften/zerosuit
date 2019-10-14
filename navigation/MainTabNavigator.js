@@ -11,6 +11,7 @@ import TxScreen from '../screens/IndivTxScreen';
 import UserScreen from '../screens/UserScreen';
 import CategoryScreen from '../screens/CategoryView';
 import TasksScreen from '../screens/TasksScreen';
+import UncatTxScreen from '../screens/UncatTxScreen';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -95,6 +96,7 @@ UserStack.path = '';
 const TasksStack = createStackNavigator(
   {
     Tasks: TasksScreen,
+    UncatTx: UncatTxScreen
   },
   config
 );

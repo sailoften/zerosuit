@@ -9,7 +9,6 @@ import {
   FlatList,
   Button
 } from 'react-native';
-import Modal from "react-native-modal";
 import CardView from '../common/CardView';
 import moment from 'moment';
 
@@ -23,8 +22,6 @@ export default class TasksScreen extends React.Component {
       firstName: '',
       company: '',
       transactions: [],
-      modalVisible: false,
-      focusTx: {},
     }
   }
 
@@ -63,38 +60,48 @@ export default class TasksScreen extends React.Component {
     this.setState({transactions: payload.uncategorized});
   }
 
+  _onTxPress = (item) => {
+    this.props.navigation.navigate('UncatTx', {
+      tx: item
+    });
+  }
+
   _moneyFormat = (amount) => {
     return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
   }
 
   _showDetails = (tx) => {
-    this.setState({ focusTx: tx, modalVisible: true });
+    this.setState({ focusTx: tx });
+  }
+
+  _renderTitle = (tx) => {
+      const title = tx.merchantName ? tx.merchantName : tx.memo;
+      if (!title) {
+          return 'Untitled Transaction';
+      }
+      return title;
   }
 
   _renderItem = ({item}) => {
       return (
-        <TouchableOpacity style={styles.homeCards} onPress={() => this._showDetails(item)}>
+        <TouchableOpacity style={styles.homeCards} onPress={() => this._onTxPress(item)}>
             <CardView style={styles.infoCard}>
-            <View style={{flex: 1, flexDirection:'row'}}>
-              <View style={{width: '60%'}}>
-                <Text style={styles.infoText}>{item.merchantName ? item.merchantName : item.memo}</Text>
-                <Text style={styles.infoText, {color: 'gray'}}>{moment(item.transactionDate).format('MMM DD, YYYY')}</Text>
-              </View>
-              <View style={{width: '40%'}}>
-                <Text style={styles.infoText, {fontWeight: '600', fontSize: 16, textAlign: 'right'}}>${this._moneyFormat(item.amount)}</Text>
-              </View>
-            </View>
+                <View style={{flex: 1, flexDirection:'row'}}>
+                <View style={{width: '60%'}}>
+                    <Text numberOfLines={1} style={styles.infoText}>{this._renderTitle(item)}</Text>
+                    <Text style={styles.infoText, {color: 'gray'}}>{moment(item.transactionDate).format('MMM DD, YYYY')}</Text>
+                </View>
+                <View style={{width: '40%'}}>
+                    <Text style={styles.infoText, {fontWeight: '600', fontSize: 16, textAlign: 'right'}}>${this._moneyFormat(item.amount)}</Text>
+                </View>
+                </View>
             </CardView>
-          </TouchableOpacity>
+        </TouchableOpacity>
       )
   }
 
-  _hideModal = () => {
-      this.setState({ modalVisible: false });
-  }
-
   render() {
-    const { transactions, modalVisible, focusTx } = this.state;
+    const { transactions } = this.state;
     return (
       <View style={styles.container}>
         <ScrollView
@@ -109,12 +116,6 @@ export default class TasksScreen extends React.Component {
             keyExtractor={item => item.masonicId}
         />
         </ScrollView>
-        <Modal isVisible={modalVisible} style={styles.bottomModal} swipeDirection={['up', 'left', 'right', 'down']}>
-          <View style={styles.modal}>
-            <Text>{focusTx.memo}</Text>
-            <Button title="Hide modal" onPress={this._hideModal} />
-          </View>
-        </Modal>
       </View>
     );
   }
@@ -129,23 +130,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#e6edf9',
   },
-  modal: {
-    backgroundColor: 'white',
-    padding: 22,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 4,
-    borderColor: 'rgba(0, 0, 0, 0.1)',
-  },
   groupTitle: {
     marginHorizontal: 10,
     marginTop:30,
     marginBottom: 15,
     fontWeight: '600',
-  },
-  infoCard: {
-    paddingVertical: 20,
-    paddingHorizontal: 20,
   },
   infoTitle: {
     backgroundColor: 'grey',
