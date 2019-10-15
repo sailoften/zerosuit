@@ -80,22 +80,17 @@ export default class TxScreen extends React.Component {
     }
 
     _onSave = async () => {
-        console.log("Saving");
         const { infoText, tx } = this.state;
-        console.log(infoText);
         if (infoText.length === 0) {
             alert("Please enter a note to save");
             return;
         }
-        // api/categorize POST
-        // txnId, note
         const url = 'https://masonic-backend.onrender.com' + '/api/transaction/categorize';
         const body = {
             transactionId: tx.transactionId,
             notes: infoText,
         }
         try {
-            console.log("Trying to send network request");
             const res = await fetch(url, {
                 method: 'POST',
                 body: JSON.stringify(body),
@@ -104,14 +99,13 @@ export default class TxScreen extends React.Component {
                     'Content-Type': 'application/json'
                 }
             });
-            console.log("Resolved");
             const payload = await res.json();
-            console.log(payload);
-            console.log("Saved");
+            if (!payload || !payload.updatedTxn) {
+               throw "Could not save";
+            }
             Keyboard.dismiss();
             this._taskSaved({masonicId: tx.masonicId, notes: payload.updatedTxn[0].notes});
             this.props.navigation.goBack();
-            //TODO: navigate back to home page and dismiss item from array
         } catch(e) {
             console.log("Error! " + e);
             alert("Error saving");

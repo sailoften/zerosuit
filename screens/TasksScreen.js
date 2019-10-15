@@ -26,6 +26,7 @@ export default class TasksScreen extends React.Component {
       allTransactions: [],
       transactions: [],
       filter: 'incomplete',
+      loading: true,
     }
     //this.props.navigation.setParams({ taskComplete: this._taskComplete });
   }
@@ -35,8 +36,9 @@ export default class TasksScreen extends React.Component {
   }
 
   _setupPage = async () => {
+      const { filter } = this.state;
       await this._getData();
-      const newTxs = this._filterTransactions('incomplete');
+      const newTxs = this._filterTransactions(filter);
       this.setState({ transactions: newTxs });
   }
 
@@ -68,7 +70,7 @@ export default class TasksScreen extends React.Component {
       this.props.navigation.navigate('Auth');
       return;
     }
-    this.setState({allTransactions: payload.uncategorized});
+    this.setState({allTransactions: payload.uncategorized, loading: false});
   }
 
   _onTxPress = (item) => {
@@ -145,6 +147,15 @@ export default class TasksScreen extends React.Component {
       )
   }
 
+  _renderEmptyList = () => {
+    const { loading } = this.state;
+    return (
+      <View style={styles.loading}>
+        <Text style={styles.loadingText}>{ loading? 'Loading...' : 'Yay! No new tasks' }</Text>
+      </View>
+    )
+  }
+
   render() {
     const { transactions, filter } = this.state;
     return (
@@ -178,6 +189,7 @@ export default class TasksScreen extends React.Component {
             data={transactions}
             renderItem={this._renderItem}
             keyExtractor={item => item.masonicId}
+            ListEmptyComponent={this._renderEmptyList}
         />
         </ScrollView>
       </View>
@@ -266,6 +278,12 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     margin: 0,
   },
+  loading: {
+    paddingVertical: 20,
+  },
+  loadingText: {
+    textAlign: 'center'
+  }
 });
 
 const pickerSelectStyles = StyleSheet.create({
