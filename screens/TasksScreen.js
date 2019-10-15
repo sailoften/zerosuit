@@ -23,14 +23,21 @@ export default class TasksScreen extends React.Component {
       lastBurn: 0,
       firstName: '',
       company: '',
+      allTransactions: [],
       transactions: [],
-      filter: null,
+      filter: 'incomplete',
     }
     //this.props.navigation.setParams({ taskComplete: this._taskComplete });
   }
 
   componentDidMount() {
-    this._getData();
+    this._setupPage();
+  }
+
+  _setupPage = async () => {
+      await this._getData();
+      const newTxs = this._filterTransactions('incomplete');
+      this.setState({ transactions: newTxs });
   }
 
   _getTimeRange = (offset) => {
@@ -61,7 +68,7 @@ export default class TasksScreen extends React.Component {
       this.props.navigation.navigate('Auth');
       return;
     }
-    this.setState({transactions: payload.uncategorized});
+    this.setState({allTransactions: payload.uncategorized});
   }
 
   _onTxPress = (item) => {
@@ -80,26 +87,35 @@ export default class TasksScreen extends React.Component {
   }
 
   _taskSaved = (savedTx) => {
-      // TODO: remove tx from the tasks array because it has been completed already
+      const { filter, allTransactions } = this.state;
       console.log("YEET");
       console.log(savedTx);
-      const { transactions } = this.state;
-      const newTransactions = transactions.filter(tx => tx.masonicId !== savedTx.masonicId);
-      this.setState({ transactions: newTransactions });
+      for (const tx of allTransactions) {
+          if (tx.masonicId === savedTx.masonicId) {
+              console.log("updating notes");
+              console.log(savedTx.notes);
+              tx.notes = savedTx.notes;
+          }
+      }
+      const newTxs = this._filterTransactions(filter);
+      this.setState({ transactions: newTxs });
   }
 
   _changeFilter = (filter) => {
       this.setState({ filter });
+      const newTxs = this._filterTransactions(filter);
+      this.setState({ transactions: newTxs });
+  }
+
+  _filterTransactions = (filter) => {
+      const { allTransactions } = this.state;
       switch(filter) {
-            case 'incomplete':
-                console.log("incomplete");
-                break;
-            case 'complete':
-                console.log("complete");
-                break;
-            case 'all':
-                console.log("all");
-                break;
+        case 'incomplete':
+            return allTransactions.filter(tx => (!tx.notes || tx.notes.length === 0));
+        case 'complete':
+            return allTransactions.filter(tx => (tx.notes && tx.notes.length > 0));
+        case 'all':
+            return allTransactions;
       }
   }
 
@@ -138,7 +154,7 @@ export default class TasksScreen extends React.Component {
           contentContainerStyle={styles.contentContainer}
           contentInsetAdjustmentBehavior="never"
           >
-          <CardView>
+          <CardView style={styles.optionBar}>
 
           <Text style={styles.groupTitle}>Uncategorized Expenses</Text>
             <RNPickerSelect
@@ -179,8 +195,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#e6edf9',
   },
   optionBar: {
-      paddingHorizontal: 10,
-      paddingVertical: 5,
+      marginTop: 20,
   },
   infoCard: {
     marginBottom: 0,

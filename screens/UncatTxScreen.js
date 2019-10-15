@@ -109,7 +109,7 @@ export default class TxScreen extends React.Component {
             console.log(payload);
             console.log("Saved");
             Keyboard.dismiss();
-            this._taskSaved(tx);
+            this._taskSaved({masonicId: tx.masonicId, notes: payload.updatedTxn[0].notes});
             this.props.navigation.goBack();
             //TODO: navigate back to home page and dismiss item from array
         } catch(e) {
