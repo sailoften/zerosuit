@@ -20,7 +20,7 @@ export default class TxScreen extends React.Component {
         console.log(tx);
         this.state = {
             tx,
-            infoText: tx.note ? tx.note : '',
+            infoText: tx.notes ? tx.notes : '',
         }
         this.props.navigation.setParams({ onSave: this._onSave });
         this._taskSaved = this.props.navigation.getParam('taskSaved');
@@ -64,12 +64,18 @@ export default class TxScreen extends React.Component {
           } else if (item.memo && item.memo !== '') {
             return item.memo;
           } else {
-            return 'Transaction'
+            return 'Untitled Transaction'
           }
         case 'Transfer':
           return "Transfer: " + item.merchantName;
         default:
-          return item.merchantName ? item.merchantName : item.memo;
+          if (item.merchantName) {
+            return item.merchantName;
+          } else if (item.memo && item.memo !== '') {
+            return item.memo;
+          } else {
+            return 'Untitled Transaction'
+          }
       }
     }
 
@@ -117,7 +123,7 @@ export default class TxScreen extends React.Component {
     }
 
     render() {
-        const { tx } = this.state;
+        const { tx, infoText } = this.state;
         return (
             
             <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column' }} behavior="padding" keyboardVerticalOffset={Header.HEIGHT + 20} enabled>
@@ -137,10 +143,6 @@ export default class TxScreen extends React.Component {
                     data={this._getData()}
                     renderItem={this._renderItem} />
                   </CardView>
-                  <CardView>
-                      <Text style={styles.cardTitleText}>Why is this transaction uncategorized?</Text>
-                      <Text>We weren't able to determine the purpose of this transaction so we need your input to properly categorize it. We'll remember similar transactions in the future.</Text>
-                  </CardView>
                   <CardView style={{flex: 1}}>
                       <Text style={styles.cardTitleText}>Add a note for your bookkeeper</Text>
                       <TextInput
@@ -150,7 +152,12 @@ export default class TxScreen extends React.Component {
                         onChangeText={text => this._onTextChange(text)}
                         placeholder={'This was a business dinner with a client that our sales manager booked'}
                         textAlignVertical={'top'}
+                        value={infoText}
                       />
+                  </CardView>
+                  <CardView>
+                      <Text style={styles.cardTitleText}>Why is this transaction uncategorized?</Text>
+                      <Text>We weren't able to determine the purpose of this transaction so we need your input to properly categorize it. We'll remember similar transactions in the future.</Text>
                   </CardView>
                 </View>
 
