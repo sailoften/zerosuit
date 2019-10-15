@@ -4,7 +4,7 @@ import {
   StyleSheet,
   View,
   ScrollView,
-  Text,
+  Image
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {AsyncStorage} from 'react-native';
@@ -12,6 +12,8 @@ import {AsyncStorage} from 'react-native';
 import PAText from '../common/PAText';
 import PADefaultButton from '../common/PADefaultButton';
 import PATextInput from '../common/PATextInput';
+
+import Logo from '../assets/images/masonic.png';
 
 class Login extends React.Component {
   static navigationOptions = {
@@ -74,7 +76,7 @@ class Login extends React.Component {
         <KeyboardAvoidingView style={styles.flex} behavior="padding" enabled>
           <ScrollView alwaysBounceVertical={false} keyboardShouldPersistTaps="handled" style={styles.backgroundWhite} contentContainerStyle={styles.container}>
             <View style={styles.logoContainer}>
-                <Text>Masonic</Text>
+                <Image style={{ width: 150, height: 75}} source={Logo} resizeMode="contain"/>
             </View>
             <View>
               <View style={styles.marginVertical}>
@@ -114,7 +116,7 @@ class Login extends React.Component {
         </KeyboardAvoidingView>
         <View style={styles.finePrintContainer}>
           <PAText style={styles.finePrintText}>
-            By signing in to Parta you agree to our Terms of Service and Privacy Policy.
+            By signing in to Masonic you agree to our Terms of Service and Privacy Policy.
           </PAText>
         </View>
       </View>
@@ -163,6 +165,7 @@ const styles = StyleSheet.create({
   logoContainer: {
     alignItems: 'center',
     flex: 1,
+    marginTop: 50,
   },
   errorText: {
     backgroundColor: 'transparent',
