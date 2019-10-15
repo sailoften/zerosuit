@@ -9,8 +9,10 @@ import {
   FlatList,
   Button
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import CardView from '../common/CardView';
 import moment from 'moment';
+import RNPickerSelect from 'react-native-picker-select';
 
 export default class TasksScreen extends React.Component {
   constructor(props) {
@@ -22,6 +24,7 @@ export default class TasksScreen extends React.Component {
       firstName: '',
       company: '',
       transactions: [],
+      filter: null,
     }
     //this.props.navigation.setParams({ taskComplete: this._taskComplete });
   }
@@ -85,6 +88,21 @@ export default class TasksScreen extends React.Component {
       this.setState({ transactions: newTransactions });
   }
 
+  _changeFilter = (filter) => {
+      this.setState({ filter });
+      switch(filter) {
+            case 'incomplete':
+                console.log("incomplete");
+                break;
+            case 'complete':
+                console.log("complete");
+                break;
+            case 'all':
+                console.log("all");
+                break;
+      }
+  }
+
   _renderTitle = (tx) => {
       const title = tx.merchantName ? tx.merchantName : tx.memo;
       if (!title) {
@@ -112,7 +130,7 @@ export default class TasksScreen extends React.Component {
   }
 
   render() {
-    const { transactions } = this.state;
+    const { transactions, filter } = this.state;
     return (
       <View style={styles.container}>
         <ScrollView
@@ -120,7 +138,26 @@ export default class TasksScreen extends React.Component {
           contentContainerStyle={styles.contentContainer}
           contentInsetAdjustmentBehavior="never"
           >
+          <CardView>
+
           <Text style={styles.groupTitle}>Uncategorized Expenses</Text>
+            <RNPickerSelect
+                        onValueChange={(value) => this._changeFilter(value)}
+                        placeholder={{}}
+                        items={[{label: 'Incomplete', value: 'incomplete'}, {label: 'Complete', value: 'complete'}, {label: 'All', value: 'all'}]}
+                        style={{
+                            ...pickerSelectStyles,
+                            iconContainer: {
+                                top: 10,
+                                right: 12,
+                            }
+                        }}
+                        value={filter}
+                        Icon={() => {
+                            return <Ionicons name="md-arrow-down" size={18} color="gray" />;
+                        }}
+                    />
+          </CardView>
           <FlatList
             data={transactions}
             renderItem={this._renderItem}
@@ -141,13 +178,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#e6edf9',
   },
+  optionBar: {
+      paddingHorizontal: 10,
+      paddingVertical: 5,
+  },
   infoCard: {
     marginBottom: 0,
     paddingVertical: 20,
   },
   groupTitle: {
-    marginHorizontal: 10,
-    marginTop:30,
     marginBottom: 15,
     fontWeight: '600',
     fontSize: 20,
@@ -213,3 +252,26 @@ const styles = StyleSheet.create({
     margin: 0,
   },
 });
+
+const pickerSelectStyles = StyleSheet.create({
+    inputIOS: {
+      fontSize: 16,
+      paddingVertical: 8,
+      paddingHorizontal: 10,
+      borderWidth: 1,
+      borderColor: 'gray',
+      borderRadius: 4,
+      color: 'black',
+      paddingRight: 30, // to ensure the text is never behind the icon
+    },
+    inputAndroid: {
+      fontSize: 16,
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+      borderWidth: 0.5,
+      borderColor: 'purple',
+      borderRadius: 8,
+      color: 'black',
+      paddingRight: 30, // to ensure the text is never behind the icon
+    },
+  });
