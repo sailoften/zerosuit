@@ -13,28 +13,28 @@
   },
   "dependencies": {
     "@expo/samples": "~3.0.0",
-    "@expo/vector-icons": "^10.0.1",
+    "@expo/vector-icons": "^10.0.0",
     "@react-navigation/web": "^1.0.0-alpha.9",
     "exp": "^57.2.1",
-    "expo": "^33.0.0",
-    "expo-asset": "^5.0.0",
-    "expo-constants": "^5.0.0",
-    "expo-font": "^5.0.0",
-    "expo-web-browser": "^5.0.0",
+    "expo": "^34.0.0",
+    "expo-asset": "~6.0.0",
+    "expo-constants": "~6.0.0",
+    "expo-font": "~6.0.1",
+    "expo-web-browser": "~6.0.0",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "react": "16.8.3",
-    "react-dom": "^16.8.6",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-33.0.0.tar.gz",
+    "react-dom": "16.8.3",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-34.0.2.tar.gz",
     "react-native-modal": "^11.4.0",
     "react-native-picker-select": "^6.3.3",
     "react-native-tab-view": "^2.9.0",
-    "react-native-web": "^0.11.4",
+    "react-native-web": "~0.11.4",
     "react-navigation": "^3.11.0"
   },
   "devDependencies": {
-    "babel-preset-expo": "^5.1.0",
-    "jest-expo": "^33.0.0"
+    "babel-preset-expo": "^6.0.0",
+    "jest-expo": "^34.0.0"
   },
   "private": true
 }
