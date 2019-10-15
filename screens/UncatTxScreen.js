@@ -155,10 +155,6 @@ export default class TxScreen extends React.Component {
                         value={infoText}
                       />
                   </CardView>
-                  <CardView>
-                      <Text style={styles.cardTitleText}>Why is this transaction uncategorized?</Text>
-                      <Text>We weren't able to determine the purpose of this transaction so we need your input to properly categorize it. We'll remember similar transactions in the future.</Text>
-                  </CardView>
                 </View>
 
               </ScrollView>
