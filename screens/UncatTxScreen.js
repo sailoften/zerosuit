@@ -23,7 +23,7 @@ export default class TxScreen extends React.Component {
             infoText: tx.note ? tx.note : '',
         }
         this.props.navigation.setParams({ onSave: this._onSave });
-        //this._taskComplete = this.props.navigation.getParam('taskComplete');
+        this._taskSaved = this.props.navigation.getParam('taskSaved');
     }
 
     _moneyFormat = (amount) => {
@@ -85,7 +85,7 @@ export default class TxScreen extends React.Component {
         // txnId, note
         const url = 'https://masonic-backend.onrender.com' + '/api/transaction/categorize';
         const body = {
-            masonicId: tx.masonicId,
+            transactionId: tx.transactionId,
             notes: infoText,
         }
         try {
@@ -103,7 +103,7 @@ export default class TxScreen extends React.Component {
             console.log(payload);
             console.log("Saved");
             Keyboard.dismiss();
-            //this._taskCopmlete();
+            this._taskSaved(tx);
             this.props.navigation.goBack();
             //TODO: navigate back to home page and dismiss item from array
         } catch(e) {

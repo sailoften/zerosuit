@@ -63,7 +63,8 @@ export default class TasksScreen extends React.Component {
 
   _onTxPress = (item) => {
     this.props.navigation.navigate('UncatTx', {
-      tx: item
+      tx: item,
+      taskSaved: this._taskSaved
     });
   }
 
@@ -75,9 +76,13 @@ export default class TasksScreen extends React.Component {
     this.setState({ focusTx: tx });
   }
 
-  _taskComplete = (tx) => {
+  _taskSaved = (savedTx) => {
       // TODO: remove tx from the tasks array because it has been completed already
       console.log("YEET");
+      console.log(savedTx);
+      const { transactions } = this.state;
+      const newTransactions = transactions.filter(tx => tx.masonicId !== savedTx.masonicId);
+      this.setState({ transactions: newTransactions });
   }
 
   _renderTitle = (tx) => {

@@ -155,9 +155,10 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   getStartedText: {
-    fontSize: 17,
+    fontSize: 20,
     color: 'black',
     lineHeight: 24,
+    fontWeight: '600'
   },
   greetingCard: {
     flex: 1,
