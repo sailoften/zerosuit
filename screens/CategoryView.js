@@ -8,6 +8,7 @@ export default class CategoryView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: true,
       allSections: [],
       sections: [],
       search: '',
@@ -40,6 +41,7 @@ export default class CategoryView extends React.Component {
     });
     const payload = await res.json();
     await this._transformTransactions(payload);
+    this.setState({ loading: false });
   }
 
   _transformTransactions = async(payload) => {
@@ -87,6 +89,15 @@ export default class CategoryView extends React.Component {
     );
   };
 
+  _renderEmptyList = () => {
+    const { loading } = this.state;
+    return (
+      <View style={styles.loading}>
+        <Text style={styles.loadingText}>{ loading? 'Loading...' : 'No Transactions' }</Text>
+      </View>
+    )
+  }
+
   _renderSearch = () => {
     return (
       <PATextInput
@@ -110,10 +121,33 @@ export default class CategoryView extends React.Component {
     });
   }
 
+  _txTitle = (item) => {
+    switch(item.transactionType) {
+      case 'Expense':
+        if (item.merchantName) {
+          return item.merchantName;
+        } else if (item.memo && item.memo !== '') {
+          return item.memo;
+        } else {
+          return 'Untitled Transaction'
+        }
+      case 'Transfer':
+        return "Transfer: " + item.merchantName;
+      default:
+        if (item.merchantName) {
+          return item.merchantName;
+        } else if (item.memo && item.memo !== '') {
+          return item.memo;
+        } else {
+          return 'Untitled Transaction'
+        }
+    }
+  }
+
   _renderItem = ({ item, index, section }) => {
     return (
       <TouchableOpacity style={styles.item} onPress={() => this._onTxPress(item)}>
-        <Text numberOfLines={1} style={{width: '70%'}} key={index}>{item.merchantName}</Text>
+        <Text numberOfLines={1} style={{width: '70%'}} key={index}>{this._txTitle(item)}</Text>
         <Text style={{width: '30%', textAlign: 'right'}}>${this._moneyFormat(item.amount)}</Text>
       </TouchableOpacity>
     );
@@ -128,6 +162,7 @@ export default class CategoryView extends React.Component {
         sections={sections}
         keyExtractor={(item, index) => item + index}
         ListHeaderComponent={this._renderSearch}
+        ListEmptyComponent={this._renderEmptyList}
       />
     );
   }
@@ -170,4 +205,10 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
   },
+  loading: {
+    paddingVertical: 20,
+  },
+  loadingText: {
+    textAlign: 'center'
+  }
 });

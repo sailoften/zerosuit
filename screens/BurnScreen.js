@@ -1,5 +1,6 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, FlatList, View, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import RNPickerSelect from 'react-native-picker-select';
 import CardView from '../common/CardView';
 import moment from 'moment';
@@ -52,6 +53,7 @@ export default class BurnScreen extends React.Component {
     }
 
     _getData = async (start, end) => {
+        this.setState({ loading: true});
         const { startDate, endDate, burnRange } = this.state;
         console.log("StartDate: " + startDate + " EndDate: " + endDate);
         const url = 'https://masonic-backend.onrender.com' + '/api/transaction/categoryInfo';
@@ -71,7 +73,7 @@ export default class BurnScreen extends React.Component {
         if (burnRange.length === 0) {
             this._getBurnRanges(payload.firstDate);
         }
-        this.setState({company: payload.company, categoryExpenses: payload.expenseInfo, totalBurn: payload.spending});
+        this.setState({company: payload.company, categoryExpenses: payload.expenseInfo, totalBurn: payload.spending, loading: false});
     }
 
     _changeDates = async (monthYear) => {
@@ -103,6 +105,7 @@ export default class BurnScreen extends React.Component {
         });
     }
 
+    // Deprecated
     _renderPeople = ({item}) => {
         if (item.person === "null") {
             item.person = 'Company';
@@ -120,7 +123,7 @@ export default class BurnScreen extends React.Component {
     }
 
     render() {
-        const { categoryExpenses, totalBurn, burnRange, currMonth } = this.state;
+        const { categoryExpenses, totalBurn, burnRange, currMonth, company, loading } = this.state;
         //TODO: put button in for date picker
         return (
             <ScrollView style={styles.container}>
@@ -137,19 +140,24 @@ export default class BurnScreen extends React.Component {
                         }
                     }}
                     value={currMonth}
+                    Icon={() => {
+                        return <Ionicons name="md-arrow-down" size={24} color="gray" />;
+                    }}
                 />
               </CardView>
-              <CardView style={styles.burnCard}>
-                <Text style={styles.burnAmount}>AirGarage spent ${this._moneyFormat(totalBurn)} so far this month</Text>
-              </CardView>
-              <CardView style={styles.expenseCard}>
-                <Text style={styles.expenseTitle}>Company Expenses</Text>
-                <FlatList
-                    data={categoryExpenses}
-                    keyExtractor={(item) => item.categoryId}
-                    renderItem={this._renderExpenses}
-                />
-              </CardView>
+              { !loading && <View>
+                <CardView style={styles.burnCard}>
+                    <Text style={styles.burnAmount}>{company} spent ${this._moneyFormat(totalBurn)} in {currMonth}</Text>
+                </CardView>
+                <CardView style={styles.expenseCard}>
+                    <Text style={styles.expenseTitle}>Company Expenses</Text>
+                    <FlatList
+                        data={categoryExpenses}
+                        keyExtractor={(item) => item.categoryId}
+                        renderItem={this._renderExpenses}
+                    />
+                </CardView>
+              </View> }
             </ScrollView>
         );
     }

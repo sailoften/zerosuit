@@ -115,12 +115,18 @@ export default class TransactionsScreen extends React.Component {
         } else if (item.memo && item.memo !== '') {
           return item.memo;
         } else {
-          return 'Transaction'
+          return 'Untitled Transaction'
         }
       case 'Transfer':
         return "Transfer: " + item.merchantName;
       default:
-        return item.merchantName ? item.merchantName : item.memo;
+        if (item.merchantName) {
+          return item.merchantName;
+        } else if (item.memo && item.memo !== '') {
+          return item.memo;
+        } else {
+          return 'Untitled Transaction'
+        }
     }
   }
 
