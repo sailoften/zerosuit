@@ -11,6 +11,7 @@ import {
   Keyboard
 } from 'react-native';
 import CardView from '../common/CardView';
+import { Header } from 'react-navigation';
 
 export default class TxScreen extends React.Component {
     constructor(props) {
@@ -19,9 +20,10 @@ export default class TxScreen extends React.Component {
         console.log(tx);
         this.state = {
             tx,
-            infoText: '',
+            infoText: tx.note ? tx.note : '',
         }
         this.props.navigation.setParams({ onSave: this._onSave });
+        //this._taskComplete = this.props.navigation.getParam('taskComplete');
     }
 
     _moneyFormat = (amount) => {
@@ -72,8 +74,42 @@ export default class TxScreen extends React.Component {
     }
 
     _onSave = async () => {
-        const { infoText } = this.state;
-        Keyboard.dismiss();
+        console.log("Saving");
+        const { infoText, tx } = this.state;
+        console.log(infoText);
+        if (infoText.length === 0) {
+            alert("Please enter a note to save");
+            return;
+        }
+        // api/categorize POST
+        // txnId, note
+        const url = 'https://masonic-backend.onrender.com' + '/api/transaction/categorize';
+        const body = {
+            masonicId: tx.masonicId,
+            notes: infoText,
+        }
+        try {
+            console.log("Trying to send network request");
+            const res = await fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(body),
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            console.log("Resolved");
+            const payload = await res.json();
+            console.log(payload);
+            console.log("Saved");
+            Keyboard.dismiss();
+            //this._taskCopmlete();
+            this.props.navigation.goBack();
+            //TODO: navigate back to home page and dismiss item from array
+        } catch(e) {
+            console.log("Error! " + e);
+            alert("Error saving");
+        }
     }
 
     _onTextChange = (infoText) => {
@@ -84,10 +120,11 @@ export default class TxScreen extends React.Component {
         const { tx } = this.state;
         return (
             
-            <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center'}} behavior="padding" keyboardVerticalOffset={80} enabled>
+            <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column' }} behavior="padding" keyboardVerticalOffset={Header.HEIGHT + 20} enabled>
               <ScrollView
                 style={styles.container}
                 contentContainerStyle={styles.contentContainer}
+                keyboardDismissMode={'interactive'}
                 >
                 <View style={styles.headerContainer}>
                     <Text style={[styles.titleText, {width: '70%'}]}>{this._txTitle(tx)}</Text>
@@ -104,12 +141,15 @@ export default class TxScreen extends React.Component {
                       <Text style={styles.cardTitleText}>Why is this transaction uncategorized?</Text>
                       <Text>We weren't able to determine the purpose of this transaction so we need your input to properly categorize it. We'll remember similar transactions in the future.</Text>
                   </CardView>
-                  <CardView>
-                      <Text style={styles.cardTitleText}>Add a note</Text>
+                  <CardView style={{flex: 1}}>
+                      <Text style={styles.cardTitleText}>Add a note for your bookkeeper</Text>
                       <TextInput
-                        style={{ height: 100, borderColor: 'gray', borderWidth: 1 }}
+                        style={{ flex: 1, height: 100, borderColor: 'gray', borderWidth: 1 }}
                         multiline={true}
+                        scrollEnabled={false}
                         onChangeText={text => this._onTextChange(text)}
+                        placeholder={'This was a business dinner with a client that our sales manager booked'}
+                        textAlignVertical={'top'}
                       />
                   </CardView>
                 </View>
@@ -128,7 +168,7 @@ TxScreen.navigationOptions = ({navigation}) => {
         <Button
         onPress={navigation.getParam('onSave')}
         title="Save"
-        color="blue"
+        color="#007AFF"
         />
     ),
   }

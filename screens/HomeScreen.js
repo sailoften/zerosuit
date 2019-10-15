@@ -3,9 +3,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
-  SafeAreaView,
   AsyncStorage,
 } from 'react-native';
 import CardView from '../common/CardView';

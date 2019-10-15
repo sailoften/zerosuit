@@ -23,6 +23,7 @@ export default class TasksScreen extends React.Component {
       company: '',
       transactions: [],
     }
+    //this.props.navigation.setParams({ taskComplete: this._taskComplete });
   }
 
   componentDidMount() {
@@ -72,6 +73,11 @@ export default class TasksScreen extends React.Component {
 
   _showDetails = (tx) => {
     this.setState({ focusTx: tx });
+  }
+
+  _taskComplete = (tx) => {
+      // TODO: remove tx from the tasks array because it has been completed already
+      console.log("YEET");
   }
 
   _renderTitle = (tx) => {
@@ -130,11 +136,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#e6edf9',
   },
+  infoCard: {
+    marginBottom: 0,
+    paddingVertical: 20,
+  },
   groupTitle: {
     marginHorizontal: 10,
     marginTop:30,
     marginBottom: 15,
     fontWeight: '600',
+    fontSize: 20,
   },
   infoTitle: {
     backgroundColor: 'grey',
