@@ -128,10 +128,14 @@ export default class TxScreen extends React.Component {
                         multiline={true}
                         scrollEnabled={false}
                         onChangeText={text => this._onTextChange(text)}
-                        placeholder={'This was a business dinner with a client that our sales manager booked'}
+                        placeholder={'This was a sales dinner with a potential client of ours'}
                         textAlignVertical={'top'}
                         value={infoText}
                       />
+                  </CardView>
+                  <CardView style={{flex: 1}}>
+                      <Text style={styles.cardTitleText}>Why is this transaction uncategorized?</Text>
+                      <Text>We weren't able to categorize this transaction based on bank info so we need your input. We'll remember similar transactions in the future.</Text>
                   </CardView>
                 </View>
 
