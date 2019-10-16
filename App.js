@@ -4,6 +4,7 @@ import * as Font from 'expo-font';
 import React, { useState } from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import * as Segment from 'expo-analytics-segment';
 
 import RubikLight from './assets/fonts/Rubik/Rubik-Light.ttf';
 import RubikRegular from './assets/fonts/Rubik/Rubik-Regular.ttf';
@@ -60,6 +61,7 @@ async function loadResourcesAsync() {
       'MaisonNeue-Bold': MaisonNeueBold,
     }),
   ]);
+  Segment.initialize({ androidWriteKey: 'TxLAMCN5i9AxZX0AXnfns98WCIAR9DiJ', iosWriteKey: 'ey5LZ67YsjBL0jiUSBAuvc42oO7dvCkL' });
 }
 
 function handleLoadingError(error: Error) {

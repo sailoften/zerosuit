@@ -50,11 +50,20 @@ class Login extends React.Component {
       console.log(payload);
       if (payload && payload.id) {
         await this.storeUser(payload);
+        await this.registerSegment(payload);
         this.props.navigation.navigate('App');
       }
     } catch (e) {
       this.setState({ error: 'Error logging in' });
     }
+  }
+
+  registerSegment = async (user) => {
+    Segment.identifyWithTraits(userToken.id, {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email
+    });
   }
 
   storeUser = async (user) => {
