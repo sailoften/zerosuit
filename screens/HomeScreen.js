@@ -19,6 +19,7 @@ export default class HomeScreen extends React.Component {
       lastBurn: 0,
       firstName: '',
       company: '',
+      loading: true,
     }
   }
 
@@ -62,7 +63,7 @@ export default class HomeScreen extends React.Component {
       this.props.navigation.navigate('Auth');
       return;
     }
-    this.setState({company: payload.company, firstName: payload.firstName, cash: payload.cash, currentBurn: payload.currentBurn, lastBurn: payload.lastBurn});
+    this.setState({company: payload.company, firstName: payload.firstName, cash: payload.cash, currentBurn: payload.currentBurn, lastBurn: payload.lastBurn, loading: false});
   }
 
   _moneyFormat = (amount) => {
@@ -70,15 +71,12 @@ export default class HomeScreen extends React.Component {
   }
 
   render() {
-    const { cash, currentBurn, lastBurn, company, firstName } = this.state;
+    const { cash, currentBurn, lastBurn, company, firstName, loading } = this.state;
     const months = Math.floor(cash / lastBurn);
     return (
       <View style={styles.container}>
-        <ScrollView
-          style={styles.container}
-          contentContainerStyle={styles.contentContainer}
-          contentInsetAdjustmentBehavior="never"
-          >
+        { !loading && 
+        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer} contentInsetAdjustmentBehavior="never">
 
             <View style={styles.headerContainer}>
               <View style={styles.headerTextContainer}>
@@ -117,7 +115,18 @@ export default class HomeScreen extends React.Component {
               <Text style={styles.burnAmount}>{company} spent ${this._moneyFormat(currentBurn)} so far this month</Text>
             </CardView>
           </View>
-        </ScrollView>
+        </ScrollView> }
+        { loading &&
+          <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer} contentInsetAdjustmentBehavior="never">
+            <View style={styles.headerContainer}>
+              <View style={styles.headerTextContainer}>
+                <View style={styles.loadingCard}>
+                  <Text style={styles.getStartedText}>Hello! Loading your info...</Text>
+                </View>
+              </View>
+            </View>
+          </ScrollView>
+        }
       </View>
     );
   }
@@ -169,6 +178,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderBottomColor: '#f4f7fb',
     borderBottomWidth: 1,
+  },
+  loadingCard: {
+    flex: 1,
+    flexDirection: 'row',
+    paddingVertical: 45,
+    paddingHorizontal: 20,
   },
   statCard: {
     backgroundColor: 'white',
