@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {AsyncStorage} from 'react-native';
+import * as Segment from 'expo-analytics-segment';
 
 import PAText from '../common/PAText';
 import PADefaultButton from '../common/PADefaultButton';
@@ -54,12 +55,13 @@ class Login extends React.Component {
         this.props.navigation.navigate('App');
       }
     } catch (e) {
+      console.log("Login error: " + e);
       this.setState({ error: 'Error logging in' });
     }
   }
 
   registerSegment = async (user) => {
-    Segment.identifyWithTraits(userToken.id, {
+    Segment.identifyWithTraits(user.id, {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email
