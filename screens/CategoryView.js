@@ -65,7 +65,7 @@ export default class CategoryView extends React.Component {
       const newData = [];
       const title = section.title;
       section.data.forEach((tx) => {
-        const name = tx.merchantName ? tx.merchantName : '';
+        const name = this._txTitle(tx);
         if (name.toLowerCase().includes(search)) {
           newData.push(tx);
         }
