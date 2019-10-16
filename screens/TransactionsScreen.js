@@ -72,6 +72,7 @@ export default class TransactionsScreen extends React.Component {
     }
   }
 
+  //TODO: fix money parsing to show positive
   _moneyFormat = (amount) => {
     return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
   }
