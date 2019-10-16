@@ -1,7 +1,6 @@
 import React from 'react';
-import {StyleSheet, View, Text, SectionList, TouchableOpacity, AsyncStorage, FlatList} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, AsyncStorage, FlatList, Linking} from 'react-native';
 import * as Segment from 'expo-analytics-segment';
-import CardView from '../common/CardView';
 
 export default class UserScreen extends React.Component {
   constructor(props) {
@@ -35,6 +34,10 @@ export default class UserScreen extends React.Component {
     this.props.navigation.navigate('Accounts');
   }
 
+  _getHelp = () => {
+    Linking.openURL('mailto:founders@bemasonic.com?subject=Hello!')
+  }
+
   componentDidMount() {
       this._getUser();
       Segment.screen("User Profile Screen");
@@ -52,7 +55,7 @@ export default class UserScreen extends React.Component {
     const { user } = this.state;
     return(
       <FlatList
-        data={[{key: 'Connected Accounts', action: this._viewAccounts}, {key: 'Logout', action: this._userLogout}]}
+        data={[{key: 'Connected Accounts', action: this._viewAccounts}, {key: 'Contact Masonic', action: this._getHelp}, {key: 'Logout', action: this._userLogout}]}
         renderItem={this._renderItem}
       />
     );

@@ -1,6 +1,6 @@
 import React from 'react';
-import {StyleSheet, Dimensions, Button} from 'react-native';
-import { TabView, SceneMap } from 'react-native-tab-view';
+import {StyleSheet, Dimensions} from 'react-native';
+import { TabView } from 'react-native-tab-view';
 
 import BurnScreen from './BurnScreen';
 import RunwayScreen from './RunwayScreen';

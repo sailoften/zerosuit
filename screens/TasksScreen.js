@@ -6,8 +6,7 @@ import {
   View,
   AsyncStorage,
   TouchableOpacity,
-  FlatList,
-  Button
+  FlatList
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import CardView from '../common/CardView';

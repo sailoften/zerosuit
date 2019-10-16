@@ -1,6 +1,5 @@
 import React from 'react';
 import {StyleSheet, View, Text, SectionList} from 'react-native';
-import CardView from '../common/CardView';
 import _ from 'lodash';
 import * as Segment from 'expo-analytics-segment';
 
