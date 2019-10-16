@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import CardView from '../common/CardView';
+import { formatMoney } from '../common/Utils';
 import moment from 'moment';
 import RNPickerSelect from 'react-native-picker-select';
 import * as Segment from 'expo-analytics-segment';
@@ -82,10 +83,6 @@ export default class TasksScreen extends React.Component {
     });
   }
 
-  _moneyFormat = (amount) => {
-    return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-  }
-
   _showDetails = (tx) => {
     this.setState({ focusTx: tx });
   }
@@ -141,7 +138,7 @@ export default class TasksScreen extends React.Component {
                     <Text style={styles.infoText, {color: 'gray'}}>{moment(item.transactionDate).format('MMM DD, YYYY')}</Text>
                 </View>
                 <View style={{width: '40%'}}>
-                    <Text style={styles.infoText, {fontWeight: '600', fontSize: 16, textAlign: 'right'}}>${this._moneyFormat(item.amount)}</Text>
+                    <Text style={styles.infoText, {fontWeight: '600', fontSize: 16, textAlign: 'right'}}>{formatMoney(item.amount)}</Text>
                 </View>
                 </View>
             </CardView>

@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, TouchableOpacity, Text, SectionList, View} from 'react-native';
+import { formatMoney } from '../common/Utils';
 import PATextInput from '../common/PATextInput';
 import _ from 'lodash';
 import * as Segment from 'expo-analytics-segment';
@@ -38,7 +39,6 @@ export default class TransactionsScreen extends React.Component {
       const timeStamp = new Date(tx.transactionDate).toDateString();
       return timeStamp;
     }).map((data, title) => ({ title, data })).value();
-    console.log("This is payload grouped");
     this.setState({sections: payloadGrouped, allSections: payloadGrouped})
   }
 
@@ -70,11 +70,6 @@ export default class TransactionsScreen extends React.Component {
     } else {
       this.setState({ sections: filteredTx})
     }
-  }
-
-  //TODO: fix money parsing to show positive
-  _moneyFormat = (amount) => {
-    return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
   }
 
   _renderSectionHeader = ({ section }) => {
@@ -138,7 +133,7 @@ export default class TransactionsScreen extends React.Component {
     return (
       <TouchableOpacity style={styles.item} onPress={() => this._onTxPress(item)}>
         <Text numberOfLines={1} style={{width: '70%'}} key={index}>{this._txTitle(item)}</Text>
-        <Text style={{width: '30%', textAlign: 'right'}}>${this._moneyFormat(item.amount)}</Text>
+        <Text style={{width: '30%', textAlign: 'right'}}>{formatMoney(item.amount)}</Text>
       </TouchableOpacity>
     );
   };

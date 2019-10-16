@@ -6,6 +6,7 @@ import {
   View,
   FlatList,
 } from 'react-native';
+import { formatMoney } from '../common/Utils';
 import * as Segment from 'expo-analytics-segment';
 import CardView from '../common/CardView';
 
@@ -21,11 +22,6 @@ export default class TxScreen extends React.Component {
 
     componentDidMount() {
       Segment.screen("Individual Transaction Screen");
-    }
-
-
-    _moneyFormat = (amount) => {
-        return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
     }
 
     _dateFormat = (dateString) => {
@@ -88,7 +84,7 @@ export default class TxScreen extends React.Component {
 
                 <View style={styles.headerContainer}>
                     <Text style={[styles.titleText, {width: '70%'}]}>{this._txTitle(tx)}</Text>
-                    <Text style={[styles.titleText, {width: '30%', textAlign: 'right'}]}>${this._moneyFormat(tx.amount)}</Text>
+                    <Text style={[styles.titleText, {width: '30%', textAlign: 'right'}]}>{formatMoney(tx.amount)}</Text>
                 </View>
         
                 <View>

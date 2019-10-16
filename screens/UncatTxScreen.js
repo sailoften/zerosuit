@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import * as Segment from 'expo-analytics-segment';
 import CardView from '../common/CardView';
+import { formatMoney } from '../common/Utils';
 import { Header } from 'react-navigation';
 
 export default class TxScreen extends React.Component {
@@ -134,7 +135,7 @@ export default class TxScreen extends React.Component {
                 >
                 <View style={styles.headerContainer}>
                     <Text style={[styles.titleText, {width: '70%'}]}>{this._txTitle(tx)}</Text>
-                    <Text style={[styles.titleText, {width: '30%', textAlign: 'right'}]}>${this._moneyFormat(tx.amount)}</Text>
+                    <Text style={[styles.titleText, {width: '30%', textAlign: 'right'}]}>{formatMoney(tx.amount)}</Text>
                 </View>
         
                 <View>

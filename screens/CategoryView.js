@@ -3,6 +3,7 @@ import {StyleSheet, TouchableOpacity, Text, SectionList, View} from 'react-nativ
 import PATextInput from '../common/PATextInput';
 import { Ionicons } from '@expo/vector-icons';
 import _ from 'lodash';
+import { formatMoney } from '../common/Utils';
 import * as Segment from 'expo-analytics-segment';
 
 export default class CategoryView extends React.Component {
@@ -81,10 +82,6 @@ export default class CategoryView extends React.Component {
     }
   }
 
-  _moneyFormat = (amount) => {
-    return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-  }
-
   _renderSectionHeader = ({ section }) => {
     return (
       <Text style={styles.sectionHeader}>{section.title}</Text>
@@ -146,11 +143,12 @@ export default class CategoryView extends React.Component {
     }
   }
 
+  //TODO: this is incorrect for journal entries
   _renderItem = ({ item, index, section }) => {
     return (
       <TouchableOpacity style={styles.item} onPress={() => this._onTxPress(item)}>
         <Text numberOfLines={1} style={{width: '70%'}} key={index}>{this._txTitle(item)}</Text>
-        <Text style={{width: '30%', textAlign: 'right'}}>${this._moneyFormat(item.amount)}</Text>
+        <Text style={{width: '30%', textAlign: 'right'}}>{formatMoney(item.amount)}</Text>
       </TouchableOpacity>
     );
   };
