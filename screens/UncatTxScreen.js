@@ -146,7 +146,7 @@ export default class TxScreen extends React.Component {
                   <CardView style={{flex: 1}}>
                       <Text style={styles.cardTitleText}>Add a note for your bookkeeper</Text>
                       <TextInput
-                        style={{ flex: 1, height: 100, borderColor: 'gray', borderWidth: 1 }}
+                        style={{ flex: 1, height: 100, borderColor: 'gray', borderWidth: 1, paddingHorizontal: 10, paddingVertical: 10 }}
                         multiline={true}
                         scrollEnabled={false}
                         onChangeText={text => this._onTextChange(text)}
@@ -168,11 +168,13 @@ TxScreen.navigationOptions = ({navigation}) => {
   return {
     title: 'Uncategorized',
     headerRight: (
-        <Button
-        onPress={navigation.getParam('onSave')}
-        title="Save"
-        color="#007AFF"
-        />
+        <View style={{marginRight: 5}}>
+          <Button
+            onPress={navigation.getParam('onSave')}
+            title="Save"
+            color="#007AFF"
+          />
+        </View>
     ),
   }
 };
