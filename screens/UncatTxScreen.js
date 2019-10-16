@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import * as Segment from 'expo-analytics-segment';
 import CardView from '../common/CardView';
-import { formatMoney } from '../common/Utils';
+import { formatMoney, txTitle } from '../common/Utils';
 import { Header } from 'react-navigation';
 
 export default class TxScreen extends React.Component {
@@ -60,29 +60,6 @@ export default class TxScreen extends React.Component {
             {key: 'Account', desp: tx.qbAccount.accountName},
             {key: 'Comments', desp: tx.memo},
         ]
-    }
-
-    _txTitle = (item) => {
-      switch(item.transactionType) {
-        case 'Expense':
-          if (item.merchantName) {
-            return item.merchantName;
-          } else if (item.memo && item.memo !== '') {
-            return item.memo;
-          } else {
-            return 'Untitled Transaction'
-          }
-        case 'Transfer':
-          return "Transfer: " + item.merchantName;
-        default:
-          if (item.merchantName) {
-            return item.merchantName;
-          } else if (item.memo && item.memo !== '') {
-            return item.memo;
-          } else {
-            return 'Untitled Transaction'
-          }
-      }
     }
 
     _onSave = async () => {
@@ -134,7 +111,7 @@ export default class TxScreen extends React.Component {
                 keyboardDismissMode={'interactive'}
                 >
                 <View style={styles.headerContainer}>
-                    <Text style={[styles.titleText, {width: '70%'}]}>{this._txTitle(tx)}</Text>
+                    <Text style={[styles.titleText, {width: '70%'}]}>{txTitle(tx)}</Text>
                     <Text style={[styles.titleText, {width: '30%', textAlign: 'right'}]}>{formatMoney(tx.amount)}</Text>
                 </View>
         

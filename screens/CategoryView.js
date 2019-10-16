@@ -3,7 +3,7 @@ import {StyleSheet, TouchableOpacity, Text, SectionList, View} from 'react-nativ
 import PATextInput from '../common/PATextInput';
 import { Ionicons } from '@expo/vector-icons';
 import _ from 'lodash';
-import { formatMoney } from '../common/Utils';
+import { formatMoney, txTitle } from '../common/Utils';
 import * as Segment from 'expo-analytics-segment';
 
 export default class CategoryView extends React.Component {
@@ -66,7 +66,7 @@ export default class CategoryView extends React.Component {
       const newData = [];
       const title = section.title;
       section.data.forEach((tx) => {
-        const name = this._txTitle(tx);
+        const name = txTitle(tx);
         if (name.toLowerCase().includes(search)) {
           newData.push(tx);
         }
@@ -120,34 +120,11 @@ export default class CategoryView extends React.Component {
     });
   }
 
-  _txTitle = (item) => {
-    switch(item.transactionType) {
-      case 'Expense':
-        if (item.merchantName) {
-          return item.merchantName;
-        } else if (item.memo && item.memo !== '') {
-          return item.memo;
-        } else {
-          return 'Untitled Transaction'
-        }
-      case 'Transfer':
-        return "Transfer: " + item.merchantName;
-      default:
-        if (item.merchantName) {
-          return item.merchantName;
-        } else if (item.memo && item.memo !== '') {
-          return item.memo;
-        } else {
-          return 'Untitled Transaction'
-        }
-    }
-  }
-
   //TODO: this is incorrect for journal entries
   _renderItem = ({ item, index, section }) => {
     return (
       <TouchableOpacity style={styles.item} onPress={() => this._onTxPress(item)}>
-        <Text numberOfLines={1} style={{width: '70%'}} key={index}>{this._txTitle(item)}</Text>
+        <Text numberOfLines={1} style={{width: '70%'}} key={index}>{txTitle(item)}</Text>
         <Text style={{width: '30%', textAlign: 'right'}}>{formatMoney(item.amount)}</Text>
       </TouchableOpacity>
     );

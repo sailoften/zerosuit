@@ -1,4 +1,4 @@
-export { formatMoney };
+export { formatMoney, txTitle };
 
 const formatMoney = (amount) => {
     if (typeof amount !== 'number') {
@@ -10,3 +10,26 @@ const formatMoney = (amount) => {
     const fancyFormatted = (amount > 0 ? '+' : '') + '$' + fixedDecimal; // Append + if amount is positive
     return fancyFormatted;
 }
+
+const txTitle = (item) => {
+    switch(item.transactionType) {
+      case 'Expense':
+        if (item.merchantName) {
+          return item.merchantName;
+        } else if (item.memo && item.memo !== '') {
+          return item.memo;
+        } else {
+          return 'Untitled Transaction'
+        }
+      case 'Transfer':
+        return "Transfer: " + item.merchantName;
+      default:
+        if (item.merchantName) {
+          return item.merchantName;
+        } else if (item.memo && item.memo !== '') {
+          return item.memo;
+        } else {
+          return 'Untitled Transaction'
+        }
+    }
+  }

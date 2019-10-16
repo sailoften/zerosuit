@@ -6,7 +6,7 @@ import {
   View,
   FlatList,
 } from 'react-native';
-import { formatMoney } from '../common/Utils';
+import { formatMoney, txTitle } from '../common/Utils';
 import * as Segment from 'expo-analytics-segment';
 import CardView from '../common/CardView';
 
@@ -50,29 +50,6 @@ export default class TxScreen extends React.Component {
         ]
     }
 
-    _txTitle = (item) => {
-      switch(item.transactionType) {
-        case 'Expense':
-          if (item.merchantName) {
-            return item.merchantName;
-          } else if (item.memo && item.memo !== '') {
-            return item.memo;
-          } else {
-            return 'Untitled Transaction'
-          }
-        case 'Transfer':
-          return "Transfer: " + item.merchantName;
-        default:
-            if (item.merchantName) {
-              return item.merchantName;
-            } else if (item.memo && item.memo !== '') {
-              return item.memo;
-            } else {
-              return 'Untitled Transaction'
-            }
-      }
-    }
-
     render() {
         const { tx } = this.state;
         return (
@@ -83,7 +60,7 @@ export default class TxScreen extends React.Component {
                 >
 
                 <View style={styles.headerContainer}>
-                    <Text style={[styles.titleText, {width: '70%'}]}>{this._txTitle(tx)}</Text>
+                    <Text style={[styles.titleText, {width: '70%'}]}>{txTitle(tx)}</Text>
                     <Text style={[styles.titleText, {width: '30%', textAlign: 'right'}]}>{formatMoney(tx.amount)}</Text>
                 </View>
         
