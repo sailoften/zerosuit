@@ -65,7 +65,6 @@ export default class TasksScreen extends React.Component {
       body: JSON.stringify(body)
     });
     const payload = await res.json();
-    console.log(payload);
     if (payload.error) {
       // Return user to signin screen
       await AsyncStorage.removeItem('user');
@@ -88,12 +87,8 @@ export default class TasksScreen extends React.Component {
 
   _taskSaved = (savedTx) => {
       const { filter, allTransactions } = this.state;
-      console.log("YEET");
-      console.log(savedTx);
       for (const tx of allTransactions) {
-          if (tx.masonicId === savedTx.masonicId) {
-              console.log("updating notes");
-              console.log(savedTx.notes);
+          if (tx.transactionId === savedTx.transactionId) {
               tx.notes = savedTx.notes;
           }
       }

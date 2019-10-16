@@ -92,7 +92,7 @@ export default class TxScreen extends React.Component {
             }
             Keyboard.dismiss();
             Segment.trackWithProperties("Added Note to Uncat Txn", { note: infoText, masonicId: tx.masonicId });
-            this._taskSaved({masonicId: tx.masonicId, notes: payload.updatedTxn[0].notes});
+            this._taskSaved({masonicId: tx.masonicId, transactionId: tx.transactionId, notes: payload.updatedTxn[0].notes});
             this.setState({ saving: false });
             this.props.navigation.goBack();
         } catch(e) {
