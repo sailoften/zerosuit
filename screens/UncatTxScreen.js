@@ -23,6 +23,7 @@ export default class TxScreen extends React.Component {
         this.state = {
             tx,
             infoText: tx.notes ? tx.notes : '',
+            saving: false,
         }
         this.props.navigation.setParams({ onSave: this._onSave });
         this._taskSaved = this.props.navigation.getParam('taskSaved');
@@ -63,11 +64,14 @@ export default class TxScreen extends React.Component {
     }
 
     _onSave = async () => {
-        const { infoText, tx } = this.state;
+        const { infoText, tx, saving } = this.state;
         if (infoText.length === 0) {
             alert("Please enter a note to save");
             return;
+        } else if (saving) {
+          return;
         }
+        this.setState({ saving: true });
         const url = 'https://masonic-backend.onrender.com' + '/api/transaction/categorize';
         const body = {
             transactionId: tx.transactionId,
@@ -89,10 +93,12 @@ export default class TxScreen extends React.Component {
             Keyboard.dismiss();
             Segment.trackWithProperties("Added Note to Uncat Txn", { note: infoText, masonicId: tx.masonicId });
             this._taskSaved({masonicId: tx.masonicId, notes: payload.updatedTxn[0].notes});
+            this.setState({ saving: false });
             this.props.navigation.goBack();
         } catch(e) {
             console.log("Error! " + e);
             alert("Error saving");
+            this.setState({ saving: false });
         }
     }
 
