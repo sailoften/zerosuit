@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, TouchableOpacity, Text, SectionList, View} from 'react-native';
 import PATextInput from '../common/PATextInput';
 import _ from 'lodash';
+import * as Segment from 'expo-analytics-segment';
 
 export default class TransactionsScreen extends React.Component {
   constructor(props) {
@@ -13,8 +14,9 @@ export default class TransactionsScreen extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this._fetchTransactions();
+    Segment.screen("All Transactions Screen");
   }
 
   _fetchTransactions = async() => {
@@ -60,6 +62,7 @@ export default class TransactionsScreen extends React.Component {
         return ({ title, data: newData });
       }
     }).compact().value();
+    Segment.trackWithProperties("Transaction search", {query: searchText});
     console.log('Search Done');
     // DuctTape.gif
     if (filteredTx.length === 0) {

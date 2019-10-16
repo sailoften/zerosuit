@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import CardView from '../common/CardView';
 import moment from 'moment';
+import * as Segment from 'expo-analytics-segment';
 
 export default class HomeScreen extends React.Component {
   constructor(props) {
@@ -23,6 +24,7 @@ export default class HomeScreen extends React.Component {
 
   componentDidMount() {
     this._getData();
+    Segment.screen("Home Screen");
   }
 
   _getTimeRange = (offset) => {

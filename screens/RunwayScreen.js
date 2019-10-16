@@ -2,6 +2,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, View, FlatList } from 'react-native';
 import CardView from '../common/CardView';
 import moment from 'moment';
+import * as Segment from 'expo-analytics-segment';
 
 export default class RunwayScreen extends React.Component {
     
@@ -17,6 +18,7 @@ export default class RunwayScreen extends React.Component {
 
     componentDidMount() {
         this._getData();
+        Segment.screen("Runway Screen");
     }
 
     _getData = async () => {

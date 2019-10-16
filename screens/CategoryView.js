@@ -3,6 +3,7 @@ import {StyleSheet, TouchableOpacity, Text, SectionList, View} from 'react-nativ
 import PATextInput from '../common/PATextInput';
 import { Ionicons } from '@expo/vector-icons';
 import _ from 'lodash';
+import * as Segment from 'expo-analytics-segment';
 
 export default class CategoryView extends React.Component {
   constructor(props) {
@@ -19,8 +20,9 @@ export default class CategoryView extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this._fetchTransactions();
+    Segment.screen("Individual Category Screen");
   }
 
   _fetchTransactions = async() => {

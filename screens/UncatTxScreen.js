@@ -10,6 +10,7 @@ import {
   Button,
   Keyboard
 } from 'react-native';
+import * as Segment from 'expo-analytics-segment';
 import CardView from '../common/CardView';
 import { Header } from 'react-navigation';
 
@@ -24,6 +25,10 @@ export default class TxScreen extends React.Component {
         }
         this.props.navigation.setParams({ onSave: this._onSave });
         this._taskSaved = this.props.navigation.getParam('taskSaved');
+    }
+
+    componentDidMount() {
+      Segment.screen("Uncategorized Transaction Screen");
     }
 
     _moneyFormat = (amount) => {
@@ -104,6 +109,7 @@ export default class TxScreen extends React.Component {
                throw "Could not save";
             }
             Keyboard.dismiss();
+            Segment.trackWithProperties("Added Note to Uncat Txn", { note: infoText, masonicId: tx.masonicId });
             this._taskSaved({masonicId: tx.masonicId, notes: payload.updatedTxn[0].notes});
             this.props.navigation.goBack();
         } catch(e) {

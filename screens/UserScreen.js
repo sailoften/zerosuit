@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, Text, SectionList, TouchableOpacity, AsyncStorage, FlatList} from 'react-native';
+import * as Segment from 'expo-analytics-segment';
 import CardView from '../common/CardView';
 
 export default class UserScreen extends React.Component {
@@ -26,6 +27,7 @@ export default class UserScreen extends React.Component {
 
   _userLogout = async () => {
     await AsyncStorage.removeItem('user');
+    Segment.reset();
     this.props.navigation.navigate('Auth');
   }
 
@@ -33,8 +35,9 @@ export default class UserScreen extends React.Component {
     this.props.navigation.navigate('Accounts');
   }
 
-  componentWillMount() {
+  componentDidMount() {
       this._getUser();
+      Segment.screen("User Profile Screen");
   }
 
   _renderItem = ({item}) => {

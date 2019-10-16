@@ -13,6 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import CardView from '../common/CardView';
 import moment from 'moment';
 import RNPickerSelect from 'react-native-picker-select';
+import * as Segment from 'expo-analytics-segment';
 
 export default class TasksScreen extends React.Component {
   constructor(props) {
@@ -33,6 +34,7 @@ export default class TasksScreen extends React.Component {
 
   componentDidMount() {
     this._setupPage();
+    Segment.screen("Tasks Screen");
   }
 
   _setupPage = async () => {

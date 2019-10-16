@@ -6,6 +6,7 @@ import {
   View,
   FlatList,
 } from 'react-native';
+import * as Segment from 'expo-analytics-segment';
 import CardView from '../common/CardView';
 
 export default class TxScreen extends React.Component {
@@ -17,6 +18,11 @@ export default class TxScreen extends React.Component {
             tx,
         }
     }
+
+    componentDidMount() {
+      Segment.screen("Individual Transaction Screen");
+    }
+
 
     _moneyFormat = (amount) => {
         return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');

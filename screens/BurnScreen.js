@@ -2,6 +2,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, FlatList, View, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import RNPickerSelect from 'react-native-picker-select';
+import * as Segment from 'expo-analytics-segment';
 import CardView from '../common/CardView';
 import moment from 'moment';
 
@@ -80,6 +81,7 @@ export default class BurnScreen extends React.Component {
         const dates = this._monthYear(monthYear);
         this.setState({startDate: dates.start, endDate: dates.end, currMonth: monthYear });
         await this._getData(dates.start, dates.end);
+        Segment.trackWithProperties("Changed burn month", { month: monthYear });
     }
 
     _moneyFormat = (amount) => {
@@ -97,6 +99,7 @@ export default class BurnScreen extends React.Component {
 
     _goToExpense = (category, categoryId) => {
         const { startDate, endDate } = this.state;
+        Segment.trackWithProperties("Selected Indiv Category", { category, categoryId });
         this.props.navigation.navigate('Category', {
             cat: category,
             catId: categoryId, 
@@ -118,8 +121,9 @@ export default class BurnScreen extends React.Component {
         );
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this._getData();
+        Segment.screen("Burn Screen");
     }
 
     render() {
