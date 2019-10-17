@@ -9,7 +9,7 @@
       "android",
       "web"
     ],
-    "version": "2.0.0",
+    "version": "2.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/masonic_1024.png",
     "splash": {
@@ -28,7 +28,8 @@
       "bundleIdentifier": "com.masonic.masonicapp"
     },
     "android": {
-      "package": "com.masonic.masonicapp"
+      "package": "com.masonic.masonicapp",
+      "versionCode": 2
     }
   }
 }
