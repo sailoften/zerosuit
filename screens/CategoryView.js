@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, TouchableOpacity, Text, SectionList, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, Text, SectionList, View, RefreshControl} from 'react-native';
 import PATextInput from '../common/PATextInput';
 import { Ionicons } from '@expo/vector-icons';
 import _ from 'lodash';
@@ -17,7 +17,8 @@ export default class CategoryView extends React.Component {
       startDate: this.props.navigation.getParam("startDate"),
       endDate: this.props.navigation.getParam("endDate"),
       category: this.props.navigation.getParam("cat"),
-      categoryId: this.props.navigation.getParam("catId")
+      categoryId: this.props.navigation.getParam("catId"),
+      refreshing: false,
     };
   }
 
@@ -45,6 +46,12 @@ export default class CategoryView extends React.Component {
     const payload = await res.json();
     await this._transformTransactions(payload);
     this.setState({ loading: false });
+  }
+
+  _onRefresh = async() => {
+    this.setState({ refreshing: true});
+    await this._fetchTransactions();
+    this.setState({ refreshing: false});
   }
 
   _transformTransactions = async(payload) => {
@@ -131,7 +138,7 @@ export default class CategoryView extends React.Component {
   };
 
   render() {
-    const { sections } = this.state;
+    const { sections, refreshing } = this.state;
     return(
       <SectionList
         renderItem={this._renderItem}
@@ -140,6 +147,9 @@ export default class CategoryView extends React.Component {
         keyExtractor={(item, index) => item + index}
         ListHeaderComponent={this._renderSearch}
         ListEmptyComponent={this._renderEmptyList}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={this._onRefresh} />
+        }
       />
     );
   }

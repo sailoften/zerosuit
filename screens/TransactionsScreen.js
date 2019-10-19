@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, TouchableOpacity, Text, SectionList, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, Text, SectionList, View, RefreshControl} from 'react-native';
 import { formatMoney, txTitle } from '../common/Utils';
 import PATextInput from '../common/PATextInput';
 import _ from 'lodash';
@@ -11,7 +11,8 @@ export default class TransactionsScreen extends React.Component {
     this.state = {
       allSections: [],
       sections: [],
-      search: ''
+      search: '',
+      refreshing: false,
     };
   }
 
@@ -40,6 +41,13 @@ export default class TransactionsScreen extends React.Component {
       return timeStamp;
     }).map((data, title) => ({ title, data })).value();
     this.setState({sections: payloadGrouped, allSections: payloadGrouped})
+  }
+
+  _onRefresh = async() => {
+    console.log("Refreshing transactions");
+    this.setState({ refreshing: true });
+    await this._fetchTransactions();
+    this.setState({ refreshing: false });
   }
 
   _searchTransactions = (searchText) => {
@@ -116,7 +124,7 @@ export default class TransactionsScreen extends React.Component {
   };
 
   render() {
-    const { sections } = this.state;
+    const { sections, refreshing } = this.state;
     return(
       <SectionList
         renderItem={this._renderItem}
@@ -125,6 +133,9 @@ export default class TransactionsScreen extends React.Component {
         ListEmptyComponent={this._renderEmptyList}
         keyExtractor={(item, index) => item + index}
         ListHeaderComponent={this._renderSearch}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={this._onRefresh} />
+        }
       />
     );
   }

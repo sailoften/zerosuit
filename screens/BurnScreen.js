@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, FlatList, View, TouchableOpacity } from 'react-native';
+import { ScrollView, StyleSheet, Text, FlatList, View, TouchableOpacity, RefreshControl } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import RNPickerSelect from 'react-native-picker-select';
 import * as Segment from 'expo-analytics-segment';
@@ -21,6 +21,7 @@ export default class BurnScreen extends React.Component {
             burnRange: [],
             currMonth: date.curr,
             loading: true,
+            refreshing: false,
         }
     }
 
@@ -77,6 +78,12 @@ export default class BurnScreen extends React.Component {
         this.setState({company: payload.company, categoryExpenses: payload.expenseInfo, totalBurn: payload.spending, loading: false});
     }
 
+    _onRefresh = async () => {
+        this.setState({ refreshing: true});
+        await this._getData();
+        this.setState({ refreshing: false});
+    }
+
     _changeDates = async (monthYear) => {
         const dates = this._monthYear(monthYear);
         this.setState({startDate: dates.start, endDate: dates.end, currMonth: monthYear });
@@ -127,10 +134,13 @@ export default class BurnScreen extends React.Component {
     }
 
     render() {
-        const { categoryExpenses, totalBurn, burnRange, currMonth, company, loading } = this.state;
+        const { categoryExpenses, totalBurn, burnRange, currMonth, company, loading, refreshing } = this.state;
         //TODO: put button in for date picker
         return (
-            <ScrollView style={styles.container}>
+            <ScrollView style={styles.container} 
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={this._onRefresh} />
+            }>
               <CardView style={styles.burnPickerCard}>
                 <RNPickerSelect
                     onValueChange={(value) => this._changeDates(value)}

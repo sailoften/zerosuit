@@ -5,6 +5,8 @@ import {
   Text,
   View,
   AsyncStorage,
+  RefreshControl,
+  SafeAreaView
 } from 'react-native';
 import CardView from '../common/CardView';
 import moment from 'moment';
@@ -20,6 +22,7 @@ export default class HomeScreen extends React.Component {
       firstName: '',
       company: '',
       loading: true,
+      refreshing: false,
     }
   }
 
@@ -70,13 +73,24 @@ export default class HomeScreen extends React.Component {
     return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
   }
 
+  _onRefresh = async () => {
+    this.setState({ refreshing: true });
+    await this._getData();
+    this.setState({ refreshing: false});
+  }
+
   render() {
-    const { cash, currentBurn, lastBurn, company, firstName, loading } = this.state;
+    const { cash, currentBurn, lastBurn, company, firstName, loading, refreshing } = this.state;
     const months = Math.floor(cash / lastBurn);
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         { !loading && 
-        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer} contentInsetAdjustmentBehavior="never">
+        <ScrollView style={styles.container} 
+          contentContainerStyle={styles.contentContainer} 
+          contentInsetAdjustmentBehavior="never"
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={this._onRefresh} />
+        }>
 
             <View style={styles.headerContainer}>
               <View style={styles.headerTextContainer}>
@@ -127,7 +141,7 @@ export default class HomeScreen extends React.Component {
             </View>
           </ScrollView>
         }
-      </View>
+      </SafeAreaView>
     );
   }
 }
@@ -163,7 +177,7 @@ const styles = StyleSheet.create({
   },
   headerTextContainer: {
     //marginHorizontal: 20,
-    marginTop: 30,
+    //marginTop: 30,
   },
   getStartedText: {
     fontSize: 20,

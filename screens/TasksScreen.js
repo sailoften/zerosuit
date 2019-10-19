@@ -6,7 +6,8 @@ import {
   View,
   AsyncStorage,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  RefreshControl
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import CardView from '../common/CardView';
@@ -28,6 +29,7 @@ export default class TasksScreen extends React.Component {
       transactions: [],
       filter: 'incomplete',
       loading: true,
+      refreshing: false,
     }
     //this.props.navigation.setParams({ taskComplete: this._taskComplete });
   }
@@ -42,6 +44,12 @@ export default class TasksScreen extends React.Component {
       await this._getData();
       const newTxs = this._filterTransactions(filter);
       this.setState({ transactions: newTxs });
+  }
+
+  _onRefresh = async () => {
+    this.setState({ refreshing: true });
+    await this._setupPage();
+    this.setState({ refreshing: false });
   }
 
   _getTimeRange = (offset) => {
@@ -150,14 +158,17 @@ export default class TasksScreen extends React.Component {
   }
 
   render() {
-    const { transactions, filter } = this.state;
+    const { transactions, filter, refreshing } = this.state;
     return (
       <View style={styles.container}>
         <ScrollView
           style={styles.container}
           contentContainerStyle={styles.contentContainer}
           contentInsetAdjustmentBehavior="never"
-          >
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={this._onRefresh} />
+          }
+        >
           <CardView style={styles.optionBar}>
 
           <Text style={styles.groupTitle}>Uncategorized Expenses</Text>

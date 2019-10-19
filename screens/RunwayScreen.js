@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, View, FlatList } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, FlatList, RefreshControl } from 'react-native';
 import CardView from '../common/CardView';
 import moment from 'moment';
 import * as Segment from 'expo-analytics-segment';
@@ -13,6 +13,7 @@ export default class RunwayScreen extends React.Component {
             cash: 0,
             months: 0,
             projection: [],
+            refreshing: false,
         }
     }
 
@@ -41,6 +42,12 @@ export default class RunwayScreen extends React.Component {
         const runway = this._calcRunway(payload);
         const projection = this._calcProjections(payload);
         this.setState({totalBurn: payload.spending, cash: payload.cash, months: runway, projection});
+    }
+
+    _onRefresh = async () => {
+        this.setState({ refreshing: true });
+        await this._getData();
+        this.setState({ refreshing: false});
     }
 
     _getTimeRange = () => {
@@ -87,9 +94,12 @@ export default class RunwayScreen extends React.Component {
     }
 
     render() {
-        const {totalBurn, cash, months, projection} = this.state;
+        const {totalBurn, refreshing, months, projection} = this.state;
         return (
-            <ScrollView style={styles.container}>
+            <ScrollView style={styles.container}
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={this._onRefresh} />
+            }>
                 <CardView>
                     <View style={{flex: 1, flexDirection:'row'}}>
                         <View style={{width: '50%'}}>
