@@ -4,6 +4,8 @@ import { formatMoney, txTitle } from '../common/Utils';
 import PATextInput from '../common/PATextInput';
 import _ from 'lodash';
 import * as Segment from 'expo-analytics-segment';
+import getEnvVars from '../env';
+const { apiUrl } = getEnvVars();
 
 export default class TransactionsScreen extends React.Component {
   constructor(props) {
@@ -22,7 +24,7 @@ export default class TransactionsScreen extends React.Component {
   }
 
   _fetchTransactions = async() => {
-    const url = 'https://masonic-backend.onrender.com' + '/api/transaction/get';
+    const url = `${apiUrl}/api/transaction/get`;
     const res = await fetch(url, {
       method: 'POST',
       credentials: 'include',

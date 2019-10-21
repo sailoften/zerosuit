@@ -11,6 +11,8 @@ import {
 import CardView from '../common/CardView';
 import moment from 'moment';
 import * as Segment from 'expo-analytics-segment';
+import getEnvVars from '../env';
+const { apiUrl } = getEnvVars();
 
 export default class HomeScreen extends React.Component {
   constructor(props) {
@@ -41,7 +43,7 @@ export default class HomeScreen extends React.Component {
 }
 
   _getData = async () => {
-    const url = 'https://masonic-backend.onrender.com' + '/api/transaction/home';
+    const url = `${apiUrl}/api/transaction/home`;
     const dates = this._getTimeRange();
     const burnDates = this._getTimeRange(1);
     const body = {

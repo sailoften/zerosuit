@@ -15,6 +15,8 @@ import { formatMoney } from '../common/Utils';
 import moment from 'moment';
 import RNPickerSelect from 'react-native-picker-select';
 import * as Segment from 'expo-analytics-segment';
+import getEnvVars from '../env';
+const { apiUrl } = getEnvVars();
 
 export default class TasksScreen extends React.Component {
   constructor(props) {
@@ -62,7 +64,7 @@ export default class TasksScreen extends React.Component {
 }
 
   _getData = async () => {
-    const url = 'https://masonic-backend.onrender.com' + '/api/transaction/uncategorized';
+    const url = `${apiUrl}/api/transaction/uncategorized`;
     const body = {};
     const res = await fetch(url, {
       method: 'POST',

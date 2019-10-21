@@ -5,6 +5,8 @@ import { Ionicons } from '@expo/vector-icons';
 import _ from 'lodash';
 import { formatMoney, txTitle } from '../common/Utils';
 import * as Segment from 'expo-analytics-segment';
+import getEnvVars from '../env';
+const { apiUrl } = getEnvVars();
 
 export default class CategoryView extends React.Component {
   constructor(props) {
@@ -34,7 +36,7 @@ export default class CategoryView extends React.Component {
         endDate,
         category: categoryId,
     }
-    const url = 'https://masonic-backend.onrender.com' + '/api/transaction/categoryTransactions';
+    const url = `${apiUrl}/api/transaction/categoryTransactions`;
     const res = await fetch(url, {
       method: 'POST',
       credentials: 'include',

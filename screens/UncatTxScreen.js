@@ -14,6 +14,8 @@ import * as Segment from 'expo-analytics-segment';
 import CardView from '../common/CardView';
 import { formatMoney, txTitle } from '../common/Utils';
 import { Header } from 'react-navigation';
+import getEnvVars from '../env';
+const { apiUrl } = getEnvVars();
 
 export default class TxScreen extends React.Component {
     constructor(props) {
@@ -72,7 +74,7 @@ export default class TxScreen extends React.Component {
           return;
         }
         this.setState({ saving: true });
-        const url = 'https://masonic-backend.onrender.com' + '/api/transaction/categorize';
+        const url = `${apiUrl}/api/transaction/categorize`;
         const body = {
             transactionId: tx.transactionId,
             notes: infoText,

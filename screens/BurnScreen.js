@@ -5,6 +5,8 @@ import RNPickerSelect from 'react-native-picker-select';
 import * as Segment from 'expo-analytics-segment';
 import CardView from '../common/CardView';
 import moment from 'moment';
+import getEnvVars from '../env';
+const { apiUrl } = getEnvVars();
 
 export default class BurnScreen extends React.Component {
     constructor(props) {
@@ -58,7 +60,7 @@ export default class BurnScreen extends React.Component {
         this.setState({ loading: true});
         const { startDate, endDate, burnRange } = this.state;
         console.log("StartDate: " + startDate + " EndDate: " + endDate);
-        const url = 'https://masonic-backend.onrender.com' + '/api/transaction/categoryInfo';
+        const url = `${apiUrl}/api/transaction/categoryInfo`;
         const body = {
             startDate: start ? start : startDate,
             endDate: end ? end : endDate

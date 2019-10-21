@@ -9,6 +9,8 @@ import {
 import PropTypes from 'prop-types';
 import {AsyncStorage} from 'react-native';
 import * as Segment from 'expo-analytics-segment';
+import getEnvVars from '../env';
+const { apiUrl } = getEnvVars();
 
 import PAText from '../common/PAText';
 import PADefaultButton from '../common/PADefaultButton';
@@ -39,7 +41,7 @@ class Login extends React.Component {
     };
     try {
       console.log(loginData);
-      const res = await fetch('https://masonic-backend.onrender.com' + '/api/user/login', {
+      const res = await fetch(`${apiUrl}/api/user/login`, {
         method: 'POST',
         body: JSON.stringify(loginData),
         credentials: 'include',

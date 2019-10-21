@@ -3,6 +3,8 @@ import { ScrollView, StyleSheet, Text, View, FlatList, RefreshControl } from 're
 import CardView from '../common/CardView';
 import moment from 'moment';
 import * as Segment from 'expo-analytics-segment';
+import getEnvVars from '../env';
+const { apiUrl } = getEnvVars();
 
 export default class RunwayScreen extends React.Component {
     
@@ -23,7 +25,7 @@ export default class RunwayScreen extends React.Component {
     }
 
     _getData = async () => {
-        const url = 'https://masonic-backend.onrender.com' + '/api/transaction/runway';
+        const url = `${apiUrl}/api/transaction/runway`;
         //TODO: use moment to set this to last month
         const range = this._getTimeRange();
         const body = {

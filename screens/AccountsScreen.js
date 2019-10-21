@@ -2,6 +2,8 @@ import React from 'react';
 import {StyleSheet, View, Text, SectionList} from 'react-native';
 import _ from 'lodash';
 import * as Segment from 'expo-analytics-segment';
+import getEnvVars from '../env';
+const { apiUrl } = getEnvVars();
 
 export default class AccountsScreen extends React.Component {
   constructor(props) {
@@ -17,7 +19,7 @@ export default class AccountsScreen extends React.Component {
   }
 
   _getAccounts= async () => {
-    const url = 'https://masonic-backend.onrender.com' + '/api/transaction/accounts';
+    const url =  `${apiUrl}/api/transaction/accounts`;
     const res = await fetch(url, {
       method: 'POST',
       credentials: 'include',
