@@ -35,12 +35,12 @@ class Login extends React.Component {
 
   handleLogin = async () => {
     const { email, password } = this.state;
+    this.setState({ error: '' });
     const loginData = {
       email,
       password,
     };
     try {
-      console.log(loginData);
       const res = await fetch(`${apiUrl}/api/user/login`, {
         method: 'POST',
         body: JSON.stringify(loginData),
@@ -50,11 +50,14 @@ class Login extends React.Component {
         }
       });
       const payload = await res.json();
-      console.log(payload);
       if (payload && payload.id) {
         await this.storeUser(payload);
         await this.registerSegment(payload);
         this.props.navigation.navigate('App');
+      } else if (payload && payload.error) {
+        this.setState({ error: payload.error});
+      } else {
+        this.setState({ error: 'An error occured, please try again'});
       }
     } catch (e) {
       console.log("Login error: " + e);
