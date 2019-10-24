@@ -64,10 +64,12 @@ export default class BurnScreen extends React.Component {
             endDate: end ? end : endDate
         }
         const payload = await makeRequest('/api/transaction/categoryInfo', body);
-        if (burnRange.length === 0) {
-            this._getBurnRanges(payload.firstDate);
+        if (!payload.error) {
+            if (burnRange.length === 0) {
+                this._getBurnRanges(payload.firstDate);
+            }
+            this.setState({company: payload.company, categoryExpenses: payload.expenseInfo, totalBurn: payload.spending, loading: false});
         }
-        this.setState({company: payload.company, categoryExpenses: payload.expenseInfo, totalBurn: payload.spending, loading: false});
     }
 
     _onRefresh = async () => {

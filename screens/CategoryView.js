@@ -35,8 +35,10 @@ export default class CategoryView extends React.Component {
         category: categoryId,
     }
     const payload = await makeRequest('/api/transaction/categoryTransactions', body);
-    await this._transformTransactions(payload);
-    this.setState({ loading: false });
+    if (!payload.error) {
+      await this._transformTransactions(payload);
+      this.setState({ loading: false });
+    }
   }
 
   _onRefresh = async() => {

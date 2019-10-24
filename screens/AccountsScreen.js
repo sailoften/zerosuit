@@ -19,9 +19,11 @@ export default class AccountsScreen extends React.Component {
 
   _getAccounts= async () => {
     const payload = await makeRequest('/api/transaction/accounts', {});
-    const transformed = this._transformAccounts(payload.accounts);
-    this.setState({sections: transformed});
-    console.log(transformed);
+    if (!payload.error) {
+      const transformed = this._transformAccounts(payload.accounts);
+      this.setState({sections: transformed});
+      console.log(transformed);
+    }
   }
 
   _transformAccounts = (accounts) => {

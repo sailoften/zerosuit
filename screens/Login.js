@@ -17,6 +17,7 @@ import PADefaultButton from '../common/PADefaultButton';
 import PATextInput from '../common/PATextInput';
 
 import Logo from '../assets/images/masonic.png';
+import { makeRequest } from '../common/Utils';
 
 class Login extends React.Component {
   static navigationOptions = {
@@ -41,15 +42,7 @@ class Login extends React.Component {
       password,
     };
     try {
-      const res = await fetch(`${apiUrl}/api/user/login`, {
-        method: 'POST',
-        body: JSON.stringify(loginData),
-        credentials: 'include',
-        headers:{
-          'Content-Type': 'application/json'
-        }
-      });
-      const payload = await res.json();
+      const payload = await makeRequest('/api/user/login', loginData);
       if (payload && payload.id) {
         await this.storeUser(payload);
         await this.registerSegment(payload);

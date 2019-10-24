@@ -23,7 +23,9 @@ export default class TransactionsScreen extends React.Component {
 
   _fetchTransactions = async() => {
     const payload = await makeRequest('/api/transaction/get', {});
-    await this._transformTransactions(payload.transactions);
+    if (!payload.error) {
+      await this._transformTransactions(payload.transactions);
+    }
   }
 
   _transformTransactions = async(payload) => {

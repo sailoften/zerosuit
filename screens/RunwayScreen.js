@@ -30,9 +30,11 @@ export default class RunwayScreen extends React.Component {
             endDate: range.end,
         }
         const payload = await makeRequest('/api/transaction/runway', body);
-        const runway = this._calcRunway(payload);
-        const projection = this._calcProjections(payload);
-        this.setState({totalBurn: payload.spending, cash: payload.cash, months: runway, projection});
+        if (!payload.error) {
+            const runway = this._calcRunway(payload);
+            const projection = this._calcProjections(payload);
+            this.setState({totalBurn: payload.spending, cash: payload.cash, months: runway, projection});
+        }
     }
 
     _onRefresh = async () => {
