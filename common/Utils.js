@@ -3,7 +3,7 @@ import * as Segment from 'expo-analytics-segment';
 import getEnvVars from '../env';
 const { apiUrl } = getEnvVars();
 
-export { formatMoney, txTitle, makeRequest, registerSegment, unregisterSegment, segmentScreen, segmentTrack, enableGod };
+export { formatMoney, txTitle, makeRequest, registerSegment, unregisterSegment, segmentScreen, segmentTrack, isGodMode };
 
 const formatMoney = (amount) => {
     if (typeof amount !== 'number') {
@@ -89,8 +89,8 @@ const txTitle = (item) => {
     }
   }
 
-  // Call enableGod(true) to enable god mode and disable segment tracking
-  const enableGod = async (status) => {
+  // Check if God Mode is enabled
+  const isGod = async () => {
     if (typeof enableGod.status == 'undefined') {
       const userString = await AsyncStorage.getItem('user');
       const user = JSON.parse(userString);
@@ -109,6 +109,6 @@ const txTitle = (item) => {
 
   const _useSegment = async () => {
     const isExpo = __DEV__;
-    const isGod = await enableGod();
-    return !isExpo && !isGod;
+    const isGodMode = await isGod();
+    return !isExpo && !isGodMode;
   }
