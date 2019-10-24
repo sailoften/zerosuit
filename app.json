@@ -29,7 +29,8 @@
     },
     "android": {
       "package": "com.masonic.masonicapp",
-      "versionCode": 2
+      "versionCode": 2,
+      "googleServicesFile": "./google-services.json"
     }
   }
 }
