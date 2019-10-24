@@ -11,12 +11,10 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import CardView from '../common/CardView';
-import { formatMoney } from '../common/Utils';
+import { formatMoney, makeRequest } from '../common/Utils';
 import moment from 'moment';
 import RNPickerSelect from 'react-native-picker-select';
 import * as Segment from 'expo-analytics-segment';
-import getEnvVars from '../env';
-const { apiUrl } = getEnvVars();
 
 export default class TasksScreen extends React.Component {
   constructor(props) {
@@ -33,7 +31,6 @@ export default class TasksScreen extends React.Component {
       loading: true,
       refreshing: false,
     }
-    //this.props.navigation.setParams({ taskComplete: this._taskComplete });
   }
 
   componentDidMount() {
@@ -64,17 +61,7 @@ export default class TasksScreen extends React.Component {
 }
 
   _getData = async () => {
-    const url = `${apiUrl}/api/transaction/uncategorized`;
-    const body = {};
-    const res = await fetch(url, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
-    });
-    const payload = await res.json();
+    const payload = await makeRequest('/api/transaction/uncategorized', {});
     if (payload.error) {
       // Return user to signin screen
       await AsyncStorage.removeItem('user');

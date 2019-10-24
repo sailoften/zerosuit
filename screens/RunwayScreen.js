@@ -3,8 +3,7 @@ import { ScrollView, StyleSheet, Text, View, FlatList, RefreshControl } from 're
 import CardView from '../common/CardView';
 import moment from 'moment';
 import * as Segment from 'expo-analytics-segment';
-import getEnvVars from '../env';
-const { apiUrl } = getEnvVars();
+import { makeRequest } from '../common/Utils';
 
 export default class RunwayScreen extends React.Component {
     
@@ -25,22 +24,12 @@ export default class RunwayScreen extends React.Component {
     }
 
     _getData = async () => {
-        const url = `${apiUrl}/api/transaction/runway`;
-        //TODO: use moment to set this to last month
         const range = this._getTimeRange();
         const body = {
             startDate: range.start,
             endDate: range.end,
         }
-        const res = await fetch(url, {
-        method: 'POST',
-        credentials: 'include',
-        body: JSON.stringify(body),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-        });
-        const payload = await res.json();
+        const payload = await makeRequest('/api/transaction/runway', body);
         const runway = this._calcRunway(payload);
         const projection = this._calcProjections(payload);
         this.setState({totalBurn: payload.spending, cash: payload.cash, months: runway, projection});

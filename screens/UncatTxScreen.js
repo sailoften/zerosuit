@@ -12,10 +12,8 @@ import {
 } from 'react-native';
 import * as Segment from 'expo-analytics-segment';
 import CardView from '../common/CardView';
-import { formatMoney, txTitle } from '../common/Utils';
+import { formatMoney, txTitle, makeRequest } from '../common/Utils';
 import { Header } from 'react-navigation';
-import getEnvVars from '../env';
-const { apiUrl } = getEnvVars();
 
 export default class TxScreen extends React.Component {
     constructor(props) {
@@ -74,21 +72,12 @@ export default class TxScreen extends React.Component {
           return;
         }
         this.setState({ saving: true });
-        const url = `${apiUrl}/api/transaction/categorize`;
         const body = {
             transactionId: tx.transactionId,
             notes: infoText,
         }
         try {
-            const res = await fetch(url, {
-                method: 'POST',
-                body: JSON.stringify(body),
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            const payload = await res.json();
+            const payload = await ('/api/transaction/categorize', body);
             if (!payload || !payload.updatedTxn) {
                throw "Could not save";
             }

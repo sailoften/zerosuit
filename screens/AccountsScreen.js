@@ -2,8 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Text, SectionList} from 'react-native';
 import _ from 'lodash';
 import * as Segment from 'expo-analytics-segment';
-import getEnvVars from '../env';
-const { apiUrl } = getEnvVars();
+import { makeRequest } from '../common/Utils';
 
 export default class AccountsScreen extends React.Component {
   constructor(props) {
@@ -19,15 +18,7 @@ export default class AccountsScreen extends React.Component {
   }
 
   _getAccounts= async () => {
-    const url =  `${apiUrl}/api/transaction/accounts`;
-    const res = await fetch(url, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-    const payload = await res.json();
+    const payload = await makeRequest('/api/transaction/accounts', {});
     const transformed = this._transformAccounts(payload.accounts);
     this.setState({sections: transformed});
     console.log(transformed);

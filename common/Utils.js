@@ -1,7 +1,8 @@
+import * as Segment from 'expo-analytics-segment';
 import getEnvVars from '../env';
 const { apiUrl } = getEnvVars();
 
-export { formatMoney, txTitle, makeRequest };
+export { formatMoney, txTitle, makeRequest, registerSegment, unregisterSegment, segmentScreen, segmentTrack };
 
 const formatMoney = (amount) => {
     if (typeof amount !== 'number') {
@@ -53,4 +54,30 @@ const txTitle = (item) => {
     } catch(e) {
       return { error: e };
     }
+  }
+
+  const unregisterSegment = () => {
+    Segment.reset();
+  }
+
+  const registerSegment = (user) => {
+    Segment.identifyWithTraits(user.id, {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email
+    });
+  }
+
+  const segmentScreen = (name) => {
+    Segment.screen(name);
+  }
+
+  const segmentTrack = (name, props) => {
+    Segment.trackWithProperties(name, props);
+  }
+
+  const _useSegment = () => {
+    const isExpo = __DEV__;
+    const isGod = true;
+    return !isExpo && !isGod;
   }

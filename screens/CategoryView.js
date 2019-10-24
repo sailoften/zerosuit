@@ -3,10 +3,8 @@ import {StyleSheet, TouchableOpacity, Text, SectionList, View, RefreshControl} f
 import PATextInput from '../common/PATextInput';
 import { Ionicons } from '@expo/vector-icons';
 import _ from 'lodash';
-import { formatMoney, txTitle } from '../common/Utils';
+import { formatMoney, txTitle, makeRequest } from '../common/Utils';
 import * as Segment from 'expo-analytics-segment';
-import getEnvVars from '../env';
-const { apiUrl } = getEnvVars();
 
 export default class CategoryView extends React.Component {
   constructor(props) {
@@ -36,16 +34,7 @@ export default class CategoryView extends React.Component {
         endDate,
         category: categoryId,
     }
-    const url = `${apiUrl}/api/transaction/categoryTransactions`;
-    const res = await fetch(url, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
-    });
-    const payload = await res.json();
+    const payload = await makeRequest('/api/transaction/categoryTransactions', body);
     await this._transformTransactions(payload);
     this.setState({ loading: false });
   }

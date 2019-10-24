@@ -12,8 +12,7 @@ import CardView from '../common/CardView';
 import moment from 'moment';
 import * as Push from '../common/Push';
 import * as Segment from 'expo-analytics-segment';
-import getEnvVars from '../env';
-const { apiUrl } = getEnvVars();
+import { makeRequest } from '../common/Utils';
 
 export default class HomeScreen extends React.Component {
   constructor(props) {
@@ -82,7 +81,6 @@ export default class HomeScreen extends React.Component {
   }
 
   _getData = async () => {
-    const url = `${apiUrl}/api/transaction/home`;
     const dates = this._getTimeRange();
     const burnDates = this._getTimeRange(1);
     const body = {
@@ -91,15 +89,7 @@ export default class HomeScreen extends React.Component {
       burnStartDate: burnDates.start,
       burnEndDate: burnDates.end
     }
-    const res = await fetch(url, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
-    });
-    const payload = await res.json();
+    const payload = await makeRequest('/api/transaction/home', body);
     if (payload.error) {
       // Return user to signin screen
       await AsyncStorage.removeItem('user');

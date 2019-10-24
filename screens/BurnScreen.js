@@ -5,8 +5,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import * as Segment from 'expo-analytics-segment';
 import CardView from '../common/CardView';
 import moment from 'moment';
-import getEnvVars from '../env';
-const { apiUrl } = getEnvVars();
+import { makeRequest } from '../common/Utils';
 
 export default class BurnScreen extends React.Component {
     constructor(props) {
@@ -60,20 +59,11 @@ export default class BurnScreen extends React.Component {
         this.setState({ loading: true});
         const { startDate, endDate, burnRange } = this.state;
         console.log("StartDate: " + startDate + " EndDate: " + endDate);
-        const url = `${apiUrl}/api/transaction/categoryInfo`;
         const body = {
             startDate: start ? start : startDate,
             endDate: end ? end : endDate
         }
-        const res = await fetch(url, {
-        method: 'POST',
-        credentials: 'include',
-        body: JSON.stringify(body),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-        });
-        const payload = await res.json();
+        const payload = await makeRequest('/api/transaction/categoryInfo', body);
         if (burnRange.length === 0) {
             this._getBurnRanges(payload.firstDate);
         }

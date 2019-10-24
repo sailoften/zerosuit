@@ -1,11 +1,9 @@
 import React from 'react';
 import {StyleSheet, TouchableOpacity, Text, SectionList, View, RefreshControl} from 'react-native';
-import { formatMoney, txTitle } from '../common/Utils';
+import { formatMoney, txTitle, makeRequest } from '../common/Utils';
 import PATextInput from '../common/PATextInput';
 import _ from 'lodash';
 import * as Segment from 'expo-analytics-segment';
-import getEnvVars from '../env';
-const { apiUrl } = getEnvVars();
 
 export default class TransactionsScreen extends React.Component {
   constructor(props) {
@@ -24,15 +22,7 @@ export default class TransactionsScreen extends React.Component {
   }
 
   _fetchTransactions = async() => {
-    const url = `${apiUrl}/api/transaction/get`;
-    const res = await fetch(url, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-    const payload = await res.json();
+    const payload = await makeRequest('/api/transaction/get', {});
     await this._transformTransactions(payload.transactions);
   }
 
