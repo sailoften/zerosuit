@@ -1,8 +1,9 @@
+import { AsyncStorage } from 'react-native';
 import * as Segment from 'expo-analytics-segment';
 import getEnvVars from '../env';
 const { apiUrl } = getEnvVars();
 
-export { formatMoney, txTitle, makeRequest, registerSegment, unregisterSegment, segmentScreen, segmentTrack };
+export { formatMoney, txTitle, makeRequest, registerSegment, unregisterSegment, segmentScreen, segmentTrack, enableGod };
 
 const formatMoney = (amount) => {
     if (typeof amount !== 'number') {
@@ -56,28 +57,58 @@ const txTitle = (item) => {
     }
   }
 
-  const unregisterSegment = () => {
-    Segment.reset();
+  const unregisterSegment = async () => {
+    const active = await _useSegment();
+    if (active) {
+      Segment.reset();
+    }
   }
 
-  const registerSegment = (user) => {
-    Segment.identifyWithTraits(user.id, {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email
-    });
+  const registerSegment = async (user) => {
+    const active = await _useSegment();
+    if (active) {
+      Segment.identifyWithTraits(user.id, {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email
+      });
+    }
   }
 
-  const segmentScreen = (name) => {
-    Segment.screen(name);
+  const segmentScreen = async (name) => {
+    const active = await _useSegment();
+    if (active) {
+      Segment.screen(name);
+    }
   }
 
-  const segmentTrack = (name, props) => {
-    Segment.trackWithProperties(name, props);
+  const segmentTrack = async (name, props) => {
+    const active = await _useSegment();
+    if (active) {
+      Segment.trackWithProperties(name, props);
+    }
   }
 
-  const _useSegment = () => {
+  // Call enableGod(true) to enable god mode and disable segment tracking
+  const enableGod = async (status) => {
+    if (typeof enableGod.status == 'undefined') {
+      const userString = await AsyncStorage.getItem('user');
+      const user = JSON.parse(userString);
+      console.log(user);
+      //TODO: change to godmode
+      if (user.firstName === 'Jimmy') {
+        enableGod.status = true;
+      } else {
+        enableGod.status = false;
+      }
+    } else if (enableGod.status === true) {
+      return true;
+    }
+    return false;
+  }
+
+  const _useSegment = async () => {
     const isExpo = __DEV__;
-    const isGod = true;
+    const isGod = await enableGod();
     return !isExpo && !isGod;
   }

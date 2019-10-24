@@ -12,7 +12,7 @@ import CardView from '../common/CardView';
 import moment from 'moment';
 import * as Push from '../common/Push';
 import * as Segment from 'expo-analytics-segment';
-import { makeRequest } from '../common/Utils';
+import { makeRequest, enableGod } from '../common/Utils';
 
 export default class HomeScreen extends React.Component {
   constructor(props) {
@@ -81,6 +81,10 @@ export default class HomeScreen extends React.Component {
   }
 
   _getData = async () => {
+    await enableGod();
+    const x = await enableGod();
+    console.log(x);
+    await enableGod();
     const dates = this._getTimeRange();
     const burnDates = this._getTimeRange(1);
     const body = {
