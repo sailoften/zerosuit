@@ -84,6 +84,7 @@ const txTitle = (item) => {
   const segmentScreen = async (name) => {
     const active = await _useSegment();
     if (active) {
+      console.log("On this screen: " + name);
       Segment.screen(name);
     }
   }

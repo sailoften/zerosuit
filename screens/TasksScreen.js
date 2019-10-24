@@ -11,10 +11,9 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import CardView from '../common/CardView';
-import { formatMoney, makeRequest } from '../common/Utils';
+import { formatMoney, makeRequest, segmentScreen } from '../common/Utils';
 import moment from 'moment';
 import RNPickerSelect from 'react-native-picker-select';
-import * as Segment from 'expo-analytics-segment';
 
 export default class TasksScreen extends React.Component {
   constructor(props) {
@@ -35,7 +34,7 @@ export default class TasksScreen extends React.Component {
 
   componentDidMount() {
     this._setupPage();
-    Segment.screen("Tasks Screen");
+    segmentScreen("Tasks Screen");
   }
 
   _setupPage = async () => {
@@ -58,7 +57,7 @@ export default class TasksScreen extends React.Component {
     const start = now.startOf('month').toDate();;
     const end = now.endOf('month').toDate();
     return { start, end };
-}
+  }
 
   _getData = async () => {
     const payload = await makeRequest('/api/transaction/uncategorized', {});

@@ -1,8 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, AsyncStorage, FlatList, Linking} from 'react-native';
 import * as Push from '../common/Push';
-import { logoutHelper } from '../common/Utils';
-import * as Segment from 'expo-analytics-segment';
+import { logoutHelper, segmentScreen } from '../common/Utils';
 
 export default class UserScreen extends React.Component {
   constructor(props) {
@@ -42,7 +41,7 @@ export default class UserScreen extends React.Component {
 
   componentDidMount() {
       this._getUser();
-      Segment.screen("User Profile Screen");
+      segmentScreen("User Profile Screen");
   }
 
   _renderItem = ({item}) => {

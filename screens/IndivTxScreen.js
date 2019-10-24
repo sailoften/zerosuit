@@ -6,8 +6,7 @@ import {
   View,
   FlatList,
 } from 'react-native';
-import { formatMoney, txTitle } from '../common/Utils';
-import * as Segment from 'expo-analytics-segment';
+import { formatMoney, txTitle, segmentScreen } from '../common/Utils';
 import CardView from '../common/CardView';
 
 export default class TxScreen extends React.Component {
@@ -21,7 +20,7 @@ export default class TxScreen extends React.Component {
     }
 
     componentDidMount() {
-      Segment.screen("Individual Transaction Screen");
+      segmentScreen("Individual Transaction Screen");
     }
 
     _dateFormat = (dateString) => {

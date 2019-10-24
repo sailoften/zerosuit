@@ -3,8 +3,7 @@ import {StyleSheet, TouchableOpacity, Text, SectionList, View, RefreshControl} f
 import PATextInput from '../common/PATextInput';
 import { Ionicons } from '@expo/vector-icons';
 import _ from 'lodash';
-import { formatMoney, txTitle, makeRequest } from '../common/Utils';
-import * as Segment from 'expo-analytics-segment';
+import { formatMoney, txTitle, makeRequest, segmentScreen } from '../common/Utils';
 
 export default class CategoryView extends React.Component {
   constructor(props) {
@@ -24,7 +23,7 @@ export default class CategoryView extends React.Component {
 
   componentDidMount() {
     this._fetchTransactions();
-    Segment.screen("Individual Category Screen");
+    segmentScreen("Individual Category Screen");
   }
 
   _fetchTransactions = async() => {

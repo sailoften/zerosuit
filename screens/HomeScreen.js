@@ -11,8 +11,7 @@ import {
 import CardView from '../common/CardView';
 import moment from 'moment';
 import * as Push from '../common/Push';
-import * as Segment from 'expo-analytics-segment';
-import { makeRequest, logoutHelper } from '../common/Utils';
+import { makeRequest, logoutHelper, segmentScreen } from '../common/Utils';
 
 export default class HomeScreen extends React.Component {
   constructor(props) {
@@ -30,8 +29,8 @@ export default class HomeScreen extends React.Component {
 
   componentDidMount() {
     this._getData();
-    Segment.screen("Home Screen");
     this._handlePush();
+    segmentScreen("Home Screen");
   }
 
   _handlePush = async () => {

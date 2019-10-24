@@ -8,16 +8,13 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {AsyncStorage} from 'react-native';
-import * as Segment from 'expo-analytics-segment';
-import getEnvVars from '../env';
-const { apiUrl } = getEnvVars();
 
 import PAText from '../common/PAText';
 import PADefaultButton from '../common/PADefaultButton';
 import PATextInput from '../common/PATextInput';
 
 import Logo from '../assets/images/masonic.png';
-import { makeRequest } from '../common/Utils';
+import { makeRequest, registerSegment } from '../common/Utils';
 
 class Login extends React.Component {
   static navigationOptions = {
@@ -45,7 +42,7 @@ class Login extends React.Component {
       const payload = await makeRequest('/api/user/login', loginData);
       if (payload && payload.id) {
         await this.storeUser(payload);
-        await this.registerSegment(payload);
+        await this.activateSegment(payload);
         this.props.navigation.navigate('App');
       } else if (payload && payload.error) {
         this.setState({ error: payload.error});
@@ -58,8 +55,8 @@ class Login extends React.Component {
     }
   }
 
-  registerSegment = async (user) => {
-    Segment.identifyWithTraits(user.id, {
+  activateSegment = async (user) => {
+    registerSegment(user.id, {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email
