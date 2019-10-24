@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import CardView from '../common/CardView';
 import moment from 'moment';
+import * as Push from '../common/Push';
 import * as Segment from 'expo-analytics-segment';
 import getEnvVars from '../env';
 const { apiUrl } = getEnvVars();
@@ -31,6 +32,28 @@ export default class HomeScreen extends React.Component {
   componentDidMount() {
     this._getData();
     Segment.screen("Home Screen");
+    this._handlePush();
+  }
+
+  _handlePush = async () => {
+    const action = await Push.status();
+    if (action === 'ask') {
+      //TODO: prompt for push notification
+      const currStatus = await Push.checkPermission();
+      let finalStatus = currStatus;
+      if (currStatus !== 'granted') {
+        finalStatus = await Push.getPermission();
+      }
+
+      if (finalStatus !== 'granted') {
+        return;
+      }
+
+      const token = await Push.retrieveToken();
+      if (token) {
+        await Push.registerToken(token);
+      }
+    }
   }
 
   _getTimeRange = (offset) => {
@@ -40,7 +63,23 @@ export default class HomeScreen extends React.Component {
     const start = now.startOf('month').toDate();;
     const end = now.endOf('month').toDate();
     return { start, end };
-}
+  }
+
+  _checkPushPermission = async () => {
+    const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+    return status;
+  }
+
+  _getPushPermission = async () => {
+    const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+    return status;
+  }
+
+  _retrieveExpoToken = async () => {
+    const token = await Notifications.getExpoPushTokenAsync();
+    console.log(token);
+    return token;
+  }
 
   _getData = async () => {
     const url = `${apiUrl}/api/transaction/home`;
@@ -61,7 +100,6 @@ export default class HomeScreen extends React.Component {
       body: JSON.stringify(body)
     });
     const payload = await res.json();
-    console.log(payload);
     if (payload.error) {
       // Return user to signin screen
       await AsyncStorage.removeItem('user');

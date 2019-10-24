@@ -1,4 +1,7 @@
-export { formatMoney, txTitle };
+import getEnvVars from '../env';
+const { apiUrl } = getEnvVars();
+
+export { formatMoney, txTitle, makeRequest };
 
 const formatMoney = (amount) => {
     if (typeof amount !== 'number') {
@@ -31,5 +34,23 @@ const txTitle = (item) => {
         } else {
           return 'Untitled Transaction'
         }
+    }
+  }
+
+  const makeRequest = async (url, body) => {
+    try {
+      const finalUrl = `${apiUrl}${url}`;
+      const res = await fetch(finalUrl, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      });
+      const payload = await res.json();
+      return payload;
+    } catch(e) {
+      return { error: e };
     }
   }
