@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, AsyncStorage, FlatList, Linking} from 'react-native';
 import * as Push from '../common/Push';
+import { logoutHelper } from '../common/Utils';
 import * as Segment from 'expo-analytics-segment';
 
 export default class UserScreen extends React.Component {
@@ -26,8 +27,7 @@ export default class UserScreen extends React.Component {
   }
 
   _userLogout = async () => {
-    await AsyncStorage.removeItem('user');
-    Segment.reset();
+    await logoutHelper();
     await Push.unregisterToken();
     this.props.navigation.navigate('Auth');
   }
