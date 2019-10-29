@@ -108,12 +108,13 @@ const txTitle = (item) => {
         isGod.status = false;
       }
     }
-    console.log("God mode status: " + isGod.status);
     return isGod.status;
   }
 
   const _useSegment = async () => {
     const isExpo = __DEV__;
     const isGodMode = await isGod();
-    return !isExpo && !isGodMode;
+    const segOn = !isExpo && !isGodMode;
+    console.log("Using Segment: " + segOn);
+    return segOn;
   }
