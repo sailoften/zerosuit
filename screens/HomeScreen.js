@@ -8,10 +8,11 @@ import {
   RefreshControl,
   SafeAreaView
 } from 'react-native';
+import { Notifications } from 'expo';
 import CardView from '../common/CardView';
 import moment from 'moment';
 import * as Push from '../common/Push';
-import { makeRequest, logoutHelper, segmentScreen } from '../common/Utils';
+import { makeRequest, logoutHelper, segmentScreen, segmentTrack } from '../common/Utils';
 
 export default class HomeScreen extends React.Component {
   constructor(props) {
@@ -30,13 +31,20 @@ export default class HomeScreen extends React.Component {
   componentDidMount() {
     this._getData();
     this._handlePush();
+    this._notificationSubscription = Notifications.addListener(this._handleNotification);
     segmentScreen("Home Screen");
+  }
+
+  _handleNotification = (notif) => {
+    if (notif && notif.origin === 'selected') {
+      console.log("Push notification opened and sent to Segment");
+      segmentTrack("Push notification opened");
+    }
   }
 
   _handlePush = async () => {
     const action = await Push.status();
     if (action === 'ask') {
-      //TODO: prompt for push notification
       const currStatus = await Push.checkPermission();
       let finalStatus = currStatus;
       if (currStatus !== 'granted') {
