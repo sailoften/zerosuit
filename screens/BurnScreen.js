@@ -67,7 +67,9 @@ export default class BurnScreen extends React.Component {
             if (burnRange.length === 0) {
                 this._getBurnRanges(payload.firstDate);
             }
-            this.setState({company: payload.company, categoryExpenses: payload.expenseInfo, totalBurn: payload.spending, loading: false});
+            //TODO: filter out categories with 0 expenses
+            const categoryExpenses = payload.expenseInfo.filter(cat => cat.total !== 0);
+            this.setState({company: payload.company, categoryExpenses, totalBurn: payload.spending, loading: false});
         }
     }
 
