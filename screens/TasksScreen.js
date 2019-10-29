@@ -119,6 +119,9 @@ export default class TasksScreen extends React.Component {
   }
 
   _renderItem = ({item}) => {
+    if (!item.masonicId) {
+      console.log(item);
+    }
       return (
         <TouchableOpacity style={styles.homeCards} onPress={() => this._onTxPress(item)}>
             <CardView style={styles.infoCard}>

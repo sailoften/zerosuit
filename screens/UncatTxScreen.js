@@ -11,7 +11,7 @@ import {
   Keyboard
 } from 'react-native';
 import CardView from '../common/CardView';
-import { formatMoney, txTitle, segmentScreen, segmentTrack } from '../common/Utils';
+import { formatMoney, txTitle, segmentScreen, segmentTrack, makeRequest } from '../common/Utils';
 import { Header } from 'react-navigation';
 
 export default class TxScreen extends React.Component {
@@ -76,7 +76,7 @@ export default class TxScreen extends React.Component {
             notes: infoText,
         }
         try {
-            const payload = await ('/api/transaction/categorize', body);
+            const payload = await makeRequest('/api/transaction/categorize', body);
             if (!payload || !payload.updatedTxn) {
                throw "Could not save";
             }
