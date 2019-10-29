@@ -3,7 +3,7 @@ import * as Segment from 'expo-analytics-segment';
 import getEnvVars from '../env';
 const { apiUrl } = getEnvVars();
 
-export { formatMoney, txTitle, makeRequest, registerSegment, unregisterSegment, segmentScreen, segmentTrack, isGodMode };
+export { formatMoney, txTitle, makeRequest, registerSegment, unregisterSegment, segmentScreen, segmentTrack, logoutHelper };
 
 const formatMoney = (amount) => {
     if (typeof amount !== 'number') {
@@ -57,6 +57,12 @@ const txTitle = (item) => {
     }
   }
 
+  const logoutHelper = async () => {
+    Segment.reset();
+    await AsyncStorage.removeItem('user');
+    isGod.status = undefined;
+  }
+
   const unregisterSegment = async () => {
     const active = await _useSegment();
     if (active) {
@@ -78,6 +84,7 @@ const txTitle = (item) => {
   const segmentScreen = async (name) => {
     const active = await _useSegment();
     if (active) {
+      console.log("On this screen: " + name);
       Segment.screen(name);
     }
   }
@@ -90,25 +97,24 @@ const txTitle = (item) => {
   }
 
   // Check if God Mode is enabled
+  // Cached state from localStorage
   const isGod = async () => {
-    if (typeof enableGod.status == 'undefined') {
+    if (typeof isGod.status == 'undefined') {
       const userString = await AsyncStorage.getItem('user');
       const user = JSON.parse(userString);
-      console.log(user);
-      //TODO: change to godmode
-      if (user.firstName === 'Jimmy') {
-        enableGod.status = true;
+      if (user.isGod === true) {
+        isGod.status = true;
       } else {
-        enableGod.status = false;
+        isGod.status = false;
       }
-    } else if (enableGod.status === true) {
-      return true;
     }
-    return false;
+    return isGod.status;
   }
 
   const _useSegment = async () => {
     const isExpo = __DEV__;
     const isGodMode = await isGod();
-    return !isExpo && !isGodMode;
+    const segOn = !isExpo && !isGodMode;
+    console.log("Using Segment: " + segOn);
+    return segOn;
   }

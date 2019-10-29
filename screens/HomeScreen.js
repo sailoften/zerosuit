@@ -8,11 +8,11 @@ import {
   RefreshControl,
   SafeAreaView
 } from 'react-native';
+import { Notifications } from 'expo';
 import CardView from '../common/CardView';
 import moment from 'moment';
 import * as Push from '../common/Push';
-import * as Segment from 'expo-analytics-segment';
-import { makeRequest, enableGod } from '../common/Utils';
+import { makeRequest, logoutHelper, segmentScreen, segmentTrack } from '../common/Utils';
 
 export default class HomeScreen extends React.Component {
   constructor(props) {
@@ -30,14 +30,21 @@ export default class HomeScreen extends React.Component {
 
   componentDidMount() {
     this._getData();
-    Segment.screen("Home Screen");
     this._handlePush();
+    this._notificationSubscription = Notifications.addListener(this._handleNotification);
+    segmentScreen("Home Screen");
+  }
+
+  _handleNotification = (notif) => {
+    if (notif && notif.origin === 'selected') {
+      console.log("Push notification opened and sent to Segment" + JSON.stringify(notif.data));
+      segmentTrack("Push notification opened", notif.data);
+    }
   }
 
   _handlePush = async () => {
     const action = await Push.status();
     if (action === 'ask') {
-      //TODO: prompt for push notification
       const currStatus = await Push.checkPermission();
       let finalStatus = currStatus;
       if (currStatus !== 'granted') {
@@ -81,10 +88,6 @@ export default class HomeScreen extends React.Component {
   }
 
   _getData = async () => {
-    await enableGod();
-    const x = await enableGod();
-    console.log(x);
-    await enableGod();
     const dates = this._getTimeRange();
     const burnDates = this._getTimeRange(1);
     const body = {
@@ -96,7 +99,7 @@ export default class HomeScreen extends React.Component {
     const payload = await makeRequest('/api/transaction/home', body);
     if (payload.error) {
       // Return user to signin screen
-      await AsyncStorage.removeItem('user');
+      await logoutHelper();
       this.props.navigation.navigate('Auth');
       return;
     }

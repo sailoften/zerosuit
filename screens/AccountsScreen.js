@@ -1,8 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Text, SectionList} from 'react-native';
 import _ from 'lodash';
-import * as Segment from 'expo-analytics-segment';
-import { makeRequest } from '../common/Utils';
+import { makeRequest, segmentScreen } from '../common/Utils';
 
 export default class AccountsScreen extends React.Component {
   constructor(props) {
@@ -14,7 +13,7 @@ export default class AccountsScreen extends React.Component {
 
   componentDidMount() {
       this._getAccounts();
-      Segment.screen("Connected Accounts Screen");
+      segmentScreen("Connected Accounts Screen");
   }
 
   _getAccounts= async () => {

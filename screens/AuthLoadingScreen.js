@@ -5,7 +5,7 @@ import {
   StatusBar,
   View,
 } from 'react-native';
-import * as Segment from 'expo-analytics-segment';
+import { registerSegment } from '../common/Utils';
 
 class AuthLoadingScreen extends React.Component {
   constructor(props) {
@@ -17,7 +17,7 @@ class AuthLoadingScreen extends React.Component {
     const userToken = await AsyncStorage.getItem('user');
     if (userToken) {
       const user = JSON.parse(userToken);
-      Segment.identifyWithTraits(user.id, {
+      registerSegment(user.id, {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email

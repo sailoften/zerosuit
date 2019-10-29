@@ -2,10 +2,9 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, FlatList, View, TouchableOpacity, RefreshControl } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import RNPickerSelect from 'react-native-picker-select';
-import * as Segment from 'expo-analytics-segment';
 import CardView from '../common/CardView';
 import moment from 'moment';
-import { makeRequest } from '../common/Utils';
+import { makeRequest, segmentScreen, segmentTrack } from '../common/Utils';
 
 export default class BurnScreen extends React.Component {
     constructor(props) {
@@ -68,7 +67,8 @@ export default class BurnScreen extends React.Component {
             if (burnRange.length === 0) {
                 this._getBurnRanges(payload.firstDate);
             }
-            this.setState({company: payload.company, categoryExpenses: payload.expenseInfo, totalBurn: payload.spending, loading: false});
+            const categoryExpenses = payload.expenseInfo.filter(cat => cat.total !== 0);
+            this.setState({company: payload.company, categoryExpenses, totalBurn: payload.spending, loading: false});
         }
     }
 
@@ -82,7 +82,7 @@ export default class BurnScreen extends React.Component {
         const dates = this._monthYear(monthYear);
         this.setState({startDate: dates.start, endDate: dates.end, currMonth: monthYear });
         await this._getData(dates.start, dates.end);
-        Segment.trackWithProperties("Changed burn month", { month: monthYear });
+        segmentTrack("Changed burn month", { month: monthYear });
     }
 
     _moneyFormat = (amount) => {
@@ -100,7 +100,7 @@ export default class BurnScreen extends React.Component {
 
     _goToExpense = (category, categoryId) => {
         const { startDate, endDate } = this.state;
-        Segment.trackWithProperties("Selected Indiv Category", { category, categoryId });
+        segmentTrack("Selected Indiv Category", { category, categoryId });
         this.props.navigation.navigate('Category', {
             cat: category,
             catId: categoryId, 
@@ -124,7 +124,7 @@ export default class BurnScreen extends React.Component {
 
     componentDidMount() {
         this._getData();
-        Segment.screen("Burn Screen");
+        segmentScreen("Burn Screen");
     }
 
     render() {
