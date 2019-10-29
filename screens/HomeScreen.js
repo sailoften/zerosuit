@@ -37,8 +37,8 @@ export default class HomeScreen extends React.Component {
 
   _handleNotification = (notif) => {
     if (notif && notif.origin === 'selected') {
-      console.log("Push notification opened and sent to Segment");
-      segmentTrack("Push notification opened");
+      console.log("Push notification opened and sent to Segment" + JSON.stringify(notif.data));
+      segmentTrack("Push notification opened", notif.data);
     }
   }
 
