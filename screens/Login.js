@@ -42,7 +42,7 @@ class Login extends React.Component {
       const payload = await makeRequest('/api/user/login', loginData);
       if (payload && payload.id) {
         await this.storeUser(payload);
-        await this.activateSegment(payload);
+        await registerSegment(payload);
         this.props.navigation.navigate('App');
       } else if (payload && payload.error) {
         this.setState({ error: payload.error});
@@ -53,14 +53,6 @@ class Login extends React.Component {
       console.log("Login error: " + e);
       this.setState({ error: 'Error logging in' });
     }
-  }
-
-  activateSegment = async (user) => {
-    registerSegment(user.id, {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email
-    });
   }
 
   storeUser = async (user) => {
