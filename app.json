@@ -9,7 +9,7 @@
       "android",
       "web"
     ],
-    "version": "2.0.1",
+    "version": "2.0.3",
     "orientation": "portrait",
     "icon": "./assets/images/masonic_1024.png",
     "splash": {
@@ -29,7 +29,7 @@
     },
     "android": {
       "package": "com.masonic.masonicapp",
-      "versionCode": 2,
+      "versionCode": 3,
       "googleServicesFile": "./google-services.json"
     }
   }
