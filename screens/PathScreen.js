@@ -3,6 +3,7 @@ import {StyleSheet, Dimensions} from 'react-native';
 import { TabView } from 'react-native-tab-view';
 
 import BurnScreen from './BurnScreen';
+import IncomeScreen from './IncomeScreen';
 import RunwayScreen from './RunwayScreen';
 
 export default class PathTabScreen extends React.Component {
@@ -13,7 +14,8 @@ export default class PathTabScreen extends React.Component {
       index: 0,
       routes: [
         { key: 'first', title: 'Burn' },
-        { key: 'second', title: 'Runway' },
+        { key: 'second', title: 'Income'},
+        { key: 'third', title: 'Runway' },
       ],
     };
   }
@@ -37,6 +39,8 @@ export default class PathTabScreen extends React.Component {
       case 'first':
         return <BurnScreen navigation={this.props.navigation} />;
       case 'second':
+            return <IncomeScreen navigation={this.props.navigation} />;
+      case 'third':
         return <RunwayScreen navigation={this.props.navigation} />;
       default:
         return null;
