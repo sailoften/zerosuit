@@ -17,7 +17,7 @@ class AuthLoadingScreen extends React.Component {
     const userToken = await AsyncStorage.getItem('user');
     if (userToken) {
       const user = JSON.parse(userToken);
-      registerSegment(user);
+      await registerSegment(user);
     }
     this.props.navigation.navigate(userToken ? 'App' : 'Auth');
   };
