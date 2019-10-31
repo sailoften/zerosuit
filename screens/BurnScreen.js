@@ -176,7 +176,7 @@ export default class BurnScreen extends React.Component {
                 </CardView>
                 { live && <CardView>
                     <Text style={styles.cardTitleText}>Displaying Live Data</Text>
-                    <Text>We include real-time data for current month burn information. Categorizations may change as we review transactions.</Text>
+                    <Text style={styles.cardText}>We include real-time data for current month burn information. Categorizations may change as we review transactions.</Text>
                 </CardView> }
                 <CardView style={styles.expenseCard}>
                     <Text style={styles.expenseTitle}>Company Expenses</Text>
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
   },
   burnCard: {
     paddingVertical: 60,
-    paddingHorizontal: 40,
+    paddingHorizontal: 20,
   },
   burnPickerCard: {
     paddingVertical: 20, 
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
   },
   burnAmount: {
     textAlign: 'center',
-    fontSize:25,
+    fontSize:23,
     lineHeight: 35,
   },
   expenseTitle: {
@@ -236,6 +236,9 @@ const styles = StyleSheet.create({
   cardTitleText: {
     fontWeight: '600',
     marginBottom: 12,
+  },
+  cardText: {
+    lineHeight: 22,
   }
 });
 

@@ -17,6 +17,8 @@ export default class IncomeScreen extends React.Component {
             income: 0,
             expense: 0,
             cog: 0,
+            netIncome: 0,
+            grossProfit: 0,
             startDate: date.start,
             endDate: date.end,
             company: '',
@@ -25,7 +27,14 @@ export default class IncomeScreen extends React.Component {
             currMonth: date.curr,
             loading: true,
             refreshing: false,
+            live: false,
+            noData: false,
         }
+    }
+
+    componentDidMount() {
+        this._getData();
+        segmentScreen("Income Screen");
     }
 
     _getTimeRange = () => {
@@ -60,6 +69,7 @@ export default class IncomeScreen extends React.Component {
     _getData = async (start, end) => {
         this.setState({ loading: true});
         const { startDate, endDate, burnRange } = this.state;
+        const live = this._isLive(start ? start : startDate);
         console.log("StartDate: " + startDate + " EndDate: " + endDate);
         const body = {
             startDate: start ? start : startDate,
@@ -70,10 +80,24 @@ export default class IncomeScreen extends React.Component {
             if (burnRange.length === 0) {
                 this._getBurnRanges(payload.firstDate);
             }
+            /*if (payload.income === 0 && payload.cog === 0) {
+                this.setState({ noData: true, loading: false });
+                return;
+            }*/
             const categoryIncome = payload.incomeInfo.filter(cat => cat.total !== 0);
             const categoryCog = payload.cogInfo.filter(cat => cat.total !== 0);
-            this.setState({company: payload.company, categoryIncome, categoryCog, income: payload.income, cog: payload.cog, expense: payload.spending, loading: false});
+            const grossProfit = payload.income + payload.cog;
+            const netIncome = payload.income + payload.cog + payload.spending;
+            this.setState({company: payload.company, categoryIncome, categoryCog, income: payload.income, cog: payload.cog, expense: payload.spending, grossProfit, netIncome, live, loading: false, noData: false});
         }
+    }
+
+    // Check if current month, if so return true to display live data panel
+    _isLive = (monthYear) => {
+        const date = moment.utc(monthYear);
+        const now = moment.utc();
+        console.log(date, now);
+        return date.isSame(now, 'month');
     }
 
     _onRefresh = async () => {
@@ -86,7 +110,7 @@ export default class IncomeScreen extends React.Component {
         const dates = this._monthYear(monthYear);
         this.setState({startDate: dates.start, endDate: dates.end, currMonth: monthYear });
         await this._getData(dates.start, dates.end);
-        segmentTrack("Changed burn month", { month: monthYear });
+        segmentTrack("Changed income month", { month: monthYear });
     }
 
     _moneyFormat = (amount) => {
@@ -113,13 +137,9 @@ export default class IncomeScreen extends React.Component {
         });
     }
 
-    componentDidMount() {
-        this._getData();
-        segmentScreen("Burn Screen");
-    }
-
+    //TODO: handle months with no income information
     render() {
-        const { categoryIncome, categoryCog, income, burnRange, currMonth, company, loading, refreshing } = this.state;
+        const { categoryIncome, categoryCog, income, cog, expense, burnRange, currMonth, grossProfit, netIncome, loading, refreshing, noData, live } = this.state;
         return (
             <ScrollView style={styles.container} 
                 refreshControl={
@@ -143,12 +163,20 @@ export default class IncomeScreen extends React.Component {
                     }}
                 />
               </CardView>
-              { !loading && <View>
-                <CardView style={styles.burnCard}>
-                    <Text style={styles.burnAmount}>{company} spent {formatMoney(income)} in {currMonth}</Text>
+              { !loading && !noData && !live && <View>
+                <CardView>
+                    <Text style={styles.cardTitleText}>Stats for { currMonth }</Text>
+                    <Text>Income: {formatMoney(income)}</Text>
+                    <Text>Cost of Goods Sold: {formatMoney(cog)}</Text>
+                    <Text>Gross Profit: {formatMoney(grossProfit)}</Text>
+                    <Text>Expenses: {formatMoney(expense)}</Text>
+                    <Text>Ramen Profit: {formatMoney(netIncome)}</Text>
                 </CardView>
                 <CardView style={styles.expenseCard}>
-                    <Text style={styles.expenseTitle}>Income</Text>
+                    <View style={{flex: 1, flexDirection: 'row'}}>
+                        <Text style={styles.expenseTitle}>Income</Text>
+                        <Text style={{...styles.expenseTitle, textAlign: 'right'}}>{formatMoney(income)}</Text>
+                    </View>
                     <FlatList
                         data={categoryIncome}
                         keyExtractor={(item) => item.categoryId}
@@ -156,7 +184,10 @@ export default class IncomeScreen extends React.Component {
                     />
                 </CardView>
                 <CardView style={styles.expenseCard}>
-                    <Text style={styles.expenseTitle}>Cost of Goods Sold</Text>
+                    <View style={{flex: 1, flexDirection: 'row'}}>
+                        <Text style={styles.expenseTitle}>Cost of Goods Sold</Text>
+                        <Text style={{...styles.expenseTitle, textAlign: 'right'}}>{formatMoney(cog)}</Text>
+                    </View>
                     <FlatList
                         data={categoryCog}
                         keyExtractor={(item) => item.categoryId}
@@ -164,10 +195,18 @@ export default class IncomeScreen extends React.Component {
                     />
                 </CardView>
               </View> }
+              { !loading && live &&
+              <CardView>
+                <Text style={styles.cardTitleText}>Finalizing Data for { currMonth }</Text>
+                <Text style={styles.cardText}>We're working on finalizing income data for this month. Check back soon!</Text>
+              </CardView>
+              }
             </ScrollView>
         );
     }
 }
+
+// Green color: #6ba206
 
 const styles = StyleSheet.create({
   container: {
@@ -191,6 +230,7 @@ const styles = StyleSheet.create({
   expenseTitle: {
     marginBottom: 20,
     fontWeight:"700",
+    width: '50%',
   },
   expenseCat: {
     paddingVertical: 15,
@@ -198,6 +238,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     flex: 1,
     flexDirection: 'row',
+  },
+  cardTitleText: {
+    fontWeight: '600',
+    marginBottom: 12,
+  },
+  cardText: {
+      lineHeight: 22,
   }
 });
 

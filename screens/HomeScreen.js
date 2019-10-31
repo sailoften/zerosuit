@@ -194,11 +194,11 @@ const styles = StyleSheet.create({
   },
   burnCard: {
     paddingVertical: 60,
-    paddingHorizontal: 40,
+    paddingHorizontal: 20,
   },
   burnAmount: {
     textAlign: 'center',
-    fontSize:25,
+    fontSize:23,
     lineHeight: 35,
   },
   safeArea: {
