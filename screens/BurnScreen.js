@@ -22,9 +22,16 @@ export default class BurnScreen extends React.Component {
             currMonth: date.curr,
             loading: true,
             refreshing: false,
+            live: false,
         }
     }
 
+    componentDidMount() {
+        this._getData();
+        segmentScreen("Burn Screen");
+    }
+
+    // Get current month time range for instatiation
     _getTimeRange = () => {
         const now = moment.utc();
         const start = now.startOf('month').toDate();;
@@ -33,6 +40,7 @@ export default class BurnScreen extends React.Component {
         return { start, end, curr };
     }
 
+    // Take in a month year (e.g. July 2019) and convert it to a Date string
     _monthYear = (myear) => {
         const date = moment.utc(myear, "MMMM, YYYY");
         const start = date.startOf('month').toDate();;
@@ -40,6 +48,7 @@ export default class BurnScreen extends React.Component {
         return { start, end };
     }
 
+    // Based on inception transaction, generate range of possible months for company
     _getBurnRanges = (firstDate) => {
         const inceptionNumber = parseInt(moment(firstDate).format('YYYYMM'));
         const now = moment();
@@ -54,9 +63,11 @@ export default class BurnScreen extends React.Component {
         return range;
     }
 
+    // Retrieve data from the server for burn data
     _getData = async (start, end) => {
         this.setState({ loading: true});
         const { startDate, endDate, burnRange } = this.state;
+        const live = this._isLive(start ? start : startDate);
         console.log("StartDate: " + startDate + " EndDate: " + endDate);
         const body = {
             startDate: start ? start : startDate,
@@ -68,8 +79,16 @@ export default class BurnScreen extends React.Component {
                 this._getBurnRanges(payload.firstDate);
             }
             const categoryExpenses = payload.expenseInfo.filter(cat => cat.total !== 0);
-            this.setState({company: payload.company, categoryExpenses, totalBurn: payload.spending, loading: false});
+            this.setState({company: payload.company, categoryExpenses, totalBurn: payload.spending, loading: false, live});
         }
+    }
+
+    // Check if current month, if so return true to display live data panel
+    _isLive = (monthYear) => {
+        const date = moment.utc(monthYear);
+        const now = moment.utc();
+        console.log(date, now);
+        return date.isSame(now, 'month');
     }
 
     _onRefresh = async () => {
@@ -79,6 +98,10 @@ export default class BurnScreen extends React.Component {
     }
 
     _changeDates = async (monthYear) => {
+        const { currMonth } = this.state;
+        if (monthYear === currMonth) {
+            return;
+        }
         const dates = this._monthYear(monthYear);
         this.setState({startDate: dates.start, endDate: dates.end, currMonth: monthYear });
         await this._getData(dates.start, dates.end);
@@ -122,14 +145,8 @@ export default class BurnScreen extends React.Component {
         );
     }
 
-    componentDidMount() {
-        this._getData();
-        segmentScreen("Burn Screen");
-    }
-
     render() {
-        const { categoryExpenses, totalBurn, burnRange, currMonth, company, loading, refreshing } = this.state;
-        //TODO: put button in for date picker
+        const { categoryExpenses, totalBurn, burnRange, currMonth, company, loading, refreshing, live } = this.state;
         return (
             <ScrollView style={styles.container} 
                 refreshControl={
@@ -157,6 +174,10 @@ export default class BurnScreen extends React.Component {
                 <CardView style={styles.burnCard}>
                     <Text style={styles.burnAmount}>{company} spent ${this._moneyFormat(totalBurn)} in {currMonth}</Text>
                 </CardView>
+                { live && <CardView>
+                    <Text style={styles.cardTitleText}>Displaying Live Data</Text>
+                    <Text>We include real-time data for current month burn information. Categorizations may change as we review transactions.</Text>
+                </CardView> }
                 <CardView style={styles.expenseCard}>
                     <Text style={styles.expenseTitle}>Company Expenses</Text>
                     <FlatList
@@ -211,6 +232,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     flex: 1,
     flexDirection: 'row',
+  },
+  cardTitleText: {
+    fontWeight: '600',
+    marginBottom: 12,
   }
 });
 

@@ -4,16 +4,19 @@ import { Ionicons } from '@expo/vector-icons';
 import RNPickerSelect from 'react-native-picker-select';
 import CardView from '../common/CardView';
 import moment from 'moment';
-import { makeRequest, segmentScreen, segmentTrack } from '../common/Utils';
+import { makeRequest, segmentScreen, segmentTrack, formatMoney } from '../common/Utils';
 
 export default class IncomeScreen extends React.Component {
     constructor(props) {
         super(props);
         const date = this._getTimeRange();
         this.state = {
-            categoryExpenses: [],
+            categoryIncome: [],
+            categoryCog: [],
             peopleSpending: [],
-            totalBurn: 0,
+            income: 0,
+            expense: 0,
+            cog: 0,
             startDate: date.start,
             endDate: date.end,
             company: '',
@@ -67,8 +70,9 @@ export default class IncomeScreen extends React.Component {
             if (burnRange.length === 0) {
                 this._getBurnRanges(payload.firstDate);
             }
-            const categoryExpenses = payload.expenseInfo.filter(cat => cat.total !== 0);
-            this.setState({company: payload.company, categoryExpenses, totalBurn: payload.spending, loading: false});
+            const categoryIncome = payload.incomeInfo.filter(cat => cat.total !== 0);
+            const categoryCog = payload.cogInfo.filter(cat => cat.total !== 0);
+            this.setState({company: payload.company, categoryIncome, categoryCog, income: payload.income, cog: payload.cog, expense: payload.spending, loading: false});
         }
     }
 
@@ -93,7 +97,7 @@ export default class IncomeScreen extends React.Component {
         return (
             <TouchableOpacity style={styles.expenseCat} onPress={() => this._goToExpense(item.category, item.categoryId)}>
                 <Text style={{width: '50%'}}>{item.category}</Text>
-                <Text style={{width: '50%', textAlign: 'right'}}>${this._moneyFormat(item.total)}</Text>
+                <Text style={{width: '50%', textAlign: 'right'}}>{formatMoney(item.total)}</Text>
             </TouchableOpacity>
         );
     }
@@ -103,23 +107,10 @@ export default class IncomeScreen extends React.Component {
         segmentTrack("Selected Indiv Category", { category, categoryId });
         this.props.navigation.navigate('Category', {
             cat: category,
-            catId: categoryId, 
+            catId: categoryId,
             startDate,
             endDate
         });
-    }
-
-    // Deprecated
-    _renderPeople = ({item}) => {
-        if (item.person === "null") {
-            item.person = 'Company';
-        }
-        return (
-            <View style={styles.expenseCat}>
-                <Text style={{width: '50%'}}>{item.person}</Text>
-                <Text style={{width: '50%', textAlign: 'right'}}>${this._moneyFormat(item.amount)}</Text>
-            </View>
-        );
     }
 
     componentDidMount() {
@@ -128,8 +119,7 @@ export default class IncomeScreen extends React.Component {
     }
 
     render() {
-        const { categoryExpenses, totalBurn, burnRange, currMonth, company, loading, refreshing } = this.state;
-        //TODO: put button in for date picker
+        const { categoryIncome, categoryCog, income, burnRange, currMonth, company, loading, refreshing } = this.state;
         return (
             <ScrollView style={styles.container} 
                 refreshControl={
@@ -155,12 +145,20 @@ export default class IncomeScreen extends React.Component {
               </CardView>
               { !loading && <View>
                 <CardView style={styles.burnCard}>
-                    <Text style={styles.burnAmount}>{company} spent ${this._moneyFormat(totalBurn)} in {currMonth}</Text>
+                    <Text style={styles.burnAmount}>{company} spent {formatMoney(income)} in {currMonth}</Text>
                 </CardView>
                 <CardView style={styles.expenseCard}>
-                    <Text style={styles.expenseTitle}>Company Expenses</Text>
+                    <Text style={styles.expenseTitle}>Income</Text>
                     <FlatList
-                        data={categoryExpenses}
+                        data={categoryIncome}
+                        keyExtractor={(item) => item.categoryId}
+                        renderItem={this._renderExpenses}
+                    />
+                </CardView>
+                <CardView style={styles.expenseCard}>
+                    <Text style={styles.expenseTitle}>Cost of Goods Sold</Text>
+                    <FlatList
+                        data={categoryCog}
                         keyExtractor={(item) => item.categoryId}
                         renderItem={this._renderExpenses}
                     />
