@@ -4,6 +4,7 @@ import PATextInput from '../common/PATextInput';
 import { Ionicons } from '@expo/vector-icons';
 import _ from 'lodash';
 import { formatMoney, txTitle, makeRequest, segmentScreen } from '../common/Utils';
+import moment from 'moment';
 
 export default class CategoryView extends React.Component {
   constructor(props) {
@@ -46,9 +47,11 @@ export default class CategoryView extends React.Component {
     this.setState({ refreshing: false});
   }
 
+  //TODO: use UTC time for this
   _transformTransactions = async(payload) => {
     const payloadGrouped = _.chain(payload).groupBy((tx) => {
-      const timeStamp = new Date(tx.transactionDate).toDateString();
+      //const timeStamp = new Date(tx.transactionDate).toDateString();
+      const timeStamp = moment.utc(tx.transactionDate).format("dddd, MMM Do YYYY");
       return timeStamp;
     }).map((data, title) => ({ title, data })).value();
     this.setState({sections: payloadGrouped, allSections: payloadGrouped})

@@ -11,7 +11,7 @@ import {
   Keyboard
 } from 'react-native';
 import CardView from '../common/CardView';
-import { formatMoney, txTitle, segmentScreen, segmentTrack, makeRequest } from '../common/Utils';
+import { formatMoney, txTitle, segmentScreen, segmentTrack, makeRequest, dateFormat } from '../common/Utils';
 import { Header } from 'react-navigation';
 
 export default class TxScreen extends React.Component {
@@ -36,11 +36,6 @@ export default class TxScreen extends React.Component {
         return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
     }
 
-    _dateFormat = (dateString) => {
-        const dateObj = new Date(dateString);
-        return dateObj.toLocaleDateString();
-    }
-
     _renderItem = ({item}) => {
         if (item.key && item.desp) {
             return (
@@ -55,7 +50,7 @@ export default class TxScreen extends React.Component {
     _getData = () => {
         const { tx } = this.state;
         return [
-            {key: 'Date', desp: this._dateFormat(tx.transactionDate)},
+            {key: 'Date', desp: dateFormat(tx.transactionDate)},
             {key: 'Person', desp: tx.transactionOwner},
             {key: 'Account', desp: tx.qbAccount.accountName},
             {key: 'Comments', desp: tx.memo},

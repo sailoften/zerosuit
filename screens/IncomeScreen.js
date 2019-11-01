@@ -27,7 +27,6 @@ export default class IncomeScreen extends React.Component {
             currMonth: date.curr,
             loading: true,
             refreshing: false,
-            live: false,
             noData: false,
         }
     }
@@ -69,8 +68,8 @@ export default class IncomeScreen extends React.Component {
     _getData = async (start, end) => {
         this.setState({ loading: true});
         const { startDate, endDate, burnRange } = this.state;
-        const live = this._isLive(start ? start : startDate);
-        console.log("StartDate: " + startDate + " EndDate: " + endDate);
+        //const live = this._isLive(start ? start : startDate);
+        //console.log("StartDate: " + startDate + " EndDate: " + endDate);
         const body = {
             startDate: start ? start : startDate,
             endDate: end ? end : endDate
@@ -80,15 +79,15 @@ export default class IncomeScreen extends React.Component {
             if (burnRange.length === 0) {
                 this._getBurnRanges(payload.firstDate);
             }
-            /*if (payload.income === 0 && payload.cog === 0) {
+            if (payload.income === 0 && payload.cog === 0) {
                 this.setState({ noData: true, loading: false });
                 return;
-            }*/
-            const categoryIncome = payload.incomeInfo.filter(cat => cat.total !== 0);
+            }
+            const categoryIncome = payload.incomeInfo.filter(cat => cat.total !== 0).reverse();
             const categoryCog = payload.cogInfo.filter(cat => cat.total !== 0);
             const grossProfit = payload.income + payload.cog;
             const netIncome = payload.income + payload.cog + payload.spending;
-            this.setState({company: payload.company, categoryIncome, categoryCog, income: payload.income, cog: payload.cog, expense: payload.spending, grossProfit, netIncome, live, loading: false, noData: false});
+            this.setState({company: payload.company, categoryIncome, categoryCog, income: payload.income, cog: payload.cog, expense: payload.spending, grossProfit, netIncome, loading: false, noData: false});
         }
     }
 
@@ -157,7 +156,7 @@ export default class IncomeScreen extends React.Component {
 
     //TODO: handle months with no income information
     render() {
-        const { categoryIncome, categoryCog, income, cog, expense, burnRange, currMonth, grossProfit, netIncome, loading, refreshing, noData, live } = this.state;
+        const { categoryIncome, categoryCog, income, cog, expense, burnRange, currMonth, grossProfit, netIncome, loading, refreshing, noData } = this.state;
         return (
             <ScrollView style={styles.container} 
                 refreshControl={
@@ -181,7 +180,7 @@ export default class IncomeScreen extends React.Component {
                     }}
                 />
               </CardView>
-              { !loading && !noData && !live && <View>
+              { !loading && !noData && <View>
                   <View style={{ flex: 1, flexDirection: 'row'}}>
                     <View style={{width: '50%'}}>
                         <CardView style={{ marginRight: 5, marginLeft: 10}}>
@@ -238,10 +237,10 @@ export default class IncomeScreen extends React.Component {
                     />
                 </CardView>
               </View> }
-              { !loading && live &&
+              { !loading && noData &&
               <CardView>
-                <Text style={styles.cardTitleText}>Finalizing Income Data for { currMonth }</Text>
-                <Text style={styles.cardText}>We're working on finalizing income data for this month. Check back soon!</Text>
+                <Text style={styles.cardTitleText}>Finalizing Revenue Data</Text>
+                <Text style={styles.cardText}>We're working on finalizing income data for { currMonth }. Check back soon!</Text>
               </CardView>
               }
             </ScrollView>
