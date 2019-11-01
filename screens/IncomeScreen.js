@@ -106,6 +106,10 @@ export default class IncomeScreen extends React.Component {
     }
 
     _changeDates = async (monthYear) => {
+        const { currMonth } = this.state;
+        if (monthYear === currMonth) {
+            return;
+        }
         const dates = this._monthYear(monthYear);
         this.setState({startDate: dates.start, endDate: dates.end, currMonth: monthYear });
         await this._getData(dates.start, dates.end);

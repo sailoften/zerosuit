@@ -4,7 +4,7 @@ import moment from 'moment';
 import getEnvVars from '../env';
 const { apiUrl } = getEnvVars();
 
-export { formatMoney, txTitle, dateFormat, makeRequest, registerSegment, unregisterSegment, segmentScreen, segmentTrack, logoutHelper };
+export { formatMoney, txTitle, dateFormat, makeRequest, registerSegment, unregisterSegment, segmentScreen, segmentTrack, logoutHelper, timer };
 
 const formatMoney = (amount) => {
     if (typeof amount !== 'number') {
@@ -115,6 +115,13 @@ const txTitle = (item) => {
       }
     }
     return isGod.status;
+  }
+
+
+  const timer = () => {
+    const d = new Date();
+    const n = d.getTime();
+    console.log(n);
   }
 
   const _useSegment = async () => {
