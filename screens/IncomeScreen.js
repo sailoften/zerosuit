@@ -94,8 +94,8 @@ export default class IncomeScreen extends React.Component {
 
     // Check if current month, if so return true to display live data panel
     _isLive = (monthYear) => {
-        const date = moment.utc(monthYear);
-        const now = moment.utc();
+        const date = moment(monthYear);
+        const now = moment();
         console.log(date, now);
         return date.isSame(now, 'month');
     }
@@ -121,9 +121,13 @@ export default class IncomeScreen extends React.Component {
         return (
             <TouchableOpacity style={styles.expenseCat} onPress={() => this._goToExpense(item.category, item.categoryId)}>
                 <Text style={{width: '50%'}}>{item.category}</Text>
-                <Text style={{width: '50%', textAlign: 'right'}}>{formatMoney(item.total)}</Text>
+                <Text style={{width: '50%', textAlign: 'right'}}>{this._renderNumber(item.total)}</Text>
             </TouchableOpacity>
         );
+    }
+
+    _formatMoney = (amount) => {
+        return formatMoney(-amount);
     }
 
     _goToExpense = (category, categoryId) => {
@@ -136,6 +140,20 @@ export default class IncomeScreen extends React.Component {
             endDate
         });
     }
+
+    _renderNumber = (num) => {
+        const number = this._formatMoney(num);
+        if (number.includes('+')) {
+            return (
+                <Text style={{color: '#6ba206'}}>{number}</Text>
+            )
+        } else {
+            return (
+                <Text style={{color: '#101d2f'}}>{number}</Text>
+            );
+        }
+    }
+
 
     //TODO: handle months with no income information
     render() {
@@ -164,18 +182,30 @@ export default class IncomeScreen extends React.Component {
                 />
               </CardView>
               { !loading && !noData && !live && <View>
+                  <View style={{ flex: 1, flexDirection: 'row'}}>
+                    <View style={{width: '50%'}}>
+                        <CardView style={{ marginRight: 5, marginLeft: 10}}>
+                            <Text style={styles.cardTitleText}>Income</Text>
+                            <Text style={styles.cardNumber}>{this._renderNumber(income)}</Text>
+                        </CardView>
+                    </View>
+                    <View style={{width: '50%'}}>
+                        <CardView style={{ marginRight: 10, marginLeft: 5}}>
+                            <Text style={styles.cardTitleText}>Cost of Goods Sold</Text>
+                            <Text style={styles.cardNumber}>{this._renderNumber(cog)}</Text>
+                        </CardView>
+                    </View>
+                  </View>
                 <CardView>
-                    <Text style={styles.cardTitleText}>Stats for { currMonth }</Text>
-                    <Text>Income: {formatMoney(income)}</Text>
-                    <Text>Cost of Goods Sold: {formatMoney(cog)}</Text>
-                    <Text>Gross Profit: {formatMoney(grossProfit)}</Text>
-                    <Text>Expenses: {formatMoney(expense)}</Text>
-                    <Text>Ramen Profit: {formatMoney(netIncome)}</Text>
+                    <Text style={styles.cardTitleText}>Ramen Profibility Indicator</Text>
+                    <Text>Gross Profit: {this._renderNumber(grossProfit)}</Text>
+                    <Text>Expenses: {this._renderNumber(expense)}</Text>
+                    <Text>Ramen Profit: {this._renderNumber(netIncome)}</Text>
                 </CardView>
                 <CardView style={styles.expenseCard}>
                     <View style={{flex: 1, flexDirection: 'row'}}>
-                        <Text style={styles.expenseTitle}>Income</Text>
-                        <Text style={{...styles.expenseTitle, textAlign: 'right'}}>{formatMoney(income)}</Text>
+                        <Text style={styles.expenseTitle}>Income Breakdown</Text>
+                        <Text style={{...styles.expenseTitle, textAlign: 'right'}}>{this._renderNumber(income)}</Text>
                     </View>
                     <FlatList
                         data={categoryIncome}
@@ -185,8 +215,8 @@ export default class IncomeScreen extends React.Component {
                 </CardView>
                 <CardView style={styles.expenseCard}>
                     <View style={{flex: 1, flexDirection: 'row'}}>
-                        <Text style={styles.expenseTitle}>Cost of Goods Sold</Text>
-                        <Text style={{...styles.expenseTitle, textAlign: 'right'}}>{formatMoney(cog)}</Text>
+                        <Text style={styles.expenseTitle}>COGS Breakdown</Text>
+                        <Text style={{...styles.expenseTitle, textAlign: 'right'}}>{this._renderNumber(cog)}</Text>
                     </View>
                     <FlatList
                         data={categoryCog}
@@ -197,7 +227,7 @@ export default class IncomeScreen extends React.Component {
               </View> }
               { !loading && live &&
               <CardView>
-                <Text style={styles.cardTitleText}>Finalizing Data for { currMonth }</Text>
+                <Text style={styles.cardTitleText}>Finalizing Income Data for { currMonth }</Text>
                 <Text style={styles.cardText}>We're working on finalizing income data for this month. Check back soon!</Text>
               </CardView>
               }
@@ -245,6 +275,10 @@ const styles = StyleSheet.create({
   },
   cardText: {
       lineHeight: 22,
+  },
+  cardNumber: {
+      fontWeight: '700',
+      fontSize: 20,
   }
 });
 

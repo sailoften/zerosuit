@@ -144,7 +144,7 @@ export default class BurnScreen extends React.Component {
             </View>
         );
     }
-
+    
     render() {
         const { categoryExpenses, totalBurn, burnRange, currMonth, company, loading, refreshing, live } = this.state;
         return (
