@@ -131,7 +131,7 @@ export default class TxScreen extends React.Component {
                   </CardView>
                   <CardView style={{flex: 1}}>
                       <Text style={styles.cardTitleText}>Why is this transaction uncategorized?</Text>
-                      <Text>We weren't able to categorize this transaction based on bank info so we need your input. We'll remember similar transactions in the future.</Text>
+                      <Text style={styles.cardText}>We weren't able to categorize this transaction based on bank info so we need your input. We'll remember similar transactions in the future.</Text>
                   </CardView>
                 </View>
 
@@ -193,5 +193,8 @@ const styles = StyleSheet.create({
   },
   despText: {
       
+  },
+  cardText: {
+    lineHeight: 22,
   }
 });

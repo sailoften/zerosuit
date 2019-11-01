@@ -149,7 +149,7 @@ export default class IncomeScreen extends React.Component {
             )
         } else {
             return (
-                <Text style={{color: '#101d2f'}}>{number}</Text>
+                <Text style={{color: '#101d2f'}}>-{number}</Text>
             );
         }
     }
@@ -197,10 +197,23 @@ export default class IncomeScreen extends React.Component {
                     </View>
                   </View>
                 <CardView>
-                    <Text style={styles.cardTitleText}>Ramen Profibility Indicator</Text>
-                    <Text>Gross Profit: {this._renderNumber(grossProfit)}</Text>
-                    <Text>Expenses: {this._renderNumber(expense)}</Text>
-                    <Text>Ramen Profit: {this._renderNumber(netIncome)}</Text>
+                    <View style={{flex: 1, flexDirection: 'row'}}>
+                        <Text style={styles.expenseTitle}>Ramen Profitability</Text>
+                        { (netIncome > 0) && <Text style={{...styles.expenseTitle, textAlign: 'right'}}>Status: Not Yet</Text> }
+                        { (netIncome <= 0) && <Text style={{...styles.expenseTitle, textAlign: 'right'}}>Status: Profitable!</Text> }
+                    </View>
+                    <View style={styles.statsCat}>
+                        <Text style={{width: '50%'}}>+ Gross Profit</Text>
+                        <Text style={{width: '50%', textAlign: 'right'}}>{this._renderNumber(grossProfit)}</Text>
+                    </View>
+                    <View style={styles.statsCat}>
+                        <Text style={{width: '50%'}}>- Expenses</Text>
+                        <Text style={{width: '50%', textAlign: 'right'}}>{this._renderNumber(expense)}</Text>
+                    </View>
+                    <View style={{...styles.statsCat, borderBottomWidth: 0}}>
+                        <Text style={{width: '50%'}}>= EBITDA</Text>
+                        <Text style={{width: '50%', textAlign: 'right'}}>{this._renderNumber(netIncome)}</Text>
+                    </View>
                 </CardView>
                 <CardView style={styles.expenseCard}>
                     <View style={{flex: 1, flexDirection: 'row'}}>
@@ -261,6 +274,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontWeight:"700",
     width: '50%',
+  },
+  statsCat: {
+    paddingVertical: 10,
+    borderBottomColor: '#f4f7fb',
+    borderBottomWidth: 1,
+    flex: 1,
+    flexDirection: 'row',
   },
   expenseCat: {
     paddingVertical: 15,
