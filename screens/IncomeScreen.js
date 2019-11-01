@@ -90,15 +90,7 @@ export default class IncomeScreen extends React.Component {
             this.setState({company: payload.company, categoryIncome, categoryCog, income: payload.income, cog: payload.cog, expense: payload.spending, grossProfit, netIncome, loading: false, noData: false});
         }
     }
-
-    // Check if current month, if so return true to display live data panel
-    _isLive = (monthYear) => {
-        const date = moment(monthYear);
-        const now = moment();
-        console.log(date, now);
-        return date.isSame(now, 'month');
-    }
-
+    
     _onRefresh = async () => {
         this.setState({ refreshing: true});
         await this._getData();
@@ -154,6 +146,28 @@ export default class IncomeScreen extends React.Component {
             return (
                 <Text style={{color: '#101d2f'}}>-{number}</Text>
             );
+        }
+    }
+
+    _renderNoData = () => {
+        const { currMonth } = this.state;
+        const date = moment(currMonth, "MMMM, YYYY");
+        const now = moment();
+        const diff = now.diff(date, 'month');
+        if (diff < 2) {
+            return (
+                <CardView>
+                    <Text style={styles.cardTitleText}>Finalizing Revenue Data</Text>
+                    <Text style={styles.cardText}>We're working on finalizing income data for { currMonth }. Check back soon!</Text>
+                </CardView>
+            )
+        } else {
+            return (
+                <CardView>
+                    <Text style={styles.cardTitleText}>No Recorded Income</Text>
+                    <Text style={styles.cardText}>We don't have any recorded income for { currMonth }.</Text>
+                </CardView>
+            )
         }
     }
 
@@ -241,12 +255,7 @@ export default class IncomeScreen extends React.Component {
                     />
                 </CardView>
               </View> }
-              { !loading && noData &&
-              <CardView>
-                <Text style={styles.cardTitleText}>Finalizing Revenue Data</Text>
-                <Text style={styles.cardText}>We're working on finalizing income data for { currMonth }. Check back soon!</Text>
-              </CardView>
-              }
+              { !loading && noData && this._renderNoData() }
             </ScrollView>
         );
     }

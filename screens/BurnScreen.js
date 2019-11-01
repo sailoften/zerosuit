@@ -27,7 +27,8 @@ export default class BurnScreen extends React.Component {
     }
 
     componentDidMount() {
-        this._getData();
+        const { startDate, endDate, currMonth } = this.state;
+        this._getData(startDate, endDate, currMonth);
         segmentScreen("Burn Screen");
     }
 
@@ -64,14 +65,14 @@ export default class BurnScreen extends React.Component {
     }
 
     // Retrieve data from the server for burn data
-    _getData = async (start, end) => {
+    _getData = async (start, end, curr) => {
         this.setState({ loading: true});
-        const { startDate, endDate, burnRange } = this.state;
-        const live = this._isLive(start ? start : startDate);
-        console.log("StartDate: " + startDate + " EndDate: " + endDate);
+        const { burnRange } = this.state;
+        const live = this._isLive(curr);
+        console.log("StartDate: " + start + " EndDate: " + end);
         const body = {
-            startDate: start ? start : startDate,
-            endDate: end ? end : endDate
+            startDate: start,
+            endDate: end
         }
         const payload = await makeRequest('/api/transaction/categoryInfo', body);
         if (!payload.error) {
@@ -85,15 +86,16 @@ export default class BurnScreen extends React.Component {
 
     // Check if current month, if so return true to display live data panel
     _isLive = (monthYear) => {
-        const date = moment.utc(monthYear);
-        const now = moment.utc();
+        const date = moment(monthYear, "MMMM, YYYY");
+        const now = moment();
         console.log(date, now);
         return date.isSame(now, 'month');
     }
 
     _onRefresh = async () => {
         this.setState({ refreshing: true});
-        await this._getData();
+        const { startDate, endDate, currMonth } = this.state;
+        await this._getData(startDate, endDate, currMonth);
         this.setState({ refreshing: false});
     }
 
@@ -104,7 +106,7 @@ export default class BurnScreen extends React.Component {
         }
         const dates = this._monthYear(monthYear);
         this.setState({startDate: dates.start, endDate: dates.end, currMonth: monthYear });
-        await this._getData(dates.start, dates.end);
+        await this._getData(dates.start, dates.end, monthYear);
         segmentTrack("Changed burn month", { month: monthYear });
     }
 
@@ -144,7 +146,7 @@ export default class BurnScreen extends React.Component {
             </View>
         );
     }
-    
+
     render() {
         const { categoryExpenses, totalBurn, burnRange, currMonth, company, loading, refreshing, live } = this.state;
         return (
