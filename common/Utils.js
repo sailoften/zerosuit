@@ -1,9 +1,10 @@
 import { AsyncStorage } from 'react-native';
 import * as Segment from 'expo-analytics-segment';
+import moment from 'moment';
 import getEnvVars from '../env';
 const { apiUrl } = getEnvVars();
 
-export { formatMoney, txTitle, makeRequest, registerSegment, unregisterSegment, segmentScreen, segmentTrack, logoutHelper };
+export { formatMoney, txTitle, dateFormat, makeRequest, registerSegment, unregisterSegment, segmentScreen, segmentTrack, logoutHelper, timer };
 
 const formatMoney = (amount) => {
     if (typeof amount !== 'number') {
@@ -37,6 +38,11 @@ const txTitle = (item) => {
           return 'Untitled Transaction'
         }
     }
+  }
+
+  const dateFormat = (dateString) => {
+    const timeStamp = moment.utc(dateString).format("MM/DD/YY");
+    return timeStamp;
   }
 
   const makeRequest = async (url, body) => {
@@ -109,6 +115,13 @@ const txTitle = (item) => {
       }
     }
     return isGod.status;
+  }
+
+
+  const timer = () => {
+    const d = new Date();
+    const n = d.getTime();
+    console.log(n);
   }
 
   const _useSegment = async () => {

@@ -3,6 +3,7 @@ import {StyleSheet, TouchableOpacity, Text, SectionList, View, RefreshControl} f
 import { formatMoney, txTitle, makeRequest, segmentTrack, segmentScreen } from '../common/Utils';
 import PATextInput from '../common/PATextInput';
 import _ from 'lodash';
+import moment from 'moment';
 
 export default class TransactionsScreen extends React.Component {
   constructor(props) {
@@ -30,7 +31,8 @@ export default class TransactionsScreen extends React.Component {
   _transformTransactions = async(payload) => {
     //TODO: need to sort by date
     const payloadGrouped = _.chain(payload).groupBy((tx) => {
-      const timeStamp = new Date(tx.transactionDate).toDateString();
+      //const timeStamp = new Date(tx.transactionDate).toDateString();
+      const timeStamp = moment.utc(tx.transactionDate).format("dddd, MMM Do YYYY");
       return timeStamp;
     }).map((data, title) => ({ title, data })).value();
     this.setState({sections: payloadGrouped, allSections: payloadGrouped})

@@ -6,7 +6,7 @@ import {
   View,
   FlatList,
 } from 'react-native';
-import { formatMoney, txTitle, segmentScreen } from '../common/Utils';
+import { formatMoney, txTitle, segmentScreen, dateFormat } from '../common/Utils';
 import CardView from '../common/CardView';
 
 export default class TxScreen extends React.Component {
@@ -23,11 +23,6 @@ export default class TxScreen extends React.Component {
       segmentScreen("Individual Transaction Screen");
     }
 
-    _dateFormat = (dateString) => {
-        const dateObj = new Date(dateString);
-        return dateObj.toLocaleDateString();
-    }
-
     _renderItem = ({item}) => {
         if (item.key && item.desp) {
             return (
@@ -42,7 +37,7 @@ export default class TxScreen extends React.Component {
     _getData = () => {
         const { tx } = this.state;
         return [
-            {key: 'Date', desp: this._dateFormat(tx.transactionDate)},
+            {key: 'Date', desp: dateFormat(tx.transactionDate)},
             {key: 'Category', desp: tx.expenseCategory},
             {key: 'Person', desp: tx.transactionOwner},
             {key: 'Account', desp: tx.qbAccount.accountName},

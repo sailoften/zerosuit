@@ -22,9 +22,17 @@ export default class BurnScreen extends React.Component {
             currMonth: date.curr,
             loading: true,
             refreshing: false,
+            live: false,
         }
     }
 
+    componentDidMount() {
+        const { startDate, endDate, currMonth } = this.state;
+        this._getData(startDate, endDate, currMonth);
+        segmentScreen("Burn Screen");
+    }
+
+    // Get current month time range for instatiation
     _getTimeRange = () => {
         const now = moment.utc();
         const start = now.startOf('month').toDate();;
@@ -33,6 +41,7 @@ export default class BurnScreen extends React.Component {
         return { start, end, curr };
     }
 
+    // Take in a month year (e.g. July 2019) and convert it to a Date string
     _monthYear = (myear) => {
         const date = moment.utc(myear, "MMMM, YYYY");
         const start = date.startOf('month').toDate();;
@@ -40,6 +49,7 @@ export default class BurnScreen extends React.Component {
         return { start, end };
     }
 
+    // Based on inception transaction, generate range of possible months for company
     _getBurnRanges = (firstDate) => {
         const inceptionNumber = parseInt(moment(firstDate).format('YYYYMM'));
         const now = moment();
@@ -54,13 +64,15 @@ export default class BurnScreen extends React.Component {
         return range;
     }
 
-    _getData = async (start, end) => {
+    // Retrieve data from the server for burn data
+    _getData = async (start, end, curr) => {
         this.setState({ loading: true});
-        const { startDate, endDate, burnRange } = this.state;
-        console.log("StartDate: " + startDate + " EndDate: " + endDate);
+        const { burnRange } = this.state;
+        const live = this._isLive(curr);
+        console.log("StartDate: " + start + " EndDate: " + end);
         const body = {
-            startDate: start ? start : startDate,
-            endDate: end ? end : endDate
+            startDate: start,
+            endDate: end
         }
         const payload = await makeRequest('/api/transaction/categoryInfo', body);
         if (!payload.error) {
@@ -68,20 +80,33 @@ export default class BurnScreen extends React.Component {
                 this._getBurnRanges(payload.firstDate);
             }
             const categoryExpenses = payload.expenseInfo.filter(cat => cat.total !== 0);
-            this.setState({company: payload.company, categoryExpenses, totalBurn: payload.spending, loading: false});
+            this.setState({company: payload.company, categoryExpenses, totalBurn: payload.spending, loading: false, live});
         }
+    }
+
+    // Check if current month, if so return true to display live data panel
+    _isLive = (monthYear) => {
+        const date = moment(monthYear, "MMMM, YYYY");
+        const now = moment();
+        console.log(date, now);
+        return date.isSame(now, 'month');
     }
 
     _onRefresh = async () => {
         this.setState({ refreshing: true});
-        await this._getData();
+        const { startDate, endDate, currMonth } = this.state;
+        await this._getData(startDate, endDate, currMonth);
         this.setState({ refreshing: false});
     }
 
     _changeDates = async (monthYear) => {
+        const { currMonth } = this.state;
+        if (monthYear === currMonth) {
+            return;
+        }
         const dates = this._monthYear(monthYear);
         this.setState({startDate: dates.start, endDate: dates.end, currMonth: monthYear });
-        await this._getData(dates.start, dates.end);
+        await this._getData(dates.start, dates.end, monthYear);
         segmentTrack("Changed burn month", { month: monthYear });
     }
 
@@ -122,14 +147,8 @@ export default class BurnScreen extends React.Component {
         );
     }
 
-    componentDidMount() {
-        this._getData();
-        segmentScreen("Burn Screen");
-    }
-
     render() {
-        const { categoryExpenses, totalBurn, burnRange, currMonth, company, loading, refreshing } = this.state;
-        //TODO: put button in for date picker
+        const { categoryExpenses, totalBurn, burnRange, currMonth, company, loading, refreshing, live } = this.state;
         return (
             <ScrollView style={styles.container} 
                 refreshControl={
@@ -157,6 +176,10 @@ export default class BurnScreen extends React.Component {
                 <CardView style={styles.burnCard}>
                     <Text style={styles.burnAmount}>{company} spent ${this._moneyFormat(totalBurn)} in {currMonth}</Text>
                 </CardView>
+                { live && <CardView>
+                    <Text style={styles.cardTitleText}>Displaying Live Data</Text>
+                    <Text style={styles.cardText}>We include real-time data for current month burn information. Categorizations may change as we review transactions.</Text>
+                </CardView> }
                 <CardView style={styles.expenseCard}>
                     <Text style={styles.expenseTitle}>Company Expenses</Text>
                     <FlatList
@@ -190,7 +213,7 @@ const styles = StyleSheet.create({
   },
   burnCard: {
     paddingVertical: 60,
-    paddingHorizontal: 40,
+    paddingHorizontal: 20,
   },
   burnPickerCard: {
     paddingVertical: 20, 
@@ -198,7 +221,7 @@ const styles = StyleSheet.create({
   },
   burnAmount: {
     textAlign: 'center',
-    fontSize:25,
+    fontSize:23,
     lineHeight: 35,
   },
   expenseTitle: {
@@ -211,6 +234,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     flex: 1,
     flexDirection: 'row',
+  },
+  cardTitleText: {
+    fontWeight: '600',
+    marginBottom: 12,
+  },
+  cardText: {
+    lineHeight: 22,
   }
 });
 

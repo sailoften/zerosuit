@@ -128,7 +128,7 @@ export default class TasksScreen extends React.Component {
                 <View style={{flex: 1, flexDirection:'row'}}>
                 <View style={{width: '60%'}}>
                     <Text numberOfLines={1} style={styles.infoText}>{this._renderTitle(item)}</Text>
-                    <Text style={styles.infoText, {color: 'gray'}}>{moment(item.transactionDate).format('MMM DD, YYYY')}</Text>
+                    <Text style={styles.infoText, {color: 'gray'}}>{moment.utc(item.transactionDate).format('MMM DD, YYYY')}</Text>
                 </View>
                 <View style={{width: '40%'}}>
                     <Text style={styles.infoText, {fontWeight: '600', fontSize: 16, textAlign: 'right'}}>{formatMoney(item.amount)}</Text>
