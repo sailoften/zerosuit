@@ -32,7 +32,8 @@ export default class IncomeScreen extends React.Component {
     }
 
     componentDidMount() {
-        this._getData();
+        const { startDate, endDate } = this.state;
+        this._getData(startDate, endDate);
         segmentScreen("Income Screen");
     }
 
@@ -67,12 +68,10 @@ export default class IncomeScreen extends React.Component {
 
     _getData = async (start, end) => {
         this.setState({ loading: true});
-        const { startDate, endDate, burnRange } = this.state;
-        //const live = this._isLive(start ? start : startDate);
-        //console.log("StartDate: " + startDate + " EndDate: " + endDate);
+        const { burnRange } = this.state;
         const body = {
-            startDate: start ? start : startDate,
-            endDate: end ? end : endDate
+            startDate: start,
+            endDate: end
         }
         const payload = await makeRequest('/api/transaction/categoryInfo', body);
         if (!payload.error) {
@@ -90,10 +89,11 @@ export default class IncomeScreen extends React.Component {
             this.setState({company: payload.company, categoryIncome, categoryCog, income: payload.income, cog: payload.cog, expense: payload.spending, grossProfit, netIncome, loading: false, noData: false});
         }
     }
-    
+
     _onRefresh = async () => {
         this.setState({ refreshing: true});
-        await this._getData();
+        const { startDate, endDate } = this.state;
+        await this._getData(startDate, endDate);
         this.setState({ refreshing: false});
     }
 
